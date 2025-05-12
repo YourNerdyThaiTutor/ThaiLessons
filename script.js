@@ -57,7 +57,7 @@ function checkAnswer(txt){
             document.getElementById("streak").textContent = "Streak: "+streak;
         }
         alreadyWrong = false;
-        startGame();
+        setTimeout(() => startGame(),700);
     }
     else{
         //var ti = document.createTextNode("wrong");
@@ -84,6 +84,38 @@ function createQuestion(){
 function startGame(){
     generateAnswerChoices();
     createQuestion();
+    
+}
+
+var current_tone = 0;
+function playAllTones(){
+    
+    document.getElementById("helper").textContent = "play next";
+    var button = choices[current_tone];
+    document.getElementById(button).style.background='#00a5f6';
+    var src = "audios/"+button+".mp3";
+    
+    var audio = document.getElementById('helper_audio');
+
+    var source = document.getElementById('helper_audioSource');
+    source.src = src;
+    audio.load();
+    audio.play();
+    current_tone ++;
+    if(current_tone===choices.length){
+        current_tone = 0;
+        document.getElementById("helper").textContent = "click here to hear all tones";
+        for(let i = 0;i<choices.length;i++){
+            document.getElementById(choices[i]).style.background='#ffffff';
+        }
+    }
+    
+}
+
+
+function test(){
+    
 }
 
 startGame();
+document.getElementById("helper").onclick = function(){playAllTones();};
