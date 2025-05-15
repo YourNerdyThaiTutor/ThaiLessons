@@ -71,6 +71,7 @@ function checkAnswer(txt){
         alreadyWrong = false;
         setTimeout(() => startGame(),700);
         current_tone = 0;
+        document.getElementById("helper").textContent = "click here to hear all tones";
     }
     else{
         //var ti = document.createTextNode("wrong");
