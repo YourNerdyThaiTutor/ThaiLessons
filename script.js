@@ -4,15 +4,21 @@ function onPageLoaded() {
     
 }
 
-var consonants =["ก","จ","ด","ต","บ","ป","อ"];
+var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
+var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
+var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
+var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
 var tones =["","่","้","๊","๋"];
-var vowels =["า","อ","ู"];
+var vowels =["า","อ"];
 var div = document.getElementById("answers");
 var choices = [];
 var correct ="";
 var score = 0;
 var alreadyWrong = false;
 var streak = 0;
+var options = ["mid", "single low", "paired", "all"];
+var selected_option = "mid";
+var selected_consonants = consonants;
 
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
@@ -24,21 +30,27 @@ function generateChoiceButton(answer){
 }
 
 function generateAnswerChoices(){
-    //var c = Math.floor(Math.random() * 7);
+    var c = Math.floor(Math.random() * consonants.length);
     while (div.firstChild) {
-    div.firstChild.remove();
-}
+        div.firstChild.remove();//clear answer choices from previous round
+    }
     choices = [];
-    var c = "ก";
-    var t = Math.floor(Math.random() * 5);
-    var v = Math.floor(Math.random() * 3);
+    //var c = "ก";
+    //var t = Math.floor(Math.random() * consonants.length);
+    var v = Math.floor(Math.random() * vowels.length);
     for(let i=0; i< tones.length; i++){
-        var word = c + tones[i] + vowels[v];
+        var word = consonants[c] + tones[i] + vowels[v];
         choices.push(word);
         generateChoiceButton(word);
     }
     
 }
+
+function generateTones(){
+    
+    
+}
+
 function checkAnswer(txt){
     
     
@@ -112,10 +124,6 @@ function playAllTones(){
     
 }
 
-
-function test(){
-    
-}
 
 startGame();
 document.getElementById("helper").onclick = function(){playAllTones();};
