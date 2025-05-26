@@ -77,7 +77,7 @@ function checkAnswer(txt){
 function createQuestion(){
     var correctIndex = Math.floor(Math.random() * choices.length);
     correct = choices[correctIndex];
-    var src = "audios/"+correct+"อ"+".mp3";
+    var src = "mid/"+correct+"อ"+".mp3";
     
     var audio = document.getElementById('audio');
 
@@ -101,7 +101,7 @@ function playAllTones(){
     document.getElementById("helper").textContent = "play next";
     var button = choices[current_tone];
     document.getElementById(button).style.background='#00a5f6';
-    var src = "audios/"+button+"อ"+".mp3";
+    var src = "mid/"+button+"อ"+".mp3";
     
     var audio = document.getElementById('helper_audio');
 
