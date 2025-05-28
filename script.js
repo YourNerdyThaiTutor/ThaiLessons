@@ -21,6 +21,7 @@ var options = ["mid", "single low", "paired", "all"];
 var selected_option = "mid";
 var selected_consonants = consonants;
 var curr_level = "mid";
+var c=0;
 
 function generateChoiceButton(answer, _id){
     var x = document.createElement("BUTTON");
@@ -33,7 +34,7 @@ function generateChoiceButton(answer, _id){
 
 function generateAnswerChoices(){
     
-    var c = Math.floor(Math.random() * consonants.length);
+    c = Math.floor(Math.random() * consonants.length);
     while (div.firstChild) {
         div.firstChild.remove();//clear answer choices from previous round
     }
@@ -76,10 +77,23 @@ function generateTones(consonant,vowel){
         word = buildWord(consonant,"้",vowel);
         
         
-        word = buildWord("ห"+consonant,"",vowel);
-          
+        word = buildWord("ห"+consonant,"",vowel);      
+        
+    }
+    
+    else if(curr_level==="paired"){
+        word = buildWord(consonant, "", vowel);
+        word = buildWord(paired_high_consonants[c],"่",vowel);
         
         
+        word = buildWord(consonant,"่",vowel);
+        document.getElementById(word).innerHTML+="/"+paired_high_consonants[c]+"้"+vowel;
+       
+        
+        word = buildWord(consonant,"้",vowel);
+        
+        
+        word = buildWord(paired_high_consonants[c],"",vowel);    
     }
     
     
@@ -113,7 +127,12 @@ function buildWord(c, t,v){
         }
     }
     else if(c.length===1){
-        _id = consonant_map[c]+t+v;
+        if(consonant_map[c]){
+           _id = consonant_map[c]+t+v; 
+        }
+        else{
+            _id=word;
+        }
     }
     choices.push(_id);
     generateChoiceButton(word,_id);

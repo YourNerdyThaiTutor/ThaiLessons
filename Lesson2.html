@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Where does the vowel go</title>
+        <style>
+.box {
+  float: left;
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid black;
+  text-align: center;
+}
+.box {
+  padding: 5px 5px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 30px;
+  transition: all 0.5s ease;
+}
+
+.box:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+}
+
+.box:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+}            
+.con{
+    font-size: 100px;
+    text-align: center;
+}
+.dragElement, .dropZone {
+  width: 12rem;
+  height: 15rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba( 255, 255, 255, 0.9 );
+backdrop-filter: blur( 4px );
+-webkit-backdrop-filter: blur( 4px );
+border-radius: 10px;
+  transition: 0.3s;
+}
+
+.dropZone {
+  width: 13rem;
+  height: 16rem;
+  background: rgba( 0, 0, 0, 0.7 );
+backdrop-filter: blur( 4.5px );
+-webkit-backdrop-filter: blur( 4.5px );
+border-radius: 10px;
+}
+
+.beingDragged {
+ color: white;
+  background-color: #9d9d9d;
+}
+
+.hoverOver {
+  transition: 0.3s ease-out;
+  border: solid 5px #2a9d8f;
+}
+            
+</style>
+    <script>
+        var score = 0;
+        var answer="เ";
+        var vowels = {
+         "ี":"above",
+         "เ":"left",
+         "แ":"left",
+         "า":"right",
+         "ู":"under"
+    }
+        function generateQuestion(){
+         document.getElementById("score").textContent = "Score: "+score;
+         var c = Math.floor(Math.random() * consonants.length);
+         var v = Math.floor(Math.random() * vowels_list.length);
+         document.getElementById("consonant").innerHTML = consonants[c];
+         answer = vowels_list[v];
+         document.getElementById("Draggable").innerHTML = answer;
+     }
+function dragstartHandler(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+    ev.target.classList.add('beingDragged');
+}
+function SetPage(){
+    document.body.innerHTML=`
+<h1>Drag and drop the vowel to the correct placement</h1>
+
+<p id="score">Score: 0</p>      
+        
+
+        
+    <table>
+        <tr>
+            <td></td>
+            <td><div id="above" class = "box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><div id="left"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
+            <td class="con" id="consonant"></td>
+            <td><div id="right"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><div id="under"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
+            <td></td>
+        </tr>
+    </table>
+    <div id="div1" class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">
+
+            <div id="Draggable" src="img_w3slogo.gif" draggable="true" class="con" ondragstart="dragstartHandler(event)" width="100" height="100">Sa</div>
+        </div>`;
+    generateQuestion();
+}
+
+function dragoverHandler(ev) {
+  ev.preventDefault();
+}
+
+function dropHandler(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+    document.getElementById(data).classList.remove('beingDragged');
+    ev.target.classList.remove('hoverOver');
+    if(vowels[answer]==ev.target.id){
+        document.getElementById(ev.target.id).style.background='#00ff00';
+        score ++;
+        
+        setTimeout(() => SetPage(),700);
+    }
+    else{
+        document.getElementById(ev.target.id).style.background='#ff003c';
+    }
+}
+
+     var vowels_list=[ "ี","เ","แ","า", "ู"]
+     var consonants =["ก","จ","ด","ต","บ","ป","อ"];
+     window.onload = function load(){
+         SetPage();
+         
+         
+     }
+     
+</script>
+</head>
+<body>
+
+    </body>
+</html>

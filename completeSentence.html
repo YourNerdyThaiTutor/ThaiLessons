@@ -1,0 +1,181 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Complete the sentence</title>
+        <script src="https://unpkg.com/papaparse@5.5.2/papaparse.min.js"></script>
+        <style>
+.bb {
+  
+  width: 50px;
+  height: 30px;
+  border: 1px solid black;
+  text-align: center;
+  display:inline-block;
+}
+.box {
+  padding: 5px 5px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: 0;
+  background-color: white;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-size: 30px;
+  transition: all 0.5s ease;
+}
+
+.box:hover {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+}
+
+.box:active {
+  letter-spacing: 3px;
+  background-color: hsl(261deg 80% 48%);
+  color: hsl(0, 0%, 100%);
+  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+  transform: translateY(10px);
+  transition: 100ms;
+}            
+.con{
+    font-size: 100px;
+    text-align: center;
+}
+.dragElement, .dropZone {
+  width: 12rem;
+  height: 15rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba( 255, 255, 255, 0.9 );
+backdrop-filter: blur( 4px );
+-webkit-backdrop-filter: blur( 4px );
+border-radius: 10px;
+  transition: 0.3s;
+}
+body{
+  font-size: 25pt;     
+}
+.dropZone {
+  width: 13rem;
+  height: 16rem;
+  background: rgba( 0, 0, 0, 0.7 );
+backdrop-filter: blur( 4.5px );
+-webkit-backdrop-filter: blur( 4.5px );
+border-radius: 10px;
+}
+
+.beingDragged {
+ color: white;
+  background-color: #9d9d9d;
+}
+
+.hoverOver {
+  transition: 0.3s ease-out;
+  border: solid 5px #2a9d8f;
+}
+            
+</style>
+    <script>
+        var score = 0;
+    function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+        
+    function readCSV(name){
+              fetch("/complete_sentence/"+name)
+              .then((res) => res.text())
+              .then((text) => {
+                // do something with "text"
+              var questions = document.getElementById("questions");
+              var results = Papa.parse(text);
+              var word_bank = document.getElementById("word_bank");
+              var word_list = [];
+              shuffleArray(results.data);
+              for (let row of results.data) {
+                    word_list.push(row[0]);
+                    
+                    var quest = document.createElement("DIV");
+                    var sentence = row[1].split("#");
+                    var t = document.createTextNode(sentence[0]);
+                    var blank = document.createElement("DIV");
+                    blank.setAttribute('ondrop', "dropHandler(event)");
+                    blank.setAttribute('ondragover', "dragoverHandler(event)");
+                    blank.id=row[0]+"1 p";
+                    blank.classList.add("bb");
+                    var t2 = document.createTextNode(sentence[1]); 
+                    quest.appendChild(t);
+                    quest.appendChild(blank);
+                    quest.appendChild(t2);
+                    questions.appendChild(quest);
+                    
+                    
+                }
+                shuffleArray(word_list);
+                for(let i=0;i<word_list.length;i++){
+                    var word = document.createElement("DIV");
+                    word.id = word_list[i];
+                    word.setAttribute('draggable', true);
+                    word.setAttribute('ondragstart',      "dragstartHandler(event)");
+                    word.innerHTML = word_list[i];
+                    word_bank.appendChild(word);
+                }
+                
+              
+             })
+            .catch((e) => console.error(e));
+            }
+        function generateQuestion(){
+         
+         document.getElementById("Draggable").innerHTML = answer;
+            
+     }
+function dragstartHandler(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  
+}
+
+function dragoverHandler(ev) {
+  ev.preventDefault();
+}
+
+function dropHandler(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+  var blank_answer = ev.target.id.split("1");
+    if(data==blank_answer[0]){
+        document.getElementById(ev.target.id).style.background='#00ff00';
+    }
+    else{
+        document.getElementById(ev.target.id).style.background='#ff003c';
+    }
+}
+
+     window.onload = function load(){
+         readCSV("test.csv");
+         
+     }
+     
+</script>
+</head>
+<body>
+<div id="questions" class="question">
+    
+</div>
+<div id="word_bank" class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div>    
+</body>
+</html>
+
