@@ -161,10 +161,10 @@ function dropHandler(ev) {
     var blank_answer = ev.target.id.split("1");
         if(ev.target.classList[0]!="box"){
     if(data==blank_answer[0]){
-        document.getElementById(ev.target.id).parentElement.style.background='#00ff00';;
+        document.getElementById(ev.target.id).parentElement.style.background='#00ff00';
     }
     else{
-        document.getElementById(ev.target.id).parentElement.innerHTML+="wrong";
+        document.getElementById(ev.target.id).parentElement.style.background='#eb123d';
     }
     }
     }
