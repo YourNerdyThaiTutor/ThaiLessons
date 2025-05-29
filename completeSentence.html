@@ -10,6 +10,7 @@
   
   width: 100px;
   height: 30px;
+  border-radius: 5px;
   border: 1px solid black;
   text-align: center;
   display:inline-block;
@@ -155,18 +156,36 @@ function dragoverHandler(ev) {
 
 function dropHandler(ev) {
   ev.preventDefault();
-    if(ev.target.classList[0]!="word"){
         const data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
-    var blank_answer = ev.target.id.split("1");
+    
+    if(ev.target.classList[0]!="word"){
+        ev.target.appendChild(document.getElementById(data));
+        var blank_answer = ev.target.id.split("1");
         if(ev.target.classList[0]!="box"){
-    if(data==blank_answer[0]){
+        if(data==blank_answer[0]){
         document.getElementById(ev.target.id).parentElement.style.background='#00ff00';
+        }
+        else{
+        document.getElementById(ev.target.id).parentElement.style.background='#eb123d';
+        }
+        }
     }
     else{
-        document.getElementById(ev.target.id).parentElement.style.background='#eb123d';
-    }
-    }
+        if(ev.target.parentElement.id === "word_bank"){
+            document.getElementById("word_bank").appendChild(document.getElementById(data));
+        }
+        else{
+            ev.target.parentElement.appendChild(document.getElementById(data));
+            
+            var blank_answer = ev.target.parentElement.id.split("1");
+            if(data==blank_answer[0]){
+                document.getElementById(ev.target.parentElement.id).parentElement.style.background='#00ff00';
+            }
+            else{
+                document.getElementById(ev.target.parentElement.id).parentElement.style.background='#eb123d';
+            }
+            document.getElementById("word_bank").appendChild(document.getElementById(ev.target.id));
+        }
     }
     
 }
