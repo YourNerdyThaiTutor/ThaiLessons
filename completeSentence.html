@@ -15,11 +15,11 @@
   display:inline-block;
 }
 .box {
-  padding: 5px 5px;
+  padding: 20px 20px;
   border-radius: 15px;
   cursor: pointer;
   border: 0;
-  background-color: white;
+  background-color: #ffdcdc;
   box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
@@ -127,6 +127,8 @@ border-radius: 10px;
                 for(let i=0;i<word_list.length;i++){
                     var word = document.createElement("DIV");
                     word.id = word_list[i];
+                    word.classList.add("word");
+                    word.classList.add("bb");
                     word.setAttribute('draggable', true);
                     word.setAttribute('ondragstart',      "dragstartHandler(event)");
                     word.innerHTML = word_list[i];
@@ -153,15 +155,20 @@ function dragoverHandler(ev) {
 
 function dropHandler(ev) {
   ev.preventDefault();
-  const data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
-  var blank_answer = ev.target.id.split("1");
+    if(ev.target.classList[0]!="word"){
+        const data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+    var blank_answer = ev.target.id.split("1");
+        if(ev.target.classList[0]!="box"){
     if(data==blank_answer[0]){
-        document.getElementById(ev.target.id).style.background='#00ff00';
+        document.getElementById(ev.target.id).parentElement.style.background='#00ff00';;
     }
     else{
-        document.getElementById(ev.target.id).style.background='#ff003c';
+        document.getElementById(ev.target.id).parentElement.innerHTML+="wrong";
     }
+    }
+    }
+    
 }
 
      window.onload = function load(){
