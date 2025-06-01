@@ -3,13 +3,6 @@
     <head>
         <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-BQ56JZ1LM4');
-</script>
         <meta charset="utf-8" />
         <title>Mid tones</title>
         <link rel="stylesheet" href="Lesson4.css" />
@@ -25,7 +18,7 @@
         <div id="streak" class="streak">Streak: </div>
         
         <div id="question" class="question">
-            <h1>Select the correct spelling</h1>
+            <h3>Select the correct spelling of this word</h3>
         <img src="images/audio%20still.png">
             <audio controls id="audio">
                 <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3">
@@ -34,24 +27,23 @@
             
             
         </div>
-        <div class="helper">
-            <button id="helper" class="options">click here to hear all vowels</button>
-            <audio id="helper_audio">
-                <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3">
-                Your browser does not support the audio tag.
-            </audio>
-        </div>
+        
+        <h2 id="your_word" class="helper">Your word</h2>
+        <h3 class="helper">consonants</h3>
         
         <div id="answers" class="answers">
-            <script src="Lesson4.js">
-            </script>
+            
         </div>
+        <h3 class="helper">vowels</h3>
         <div id="vowels" class="answers">
         </div>
-        <div id="ending" class="answers">
+        <h3 class="helper">ending consonants</h3>
+        <div id="endings" class="answers">
         </div>
         <div id="tones"></div>
-            
+        <script src="Lesson4.js">
+        </script> 
+        
         
     </body>
 </html>
