@@ -6,17 +6,9 @@
     font-family: 'thic';
   src: url('/Thiccboiis-Regular.ttf');
 }
-.header{
-    text-align: center;
-    font-size: 30px;
-}
-.content{
-    text-align: left;
-    font-family: 'handwriting';
-    
-}
+
 body{
-    font-size: 40px;
+    font-size: 3vw;
 }
 /* Navbar container */
 .navbar {
@@ -28,7 +20,7 @@ body{
 /* Links inside the navbar */
 .navbar a {
   float: left;
-  font-size: 16px;
+  font-size: 5vw;
   color: white;
   text-align: center;
   padding: 14px 16px;
@@ -43,7 +35,7 @@ body{
 
 /* Dropdown button */
 .dropdown .dropbtn {
-  font-size: 16px;
+  font-size: 5vw;
   border: none;
   outline: none;
   color: white;
