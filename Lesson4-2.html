@@ -33,7 +33,7 @@
             
         </div>
         <div class="helper">
-            <button id="helper" class="options" onclick="location.href='https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=า,ี,ู,เ,แ,โ';">click here to see where the letters are</button>
+            <button id="helper" class="options" onclick="location.href='https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=ง,ม,ย,ว,น';">click here to see where the ending consonants are</button>
         </div>
         
         <div id="answers" class="answers">
@@ -49,7 +49,7 @@ var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple
 var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
 var tones =["","่","้","๊","๋"];
 var vowels =["า","อ"];
-var choices = ["า","ู","ี","เ","แ","โ"];
+var choices = ["กาง","กาย","กาว","แกง","แกน","โกง","โกน","จาง","จาน","จาม","จึน","จูง","แจว","ดาว","แดน","โดน","ตาม","ตีน","บาง","บาน","ปูน","อาน","เอน"];
 var correct ="";
 var score = 0;
 var alreadyWrong = false;
@@ -94,7 +94,7 @@ function checkAnswer(txt){
 function createQuestion(){
     var correctIndex = Math.floor(Math.random() * choices.length);
     correct = choices[correctIndex];
-     var src = "https://yournerdythaitutor.github.io/Alphabet_audios/"+correct+".mp3";
+     var src = "./spelling_audios/"+correct+".mp3";
     
     var audio = document.getElementById('audio');
 
