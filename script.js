@@ -23,7 +23,7 @@ var selected_consonants = consonants;
 var curr_level = "mid";
 var c=0;
 
-function generateChoiceButton(answer, _id){
+function generateChoiceButton(answer, _id){ //create the buttons
     var x = document.createElement("BUTTON");
     var t = document.createTextNode(answer);
     x.appendChild(t);
@@ -32,21 +32,15 @@ function generateChoiceButton(answer, _id){
     div.appendChild(x);
 }
 
-function generateAnswerChoices(){
+function generateAnswerChoices(){ //randomize which consonants and vowel to use
     
     c = Math.floor(Math.random() * consonants.length);
     while (div.firstChild) {
         div.firstChild.remove();//clear answer choices from previous round
     }
     choices = [];
-    //var c = "ก";
-    //var t = Math.floor(Math.random() * consonants.length);
+    
     var v = Math.floor(Math.random() * vowels.length);
-    /*for(let i=0; i< tones.length; i++){
-        var word = consonants[c] + tones[i] + vowels[v];
-        choices.push(word);
-        generateChoiceButton(word, word);
-    }*/
     generateTones(consonants[c],vowels[v]);
     
 }
@@ -64,19 +58,11 @@ function generateTones(consonant,vowel){
    
     else if(curr_level==="single"){
         
-        word = buildWord(consonant,"",vowel);
-        
-        
+        word = buildWord(consonant,"",vowel);   
         word = buildWord("ห"+consonant,"่",vowel);
-        
-        
         word = buildWord(consonant,"่",vowel);
         document.getElementById(word).innerHTML+="/"+"ห"+consonant+"้"+vowel;
-       
-        
         word = buildWord(consonant,"้",vowel);
-        
-        
         word = buildWord("ห"+consonant,"",vowel);      
         
     }
@@ -84,12 +70,8 @@ function generateTones(consonant,vowel){
     else if(curr_level==="paired"){
         word = buildWord(consonant, "", vowel);
         word = buildWord(paired_high_consonants[c],"่",vowel);
-        
-        
         word = buildWord(consonant,"่",vowel);
         document.getElementById(word).innerHTML+="/"+paired_high_consonants[c]+"้"+vowel;
-       
-        
         word = buildWord(consonant,"้",vowel);
         
         
@@ -206,6 +188,11 @@ function startGame(){
 }
 
 var current_tone = 0;
+function resetWhite(){
+            for(let i = 0;i<choices.length;i++){
+            document.getElementById(choices[i]).style.background='#ffffff';
+        }
+}
 function playAllTones(){
     
     document.getElementById("helper").textContent = "play next";
@@ -223,12 +210,12 @@ function playAllTones(){
     if(current_tone===choices.length){
         current_tone = 0;
         document.getElementById("helper").textContent = "click here to hear all tones";
-        for(let i = 0;i<choices.length;i++){
-            document.getElementById(choices[i]).style.background='#ffffff';
-        }
+        setTimeout(() => resetWhite(),700);
+        
     }
     
 }
+
 
 
 startGame();
