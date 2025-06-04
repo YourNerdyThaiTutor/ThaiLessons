@@ -96,14 +96,14 @@ function createQuestion(){
     var e = Math.floor(Math.random() * end_sound.length);
     var _end = end_sound[e];
     var _tone = tones[t];
-    var q_word;
+    var q_word = "";
     if(vowels_map[_vowel]==="before"){
         q_word = _vowel+_consonant+_end;
     }
     else if(vowels_map[_vowel]==="after"){
         q_word = _consonant+_vowel+_end;
     }
-    else if(vowels_map[_vowel]==="above"){
+    else{
         q_word = _consonant+_vowel+_end;
     }
     document.getElementById("word").innerHTML = q_word;
