@@ -98,13 +98,13 @@ function createQuestion(){
     var _tone = tones[t];
     var q_word;
     if(vowels_map[_vowel]==="before"){
-        q_word = _vowel+_consonant+_tone+_end;
+        q_word = _vowel+_consonant+_end;
     }
     else if(vowels_map[_vowel]==="after"){
-        q_word = _consonant+_tone+_vowel+_end;
+        q_word = _consonant+_vowel+_end;
     }
     else if(vowels_map[_vowel]==="above"){
-        q_word = _consonant+_vowel+_tone+_end;
+        q_word = _consonant+_vowel+_end;
     }
     document.getElementById("word").innerHTML = q_word;
     //var t = document.createTextNode(src);
