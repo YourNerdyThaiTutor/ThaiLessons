@@ -28,6 +28,10 @@ var groups ={
     "น":["น","ณ","ญ","ร","ล","ฬ"]    
 };
 
+//FUN STUFF
+var miss = 0;
+var sassy_mode = false;
+
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
     var t = document.createTextNode(answer);
@@ -81,6 +85,10 @@ function checkAnswer(txt){
         //var ti = document.createTextNode("wrong");
         //document.body.appendChild(ti);
         document.getElementById(txt).style.background='#ff3333';
+        miss ++;
+        var disappointment = document.getElementById("d");
+        disappointment.value = miss;
+        disappointment.click();
         alreadyWrong = true;
     }
 }
