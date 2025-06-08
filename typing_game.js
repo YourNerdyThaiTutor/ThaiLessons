@@ -1,50 +1,4 @@
-<!doctype html>
-<html lang="en">
-    <head>
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-BQ56JZ1LM4');
-</script>
-        <meta charset="utf-8" />
-        <title>Standalone Vowels Typing</title>
-        <link rel="stylesheet" href="styles.css" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
-     crossorigin="anonymous"></script>
-        
-    </head>
-
-    <body>
-        <a href="https://yournerdythaitutor.github.io/"> home</a>
-        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
-        <div id="score" class="score">Score: </div>
-        <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson6.html" style="float: right">Lesson</a>
-        <div id="question" class="question">
-            <!--button class="selectedOption">mid</!--button><button class = "options">single</button><button class="options">paired</button><br><br---><br>
-        <img src="images/audio%20still.png">
-            <audio controls id="audio">
-                <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3">
-                Your browser does not support the audio tag.
-            </audio>
-            
-            
-        </div>
-        <div class="helper">
-            <button id="helper" class="options" onclick="location.href='https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=ะ,ิ,ุ,ึ';">click here to see where the new letters are</button>
-        </div>
-        
-        <div id="answers" class="answers">
-            <p>Type in the correct vowel</p>
-            <input id="numb">
-            <button id="myBtn" onclick="SubmitAnswer()" type="button">Submit</button>
-            
-        </div>
-            <script>
-                var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
+var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
 var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
 var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
 var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
@@ -56,6 +10,8 @@ var score = 0;
 var alreadyWrong = false;
 var streak = 0;
 var miss =0;
+var folder = "";
+var type_of_choices = "words";
 var input = document.getElementById("numb");
     input.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
@@ -99,7 +55,14 @@ function checkAnswer(txt){
 function createQuestion(){
     var correctIndex = Math.floor(Math.random() * choices.length);
     correct = choices[correctIndex];
-     var src = "https://yournerdythaitutor.github.io/Alphabet_audios/"+correct+".mp3";
+    var src;
+    
+    if(type_of_choices === "consonant"){
+        src = folder+correct+"อ"+".mp3";
+    }
+    else if(type_of_choices === "words"){
+        src = folder+correct+".mp3";
+    }
     
     var audio = document.getElementById('audio');
 
@@ -128,11 +91,9 @@ function startGame(){
     createQuestion();
 }
 
-window.onload = function start(){startGame();}
-
-            </script>
-        <span style="position: absolute; bottom: 0; right: 20pt;" id="sass"></span>
-        <script src="./fun_js/effects.js"></script>
-        <script>addToggle();</script>
-    </body>
-</html>
+function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
+    folder = _folder;
+    choices = _list_of_choices;
+    type_of_choices = _type_of_choices;
+    startGame();
+}

@@ -73,6 +73,9 @@ function checkAnswer(txt){
             streak ++;
             document.getElementById("score").textContent = "Score: "+score;
             document.getElementById("streak").textContent = "Streak: "+streak;
+            var celebrate = document.getElementById("celebrate");
+            celebrate.value = streak;
+            celebrate.click();
         }
         else{
             streak = 0;

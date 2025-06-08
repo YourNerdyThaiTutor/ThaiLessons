@@ -56,8 +56,19 @@ function addToggle(){
                 Your browser does not support the audio tag.
     </audio>
     <button id="d" style="display:none" onclick="disappointment()" value = 0 >disrespect</button>
+    <button id="celebrate" style="display:none" onclick="celebrate()" value = 0 >celebrate</button>
     `;
+    /*document.body.innerHTML+=`<img src="./sassy_mode/img/Side%20eye.gif" style="height: 80%; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">`;*/
 }
+function displayBuffalo(_display){
+    var div = document.getElementById("buffalo").style.display = _display;
+}
+
+function setCharacter(_character){
+    var div = document.getElementById("buffalo");
+    div.src = "./sassy_mode/img/"+_character;
+}
+
 function disappointment(){
     sassyModeON();
     var miss = document.getElementById("d").value;
@@ -76,13 +87,51 @@ function disappointment(){
         }
         t = Math.floor(Math.random() * selection.length);
         playSound(selection[t]);
+        var b = Math.floor(Math.random() * 10);
+        if(b==5){
+            try{
+                displayBuffalo("block");
+                setTimeout(() => displayBuffalo("none"),2000);
+            }
+            catch{
+                console.log("can't find image");
+            }
+            
+        }
+        
     } 
+    
+    
+}
+
+function celebrate(){
+    sassyModeON();
+    var streak = document.getElementById("celebrate").value;
+    if(isChecked){
+        var t=0;
+        var selection = [];
+        if(streak == 50){
+            selection = levels_of_approval.yay;
+            t = Math.floor(Math.random() * selection.length);
+            playSound(selection[t]);     
+            try{
+                setCharacter("Green_guy.gif");
+                displayBuffalo("block");
+                setTimeout(() => displayBuffalo("none"),2000);
+            }
+            catch{
+                console.log("can't find image");
+            }
+        }
+        
+            
+        
+    }
 }
 function typing(text){
     var div = document.getElementById("sass");
     div.innerHTML = "hello";
 }
-
 
 
 

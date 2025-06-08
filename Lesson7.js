@@ -9,6 +9,8 @@ var options = ["mid", "single low", "paired", "all"];
 var selected_option = "mid";
 var selected_vowels = vowels;
 
+var miss = 0;
+
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
     var t = document.createTextNode(answer);
@@ -60,6 +62,10 @@ function checkAnswer(txt){
     else{
         //var ti = document.createTextNode("wrong");
         //document.body.appendChild(ti);
+        miss++;
+        var disappointment = document.getElementById("d");
+        disappointment.value = miss;
+        disappointment.click();
         document.getElementById(txt).style.background='#ff3333';
         alreadyWrong = true;
     }
