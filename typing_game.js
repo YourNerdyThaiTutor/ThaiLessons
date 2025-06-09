@@ -81,6 +81,7 @@ function SubmitAnswer() {
     document.getElementById("numb").select();
   // If x is Not a Number or less than one or greater than 10
    x.replace(/\s/g, '');
+   x.replace(",","");
    checkAnswer(x);
 }
 
