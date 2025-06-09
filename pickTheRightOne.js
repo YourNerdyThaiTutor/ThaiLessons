@@ -77,7 +77,12 @@ function checkAnswer(txt){
 function createQuestion(){
     var correctIndex = Math.floor(Math.random() * choices.length);
     correct = choices[correctIndex];
-    var src = "mid/"+correct+"อ"+".mp3";
+    if(type_of_choices === "consonant"){
+        src = folder+correct+"อ"+".mp3";
+    }
+    else if(type_of_choices === "words"){
+        src = folder+correct+".mp3";
+    }
     
     var audio = document.getElementById('audio');
 
@@ -120,6 +125,11 @@ function playAllTones(){
     
 }
 
+function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
+    folder = _folder;
+    consonants = _list_of_choices;
+    type_of_choices = _type_of_choices;
+    startGame();
+}
 
-startGame();
 document.getElementById("helper").onclick = function(){playAllTones();};
