@@ -43,8 +43,13 @@
             <button id="myBtn" onclick="SubmitAnswer()" type="button">Submit</button>
             
         </div>
+        
+        <span style="position: absolute; bottom: 10pt; right: 20pt;" id="sass"></span>
+        <img src="./sassy_mode/img/Side%20eye.gif" style="height: 200pt; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">
+        <script src="./fun_js/effects.js"></script>
+        <script>addToggle();</script>
             <script>
-                var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
+var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
 var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
 var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
 var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
@@ -131,8 +136,6 @@ function startGame(){
 window.onload = function start(){startGame();}
 
             </script>
-        <span style="position: absolute; bottom: 0; right: 20pt;" id="sass"></span>
-        <script src="./fun_js/effects.js"></script>
-        <script>addToggle();</script>
+        
     </body>
 </html>
