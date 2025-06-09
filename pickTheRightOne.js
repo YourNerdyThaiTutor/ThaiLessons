@@ -106,7 +106,7 @@ function playAllTones(){
     document.getElementById("helper").textContent = "play next";
     var button = choices[current_tone];
     document.getElementById(button).style.background='#00a5f6';
-    var src = "mid/"+button+"อ"+".mp3";
+    var src = folder+button+"อ"+".mp3";
     
     var audio = document.getElementById('helper_audio');
 
