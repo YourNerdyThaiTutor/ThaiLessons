@@ -106,7 +106,12 @@ function playAllTones(){
     document.getElementById("helper").textContent = "play next";
     var button = choices[current_tone];
     document.getElementById(button).style.background='#00a5f6';
-    var src = folder+button+"อ"+".mp3";
+    if(type_of_choices === "consonant"){
+        src = folder+button+"อ"+".mp3";
+    }
+    else if(type_of_choices === "words"){
+        src = folder+button+".mp3";
+    }
     
     var audio = document.getElementById('helper_audio');
 
