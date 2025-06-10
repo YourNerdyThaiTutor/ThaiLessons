@@ -39,6 +39,16 @@ function checkAnswer(txt){
             document.getElementById("streak").textContent = "Streak: "+streak;
         }
         alreadyWrong = false;
+        
+        try{
+           current_tone = 0;
+            place = false;
+           document.getElementById("helper").textContent = "click here to play each word separately"; 
+        }
+        catch{
+            console.log("no helper");
+        }
+        
         setTimeout(() => startGame(),700);
         
     }
@@ -117,7 +127,8 @@ function playNumber(){
         "6":"หก",
         "7":"เจ็ด",
         "8":"แปด",
-        "9":"เก้า"
+        "9":"เก้า",
+        "20":"ยี่สิบ"
     };
     var _place_map={
         1:"สิบ",
@@ -131,8 +142,21 @@ function playNumber(){
     var button;
     if(!place){
         var b = correct[current_tone];
-        button = _map[b];
-        place = true;
+        if(b!="0"){
+            place = true;
+            if(correct.length - current_tone -1 === 1 && b==="2"){
+                b = 20;
+                place = false;
+                current_tone ++;
+            }
+            button = _map[b];
+        }
+        else{
+            place = false;
+            current_tone ++;
+        }
+        
+        
     }
     else if(current_tone!=correct.length){
         
@@ -141,6 +165,7 @@ function playNumber(){
         place = false;
         current_tone ++;
     }
+    
     src = "https://yournerdythaitutor.github.io/Lessons/audios/vocab/"+button+".mp3";
     
     var audio = document.getElementById('helper_audio');
