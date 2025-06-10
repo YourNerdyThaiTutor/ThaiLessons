@@ -11,6 +11,7 @@ var alreadyWrong = false;
 var streak = 0;
 var miss =0;
 var folder = "";
+var current_tone=0;
 var type_of_choices = "words";
 var input = document.getElementById("numb");
     input.addEventListener("keypress", function(event) {
@@ -97,4 +98,62 @@ function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
     choices = _list_of_choices;
     type_of_choices = _type_of_choices;
     startGame();
+}
+
+function numberHelper(){
+    var place = correct.length;
+    for(let i = 0;i<correct.length;i++){
+        
+    }
+}
+var place = false;
+function playNumber(){
+    var _map = {
+        "1": "หนึ่ง",
+        "2":"สอง",
+        "3":"สาม",
+        "4":"สี่",
+        "5":"ห้า",
+        "6":"หก",
+        "7":"เจ็ด",
+        "8":"แปด",
+        "9":"เก้า"
+    };
+    var _place_map={
+        1:"สิบ",
+        2:"ร้อย",
+        3:"พัน",
+        4:"หมื่น",
+        5:"แสน",
+        6:"ล้าน"
+    };
+    document.getElementById("helper").textContent = "play next";
+    var button;
+    if(!place){
+        var b = correct[current_tone];
+        button = _map[b];
+        place = true;
+    }
+    else if(current_tone!=correct.length){
+        
+        var p = correct.length - current_tone -1;
+        button = _place_map[p];
+        place = false;
+        current_tone ++;
+    }
+    src = "https://yournerdythaitutor.github.io/Lessons/audios/vocab/"+button+".mp3";
+    
+    var audio = document.getElementById('helper_audio');
+
+    var source = document.getElementById('helper_audioSource');
+    source.src = src;
+    audio.load();
+    audio.play();
+    
+    
+    if(current_tone===correct.length){
+        current_tone = 0;
+        document.getElementById("helper").textContent = "click here to play each word separately";
+    }
+    
 }
