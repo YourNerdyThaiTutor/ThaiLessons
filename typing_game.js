@@ -150,7 +150,7 @@ function playNumber(){
                 place = false;
                 current_tone ++;
             }
-            if(correct.length - current_tone -1 === 0){
+            else if(correct.length - current_tone -1 === 0){
                 if(b==="1"){
                     b = "1+";
                 }
