@@ -13,6 +13,7 @@ var streak = 0;
 var options = ["mid", "single low", "paired", "all"];
 var selected_option = "mid";
 var selected_consonants = consonants;
+var answer_map = null;
 
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
@@ -83,6 +84,9 @@ function createQuestion(){
     else if(type_of_choices === "words"){
         src = folder+correct+".mp3";
     }
+    else if(answer_map!=null){
+        src = folder+answer_map[correct]+".mp3";
+    }
     
     var audio = document.getElementById('audio');
 
@@ -112,6 +116,9 @@ function playAllTones(){
     else if(type_of_choices === "words"){
         src = folder+button+".mp3";
     }
+    else if(answer_map!=null){
+        src = folder+answer_map[button]+".mp3";
+    }
     
     var audio = document.getElementById('helper_audio');
 
@@ -130,10 +137,11 @@ function playAllTones(){
     
 }
 
-function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
+function setupGame(_folder, _list_of_choices, _type_of_choices = "words", _answer_map = null){
     folder = _folder;
     consonants = _list_of_choices;
     type_of_choices = _type_of_choices;
+    answer_map = _answer_map;
     startGame();
 }
 

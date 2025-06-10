@@ -1,8 +1,137 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8" />
-        <title>Title</title>
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BQ56JZ1LM4');
+</script>
+        <meta charset="utf-8" />
+        <title>Consonant Cluster Game</title>
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+     crossorigin="anonymous"></script>
+                <style>
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin:auto;
+  width: 70%;
+    
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+    
+}
+
+table td:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+        
     </head>
-    <body>Game coming soon</body>
+
+    <body>
+        <a href="https://yournerdythaitutor.github.io/"> home</a>
+        
+        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
+        <div id="score" class="score">Score: </div>
+        <div id="streak" class="streak">Streak: </div>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson14.html" style="float: right">Lesson</a>
+        <span style="position: absolute; bottom: 0; right: 20pt;" id="sass"></span>
+        <div id="question" class="question">
+             <h3>How do you pronounce the consonant cluster in this word?</h3> 
+            <div style="font-size: 6vw" id="word"></div>
+        </div>
+        
+        <div class="helper">
+            <button id="helper" class="options">click here to see the table</button>
+            <div id="etable" style="display: none;">
+                <table>
+                                            <tr>
+                                                <th rowspan="2">First consonat</th>
+                                                <th colspan="3">cluster</th>
+                                                <th rowspan="2">example</th>
+                                            </tr>
+                                            <tr>
+                                                <th>ร</th>
+                                                <th>ล</th>
+                                                <th>ว</th>   
+                                            </tr>
+                                            <tr>
+                                                <td>ก</td>
+                                                <td>กร</td>
+                                                <td>กล</td>
+                                                <td>กว</td>
+                                                <td>กราบ กลาง แกว่ง</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ข</td>
+                                                <td>ขร</td>
+                                                <td>ขล</td>
+                                                <td>ขว</td>
+                                                <td>เขรอะ ขลาด ขวาน</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ค</td>
+                                                <td>คร</td>
+                                                <td>คล</td>
+                                                <td>คว</td>
+                                                <td>คราม คลาน ควาย</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ต</td>
+                                                <td>ตร</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>ตรง ตราด</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ป</td>
+                                                <td>ปร</td>
+                                                <td>ปล</td>
+                                                <td></td>
+                                                <td>ปราบ ปลวก</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ผ</td>
+                                                <td></td>
+                                                <td>ผล</td>
+                                                <td></td>
+                                                <td>แผล</td>
+                                            </tr>
+                                            <tr>
+                                                <td>พ</td>
+                                                <td>พร</td>
+                                                <td>พล</td>
+                                                <td></td>
+                                                <td>พราย พลาด</td>
+                                            </tr>
+                                        </table>
+            </div>
+        </div>
+        
+        <div id="answers" class="answers">
+            
+        </div>
+        <img src="./sassy_mode/img/Eyebrows.gif" style="width: 200pt; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">
+        <script src="Lesson14.js">
+            </script>
+        <script src="fun_js/effects.js"></script>
+        <script>addToggle();</script>
+    </body>
 </html>
+

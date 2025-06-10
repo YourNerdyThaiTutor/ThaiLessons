@@ -36,7 +36,7 @@
             
         </div>
         <div class="helper">
-            <button id="helper" class="options">click here to hear all vowels</button>
+            <button id="helper" class="options">click here to hear all letters</button>
             <audio id="helper_audio">
                 <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3">
                 Your browser does not support the audio tag.
@@ -44,10 +44,13 @@
         </div>
         
         <div id="answers" class="answers">
-            <script src="Lesson6-2.js">
-            </script>
-        </div>
             
+        </div>
+        <script src="pickTheRightOne.js"></script>  
+        <script>
+            var consonants =["ะ","า","ุ","ู","ิ","ี","เ","แ","โ","ึ"];
+            setupGame("https://yournerdythaitutor.github.io/Alphabet_audios/",consonants);
+        </script>    
         
     </body>
 </html>
