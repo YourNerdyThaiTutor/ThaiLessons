@@ -128,7 +128,8 @@ function playNumber(){
         "7":"เจ็ด",
         "8":"แปด",
         "9":"เก้า",
-        "20":"ยี่สิบ"
+        "20":"ยี่สิบ",
+        "1+":"เอ็ด"
     };
     var _place_map={
         1:"สิบ",
@@ -148,6 +149,12 @@ function playNumber(){
                 b = 20;
                 place = false;
                 current_tone ++;
+            }
+            if(correct.length - current_tone -1 === 0){
+                if(b==="1"){
+                    b = "1+";
+                }
+                current_tone++;
             }
             button = _map[b];
         }
