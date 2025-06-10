@@ -185,6 +185,7 @@ function playNumber(){
     
     if(current_tone===correct.length){
         current_tone = 0;
+        place = false;
         document.getElementById("helper").textContent = "click here to play each word separately";
     }
     
