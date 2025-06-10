@@ -13,6 +13,7 @@ var miss =0;
 var folder = "";
 var current_tone=0;
 var type_of_choices = "words";
+var phrase_test = false;
 var input = document.getElementById("numb");
     input.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
@@ -40,14 +41,17 @@ function checkAnswer(txt){
         }
         alreadyWrong = false;
         
-        try{
-           current_tone = 0;
-            place = false;
-           document.getElementById("helper").textContent = "click here to play each word separately"; 
+        if(phrase_test){
+                try{
+               current_tone = 0;
+                place = false;
+               document.getElementById("helper").textContent = "click here to play each word separately"; 
+            }
+            catch{
+                console.log("no helper");
+            }
         }
-        catch{
-            console.log("no helper");
-        }
+        
         
         setTimeout(() => startGame(),700);
         
@@ -73,6 +77,13 @@ function createQuestion(){
     }
     else if(type_of_choices === "words"){
         src = folder+correct+".mp3";
+    }
+    else if(type_of_choices === "combovowel"){
+        
+        src = folder+correct+".mp3";
+        correct = correct.replace("-","อ");
+        
+        
     }
     
     var audio = document.getElementById('audio');
@@ -110,14 +121,9 @@ function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
     startGame();
 }
 
-function numberHelper(){
-    var place = correct.length;
-    for(let i = 0;i<correct.length;i++){
-        
-    }
-}
 var place = false;
 function playNumber(){
+    phrase_test = true;
     var _map = {
         "1": "หนึ่ง",
         "2":"สอง",
