@@ -34,6 +34,15 @@ function checkAnswer(txt){
             streak ++;
             document.getElementById("score").textContent = "Score: "+score;
             document.getElementById("streak").textContent = "Streak: "+streak;
+            try{
+                var celebrate = document.getElementById("celebrate");
+                celebrate.value = streak;
+                celebrate.click();
+            }
+            catch{
+                console.log("no celebrate");
+            }
+            
         }
         else{
             streak = 0;
@@ -60,9 +69,15 @@ function checkAnswer(txt){
         //var ti = document.createTextNode("wrong");
         //document.body.appendChild(ti);
         miss++;
-        var disappointment = document.getElementById("d");
+        try{
+           var disappointment = document.getElementById("d");
         disappointment.value = miss;
-        disappointment.click();
+        disappointment.click(); 
+        }
+        catch{
+            console.log("no d");
+        }
+        
         document.getElementById("myBtn").style.background='#ff3333';
         alreadyWrong = true;
     }

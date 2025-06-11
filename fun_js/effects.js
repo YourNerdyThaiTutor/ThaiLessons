@@ -123,6 +123,20 @@ function celebrate(){
                 console.log("can't find image");
             }
         }
+        else if(streak == 100){
+            selection = levels_of_approval.yay;
+            t = Math.floor(Math.random() * selection.length);
+            playSound(selection[t]);     
+            try{
+                setCharacter("Yay_elephant.gif");
+                displayBuffalo("block");
+                setTimeout(() => displayBuffalo("none"),2000);
+            }
+            catch{
+                console.log("can't find image");
+            }
+        }
+        
         
             
         
