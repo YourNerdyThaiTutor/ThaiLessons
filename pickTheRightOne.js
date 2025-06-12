@@ -14,7 +14,8 @@ var options = ["mid", "single low", "paired", "all"];
 var selected_option = "mid";
 var selected_consonants = consonants;
 var answer_map = null;
-
+var limit_choices = null;
+var correctIndex = 0;
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
     var t = document.createTextNode(answer);
@@ -33,15 +34,37 @@ function generateAnswerChoices(){
     //var c = "ก";
     //var t = Math.floor(Math.random() * consonants.length);
     var v = Math.floor(Math.random() * vowels.length);
-    for(let i=0; i< consonants.length; i++){
+    if(limit_choices===null){
+        for(let i=0; i< consonants.length; i++){
         var word = consonants[i];
         choices.push(word);
         generateChoiceButton(word);
     }
+    }
+    else{
+        RandomizeChoices();
+        for(let i=0; i< choices.length; i++){
+        var wo = choices[i];
+        generateChoiceButton(wo);
+    }
+    }
+    
     
 }
-
-function generateTones(){
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+}
+function RandomizeChoices(){
+    var r = Math.floor(Math.random() * consonants.length/limit_choices + 1);
+    for(let i = 0; i<limit_choices;i++){
+        choices.push(consonants[(correctIndex+(i*r))%consonants.length]);
+    }
+    shuffleArray(choices);
     
     
 }
@@ -66,7 +89,7 @@ function checkAnswer(txt){
         alreadyWrong = false;
         setTimeout(() => startGame(),700);
         current_tone = 0;
-        document.getElementById("helper").textContent = "click here to hear all letters";
+        document.getElementById("helper").textContent = "click here to hear all choices";
     }
     else{
         //var ti = document.createTextNode("wrong");
@@ -76,7 +99,7 @@ function checkAnswer(txt){
     }
 }
 function createQuestion(){
-    var correctIndex = Math.floor(Math.random() * choices.length);
+    correctIndex = Math.floor(Math.random() * choices.length);
     correct = choices[correctIndex];
     if(type_of_choices === "consonant"){
         src = folder+correct+"อ"+".mp3";
@@ -129,7 +152,7 @@ function playAllTones(){
     current_tone ++;
     if(current_tone===choices.length){
         current_tone = 0;
-        document.getElementById("helper").textContent = "click here to hear all letters";
+        document.getElementById("helper").textContent = "click here to hear all choices";
         for(let i = 0;i<choices.length;i++){
             document.getElementById(choices[i]).style.background='#ffffff';
         }
@@ -137,11 +160,12 @@ function playAllTones(){
     
 }
 
-function setupGame(_folder, _list_of_choices, _type_of_choices = "words", _answer_map = null){
+function setupGame(_folder, _list_of_choices, _type_of_choices = "words", _answer_map = null, _limit_choices = null){
     folder = _folder;
     consonants = _list_of_choices;
     type_of_choices = _type_of_choices;
     answer_map = _answer_map;
+    limit_choices = _limit_choices;
     startGame();
 }
 
