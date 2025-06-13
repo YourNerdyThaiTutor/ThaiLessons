@@ -136,6 +136,26 @@ function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
     startGame();
 }
 
+function toggleHelp(){
+    
+    //TODO show ending consonant table
+      var x = document.getElementById("etable");
+    var letters = "";
+    for(let i = 0; i< correct.length;i++){
+        letters+=correct[i]+",";
+    }
+    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById("helper").innerHTML = "close table";
+      } else {
+        x.style.display = "none";
+        document.getElementById("helper").innerHTML = "click here for help";
+      }
+
+    
+}
+
 var place = false;
 function playNumber(){
     phrase_test = true;
