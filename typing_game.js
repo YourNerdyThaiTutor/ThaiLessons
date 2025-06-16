@@ -170,6 +170,7 @@ function playNumber(){
         "8":"แปด",
         "9":"เก้า",
         "20":"ยี่สิบ",
+        "10":"สิบ",
         "1+":"เอ็ด"
     };
     var _place_map={
@@ -191,12 +192,18 @@ function playNumber(){
                 place = false;
                 current_tone ++;
             }
+            else if(correct.length - current_tone -1 === 1 && b==="1"){
+                b = 10;
+                place = false;
+                current_tone ++;
+            }
             else if(correct.length - current_tone -1 === 0){
                 if(b==="1"){
                     b = "1+";
                 }
                 current_tone++;
             }
+            
             button = _map[b];
         }
         else{
