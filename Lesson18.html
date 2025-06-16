@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BQ56JZ1LM4');
+</script>
+        <meta charset="utf-8" />
+        <title>Ending sound game</title>
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+     crossorigin="anonymous"></script>
+                <style>
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  margin:auto;
+  width: 70%;
+    
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+    
+}
+
+table td:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}
+</style>
+        
+    </head>
+
+    <body>
+        <a href="https://yournerdythaitutor.github.io/"> home</a>
+        
+        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
+        <div id="score" class="score">Score: </div>
+        <div id="streak" class="streak">Streak: </div>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson17.html" style="float: right">Lesson</a>
+        <span style="position: absolute; bottom: 0; right: 20pt;" id="sass"></span>
+        <div id="question" class="question">
+             <h3>Which one of these make the same sound as this?</h3> 
+            <div style="font-size: 6vw" id="word"></div>
+        </div>
+        
+        <div class="helper">
+            <button id="helper" class="options">click here to see the table</button>
+            <div id="etable" style="display: none;">
+                <table>
+                                            <tr>
+                                                <th>Main consonant</th>
+                                                <th>Alternative Consonants</th>
+                                            </tr>
+                                            <tr>
+                                                <td>ค</td>
+                                                <td>ฆ </td>
+                                            </tr>
+                                            <tr>
+                                                <td>ช</td>
+                                                <td>ฌ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ย</td>
+                                                <td>ญ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ด</td>
+                                                <td>ฎ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ต</td>
+                                                <td>ฏ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ถ</td>
+                                                <td>ฐ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ท</td>
+                                                <td>ฑ ฒ ธ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>น</td>
+                                                <td>ณ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>พ</td>
+                                                <td>ภ</td>
+                                            </tr>
+                                            <tr>
+                                                <td>ส</td>
+                                                <td>ศ	ษ</td>
+                                            </tr>    
+                                            <tr>
+                                                <td>ล</td>
+                                                <td>ฬ</td>
+                                            </tr>
+                                            
+                                        </table>
+            </div>
+        </div>
+        
+        <div id="answers" class="answers">
+            
+        </div>
+        <img src="./sassy_mode/img/Eyebrows.gif" style="width: 200pt; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">
+        <script src="PickCategory.js">
+            </script>
+        <script src="fun_js/effects.js"></script>
+        <script>addToggle();
+            var groups ={
+                "ค":	["ฆ"],
+                "ช":	["ฌ"],
+                "ย":	["ญ"],
+                "ด":	["ฎ"],
+                "ต":	["ฏ"],
+                "ถ":	["ฐ"],
+                "ท":	["ฑ","ฒ","ธ"],
+                "น":	["ณ"],
+                "พ":	["ภ"],
+                "ส":	["ศ","ษ"],
+                "ล":	["ฬ"]
+};
+            setupGame(groups);
+        </script>
+    </body>
+</html>
+
