@@ -7,10 +7,11 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+
   gtag('config', 'G-BQ56JZ1LM4');
 </script>
         <meta charset="utf-8" />
-        <title>Paired low game</title>
+        <title>Vowel Transformation Game</title>
         <link rel="stylesheet" href="styles.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
@@ -22,7 +23,7 @@
         <a href="https://yournerdythaitutor.github.io/"> home</a>
         <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
         <div id="score" class="score">Score: </div>
-        <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson9.html" style="float: right">Lesson</a>
+        <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson16.html" style="float: right">Lesson</a>
         <div id="question" class="question">
             <!--button class="selectedOption">mid</!--button><button class = "options">single</button><button class="options">paired</button><br><br---><br>
         <img src="images/audio%20still.png">
@@ -34,7 +35,7 @@
             
         </div>
         <div class="helper">
-            <button id="helper" class="options">click here to hear all letters</button>
+            <button id="helper" class="options">click here to hear all choices</button>
             <audio id="helper_audio">
                 <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3">
                 Your browser does not support the audio tag.
@@ -43,13 +44,30 @@
         
         <div id="answers" class="answers">
         </div>
-        <script src="pickTheRightOne.js"></script>    
+        <script src="pickTheRightOne.js"></script>
         <script>
-            var consonants =["ก","ข","ฃ","ค","ฅ","ฆ","ง","จ","ฉ","ช","ซ","ฌ","ญ","ฎ","ฏ","ฐ","ฑ","ฒ","ณ","ด","ต","ถ","ท","ธ","น","บ","ป","ผ","ฝ","พ","ฟ","ภ","ม","ย","ร","ล","ว","ศ","ษ","ส","ห","ฬ","อ","ฮ"];
-            setupGame("https://yournerdythaitutor.github.io/Alphabet_audios/",consonants,"words", null, 8);
+            var map = { 
+                "purple":	"ม่วง",
+                "light blue":	"ฟ้า",
+                "dark blue":	"น้ำเงิน",
+                "green":	"เขียว",
+                "yellow":	"เหลือง",
+                "orange":	"ส้ม",
+                "red":	"แดง",
+                "pink":	"ชมพู",
+                "silver":	"เงิน",
+                "gold":	"ทอง",
+                "gray":	"เทา",
+                "brown":	"น้ำตาล",
+                "white":	"ขาว",
+                "clear":	"ใส",
+                "copper, bronze":	"ทองแดง",
+                "black":	"ดำ",
+            }
+            var l = Object.keys(map);
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/colors/",l,"word",map,6); 
         </script>
+           
         
     </body>
 </html>
-
-
