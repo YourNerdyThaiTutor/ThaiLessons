@@ -69,10 +69,10 @@ button:active {
 }
 input {
     display: block;
-    width: 30%;
+    width: 80%;
     padding: 8px 16px;
     line-height: 25px;
-    font-size: 10vw;
+    font-size: 25pt;
     font-weight: 500;
     text-align: center;
    margin: auto;
