@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
 var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
 var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
@@ -61,6 +62,10 @@ function checkAnswer(txt){
             }
         }
         
+        //check if helper table is open
+        var helperTable = document.getElementById("etable");
+        helperTable.style.display = "none";
+        document.getElementById("helper").innerHTML = "click here to see where the letters are";
         
         setTimeout(() => startGame(),700);
         
@@ -150,7 +155,7 @@ function toggleHelp(){
         document.getElementById("helper").innerHTML = "close table";
       } else {
         x.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here for help";
+        document.getElementById("helper").innerHTML = "click here to see where the letters are";
       }
 
     
