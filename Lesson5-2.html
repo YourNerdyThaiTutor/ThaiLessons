@@ -34,8 +34,10 @@
             
             
         </div>
+
         <div class="helper">
-            <button id="helper" class="options" onclick="location.href='https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=ง,น,ย,ร,ว,ม,ล';">click here to see where the letters are</button>
+            <button id="helper" class="options" onclick="toggleHelp()">click here to see where the letter is</button>
+            <iframe style="display: none; margin:auto;" id="etable" title="keyboard" src="https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=ง,น,ย,ร,ว,ม,ล;"></iframe>
         </div>
         
         <div id="answers" class="answers">
@@ -83,6 +85,12 @@ function checkAnswer(txt){
             document.getElementById("streak").textContent = "Streak: "+streak;
         }
         alreadyWrong = false;
+
+        //check if helper table is open
+        var helperTable = document.getElementById("etable");
+        helperTable.style.display = "none";
+        document.getElementById("helper").innerHTML = "click here to see where the letter is";
+
         setTimeout(() => startGame(),700);
         
     }
@@ -126,6 +134,24 @@ function startGame(){
 }
 
 window.onload = function start(){startGame();}
+
+function toggleHelp(){
+    
+    //TODO show ending consonant table
+      var x = document.getElementById("etable");
+    var letters = "";
+    for(let i = 0; i< correct.length;i++){
+        letters+=correct[i]+",";
+    }
+    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+      if (x.style.display === "none") {
+        x.style.display = "block";
+        document.getElementById("helper").innerHTML = "close table";
+      } else {
+        x.style.display = "none";
+        document.getElementById("helper").innerHTML = "click here to see where the letters are";
+      }
+}
 
             </script>
         
