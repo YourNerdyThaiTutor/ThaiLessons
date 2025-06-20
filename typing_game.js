@@ -63,9 +63,14 @@ function checkAnswer(txt){
         }
         
         //check if helper table is open
-        var helperTable = document.getElementById("etable");
-        helperTable.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letters are";
+        try{
+            var helperTable = document.getElementById("etable");
+            helperTable.style.display = "none";
+            document.getElementById("helper").innerHTML = "click here to see where the letters are";
+        }
+        catch{
+            console.log("no etable");
+        }
         
         setTimeout(() => startGame(),700);
         
