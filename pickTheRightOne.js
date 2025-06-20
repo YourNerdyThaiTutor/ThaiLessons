@@ -16,6 +16,7 @@ var selected_consonants = consonants;
 var answer_map = null;
 var limit_choices = null;
 var correctIndex = 0;
+var miss = 0;
 function generateChoiceButton(answer){
     var x = document.createElement("BUTTON");
     var t = document.createTextNode(answer);
@@ -81,11 +82,20 @@ function checkAnswer(txt){
             streak ++;
             document.getElementById("score").textContent = "Score: "+score;
             document.getElementById("streak").textContent = "Streak: "+streak;
+            try{
+                var celebrate = document.getElementById("celebrate");
+                celebrate.value = streak;
+                celebrate.click();
+            }
+            catch{
+                console.log("no celebrate");
+            }
         }
         else{
             streak = 0;
             document.getElementById("streak").textContent = "Streak: "+streak;
         }
+            
         alreadyWrong = false;
         setTimeout(() => startGame(),700);
         current_tone = 0;
@@ -94,6 +104,15 @@ function checkAnswer(txt){
     else{
         //var ti = document.createTextNode("wrong");
         //document.body.appendChild(ti);
+        miss++;
+        try{
+           var disappointment = document.getElementById("d");
+        disappointment.value = miss;
+        disappointment.click(); 
+        }
+        catch{
+            console.log("no d");
+        }
         document.getElementById(txt).style.background='#ff3333';
         alreadyWrong = true;
     }
