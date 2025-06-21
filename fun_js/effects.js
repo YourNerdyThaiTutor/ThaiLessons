@@ -58,6 +58,7 @@ function addToggle(){
     <button id="d" style="display:none" onclick="disappointment()" value = 0 >disrespect</button>
     <button id="celebrate" style="display:none" onclick="celebrate()" value = 0 >celebrate</button>
     `;
+   
     /*document.body.innerHTML+=`<img src="./sassy_mode/img/Side%20eye.gif" style="height: 80%; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">`;*/
 }
 function displayBuffalo(_display){
