@@ -151,7 +151,7 @@ function checkAnswer(txt){
 
             //update local storage
             updateToneLocalStorage(correct, false);
-            updateStreakToneLocalStorage(streak)
+            updateStreakToneLocalStorage("All TonesStreak",streak)
         }
         else{
             streak = 0;
@@ -250,10 +250,12 @@ function updateToneLocalStorage(txt, wrong){
 
                     let toneKey = toneMap[i] + "W"
                     incrementLocalStorage(toneKey)
+                    updateSpecificStreakToneLocalStorage(toneMap[i], wrong)
                 }else{
                     incrementLocalStorage("All TonesC")
                     let toneKey = toneMap[i] + "C"
                     incrementLocalStorage(toneKey)
+                    updateSpecificStreakToneLocalStorage(toneMap[i], wrong)
                 }
             }
         }
@@ -280,9 +282,9 @@ function incrementLocalStorage(key){
 }
 
 
-function updateStreakToneLocalStorage(streak){
+function updateStreakToneLocalStorage(key, myStreak){
 
-    let gameData = localStorage.getItem("All TonesStreak")
+    let gameData = localStorage.getItem(key)
 
     if(!gameData){
         //initialize it
@@ -291,8 +293,30 @@ function updateStreakToneLocalStorage(streak){
 
     //turn string into Number and increment
     gameData = Number(gameData)
-    gameData = streak > gameData ? streak : gameData                   
-    localStorage.setItem("All TonesStreak", gameData.toString())
+    gameData = myStreak > gameData ? myStreak : gameData                   
+    localStorage.setItem(key, gameData.toString())
+
+}
+
+function updateSpecificStreakToneLocalStorage(key, wrong){
+
+    let gameDataCurrStreak = localStorage.getItem(key + "CurrentStreak") ? 
+        Number(localStorage.getItem(key + "CurrentStreak")) : 0;
+    let gameDataLongestStreak = localStorage.getItem(key + "Streak") ? 
+        Number(localStorage.getItem(key + "Streak")) : 0;
+
+    if(wrong){
+        localStorage.setItem(key + "CurrentStreak", 0)
+    }else{
+        gameDataCurrStreak = gameDataCurrStreak + 1
+        localStorage.setItem(key + "CurrentStreak", gameDataCurrStreak)
+        if(gameDataCurrStreak > gameDataLongestStreak){
+            localStorage.setItem(key + "Streak", gameDataCurrStreak )
+        }
+    }
+
+    
+    
 
 }
 
