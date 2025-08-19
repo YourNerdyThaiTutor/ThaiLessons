@@ -333,7 +333,7 @@ function openIframePopup(url) {
 
     // Get the content div and append the iframe
     const popupContent = document.getElementById('popupContent');
-    popupContent.insertBefore(iframe, popupContent.firstChild); // Insert before the close button
+    popupContent.insertBefore(iframe, popupContent.lastChild); // Insert After the close button
 
     // Display the popup container
     document.getElementById('popupContainer').style.display = 'block';

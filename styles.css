@@ -221,15 +221,17 @@ input {
   justify-content: flex-end;
 }
 
-/* Button style */
+/*Button style */
 .myStats {
-  padding: 5px 8px;
+  padding: 4px 16px;
   cursor: pointer;
-  font-size: inherit;
+  font-size: small;
   background-color: #ace1af !important;
   color: Black !important;
   box-shadow: inset 0 0 0 2px #2e5939 !important; 
   border: none;
 }
+
+
 
 
