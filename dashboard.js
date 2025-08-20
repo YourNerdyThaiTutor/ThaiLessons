@@ -1,7 +1,4 @@
 
-document.getElementById("table-body")
-
-
 function startDashboard(){
     try{
         let tableBody = document.getElementById("table-body")
