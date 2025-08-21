@@ -138,8 +138,7 @@ function selectLevel(level){
 }
 
 function checkAnswer(txt){
-    
-    
+      
     if(txt === correct){
         //var t = document.createTextNode("correct");
         //document.body.appendChild(t);
@@ -149,6 +148,10 @@ function checkAnswer(txt){
             streak ++;
             document.getElementById("score").textContent = "Score: "+score;
             document.getElementById("streak").textContent = "Streak: "+streak;
+
+            //update local storage
+            updateToneLocalStorage(correct, false);
+            updateStreakToneLocalStorage("All TonesStreak",streak)
         }
         else{
             streak = 0;
@@ -164,6 +167,9 @@ function checkAnswer(txt){
         //document.body.appendChild(ti);
         document.getElementById(txt).style.background='#ff3333';
         alreadyWrong = true;
+
+        //update local storage
+        updateToneLocalStorage(correct, true);
     }
 }
 function createQuestion(){
@@ -216,6 +222,133 @@ function playAllTones(){
     
 }
 
+function updateToneLocalStorage(txt, wrong){
+    let toneMap = {
+        0 : "Neutral",
+        1 : "First",
+        2 : "Second",
+        3 : "Third",
+        4 : "Fourth"
+    }
+
+    try{
+        let parentDiv = document.getElementById("answers");
+        let childButtons = parentDiv.getElementsByTagName('button');
+
+        // Convert HTMLCollection to an array and extract IDs.
+        const buttonIdsInDOM = Array.from(childButtons).map(button => button.id); 
+
+        for(let i = 0; i < buttonIdsInDOM.length; i++){
+
+            if(txt === buttonIdsInDOM[i]){
+                //found the correct answer
+                //console.log("found: " + toneMapping[i])
+
+                //update all local storage
+                if(wrong){
+                    incrementLocalStorage("All TonesW")
+
+                    let toneKey = toneMap[i] + "W"
+                    incrementLocalStorage(toneKey)
+                    updateSpecificStreakToneLocalStorage(toneMap[i], wrong)
+                }else{
+                    incrementLocalStorage("All TonesC")
+                    let toneKey = toneMap[i] + "C"
+                    incrementLocalStorage(toneKey)
+                    updateSpecificStreakToneLocalStorage(toneMap[i], wrong)
+                }
+            }
+        }
+    }
+    catch(error){
+        console.error(`Parent div with ID "${answers}" not found.`);
+        return;
+    }
+}
+
+function incrementLocalStorage(key){
+
+    let gameData = localStorage.getItem(key)
+
+    if(!gameData){
+        //initialize it
+        gameData = "0"
+    }
+
+    //turn string into Number and increment
+    gameData = Number(gameData)
+    gameData = gameData + 1                    
+    localStorage.setItem(key, gameData.toString())
+}
+
+
+function updateStreakToneLocalStorage(key, myStreak){
+
+    let gameData = localStorage.getItem(key)
+
+    if(!gameData){
+        //initialize it
+        gameData = "0"
+    }
+
+    //turn string into Number and increment
+    gameData = Number(gameData)
+    gameData = myStreak > gameData ? myStreak : gameData                   
+    localStorage.setItem(key, gameData.toString())
+
+}
+
+function updateSpecificStreakToneLocalStorage(key, wrong){
+
+    let gameDataCurrStreak = localStorage.getItem(key + "CurrentStreak") ? 
+        Number(localStorage.getItem(key + "CurrentStreak")) : 0;
+    let gameDataLongestStreak = localStorage.getItem(key + "Streak") ? 
+        Number(localStorage.getItem(key + "Streak")) : 0;
+
+    if(wrong){
+        localStorage.setItem(key + "CurrentStreak", 0)
+    }else{
+        gameDataCurrStreak = gameDataCurrStreak + 1
+        localStorage.setItem(key + "CurrentStreak", gameDataCurrStreak)
+        if(gameDataCurrStreak > gameDataLongestStreak){
+            localStorage.setItem(key + "Streak", gameDataCurrStreak )
+        }
+    }
+
+    
+    
+
+}
+
+function openIframePopup(url) {
+
+    //create local storage info
+    localStorage.setItem("TonesGame", "All Tones,Neutral,First,Second,Third,Fourth")
+
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width = '80vw'; // Example width
+    iframe.style.height = '80vh'; // Example height
+    iframe.style.border = 'none';
+
+    // Get the content div and append the iframe
+    const popupContent = document.getElementById('popupContent');
+    popupContent.insertBefore(iframe, popupContent.lastChild); // Insert After the close button
+
+    // Display the popup container
+    document.getElementById('popupContainer').style.display = 'block';
+}
+
+function closePopup() {
+    const popupContainer = document.getElementById('popupContainer');
+    const popupContent = document.getElementById('popupContent');
+    const iframe = popupContent.querySelector('iframe');
+
+    if (iframe) {
+        popupContent.removeChild(iframe); // Remove the iframe when closing
+    }
+    popupContainer.style.display = 'none';
+}
 
 
 startGame();

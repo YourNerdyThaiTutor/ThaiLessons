@@ -20,12 +20,30 @@
     </head>
 
     <body>
-        <a href="https://yournerdythaitutor.github.io/"> home</a>
-        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
+
+        <div class="topOfPageDiv">
+            <div class="leftSlot">
+                <a href=="https://yournerdythaitutor.github.io/" >Home</a>
+            </div>
+
+            <div class="centerSlot">
+                <button 
+                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=TonesGame')" 
+                    class="myStats"
+                >
+                    My Stats 📊
+                </button>
+            </div>  
+                
+            <div class="rightSlot">
+                <a href=="https://yournerdythaitutor.github.io/Lessons/AllGames.html" >Other Games</a>
+            </div>
+        </div>
+            
         <div id="score" class="score">Score: </div>
         <a href="https://yournerdythaitutor.github.io/Lessons/Lesson3.html" style="float: right">Lesson 3</a>
-        <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson5.html" style="float: right">Lesson 5</a>
-        
+        <div id="streak" class="streak">Streak: </div>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson5.html" style="float: right">Lesson 5</a>    
         
         <a href="TonesExplanation.html">Tones Table</a>
         <div id="question" class="question">
@@ -50,7 +68,17 @@
             <script src="script.js">
             </script>
         </div>
-            
+
+        <div id="popupContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+            <div id="popupContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px;">
+                <!-- Iframe will be inserted here -->
+                <button 
+                onclick="closePopup()" 
+                style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right;" >
+                    &times;
+                </button>
+            </div>
+        </div>
         
     </body>
 </html>

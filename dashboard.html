@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-BQ56JZ1LM4');
+</script>
+        <meta charset="utf-8" />
+        <title>Dashboard</title>
+        <link rel="stylesheet" href="dashboard.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+     crossorigin="anonymous"></script>
+        
+    </head>
+
+    <body>
+         
+       <div id="dashboard" class="dash">
+            <table id="stat-table" class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Lifetime Success Rate</th>
+                        <th>Longest Streak</th>
+                        <th>
+                            Mastered
+                            <span id="info-icon" 
+                                    style="cursor:pointer; color: #007bff; font-weight: bold; margin-left: 6px;"
+                                    title="Click for info"
+                            >
+                                ℹ️
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    
+				</tbody>
+			</table>
+        </div>
+
+        <div id="info-dialog" 
+            style="
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            padding: 20px;
+            z-index: 10000;
+            width: 300px;
+            border-radius: 8px;
+            "
+        >
+            <button id="close-info" 
+                    style="
+                        float: right; 
+                        background: none; 
+                        border: none; 
+                        font-size: 18px; 
+                        cursor: pointer;
+                    " 
+                    aria-label="Close Info Dialog"
+            >&times;
+            </button>
+            <h3>Mastered Progress Colors</h3>
+            <ul>
+                <li><strong>0-9 Streak</strong>: <span style="color:#ff0000;">Red</span> — Low progress</li>
+                <li><strong>10-24 Streak</strong>: <span style="color:#ff8000;">Orange</span> — Decent Progress</li>
+                <li><strong>25-49 Streak</strong>: <span style="color:#ffcc00;">Yellow</span> — Good progress</li>
+                <li><strong>50-99 Streak</strong>: <span style="color:#77dd77;">Green</span> — Great progress</li>
+                <li><strong>100 Streak</strong>: <span style="color:#ffd700;">👑</span> — Perfect mastery</li>
+            </ul>
+        </div>
+
+        <script src="dashboard.js"></script>
+        <script>
+            const infoIcon = document.getElementById('info-icon');
+            const infoDialog = document.getElementById('info-dialog');
+            const closeBtn = document.getElementById('close-info');
+
+            // Show dialog on icon click
+            infoIcon.addEventListener('click', () => {
+            infoDialog.style.display = 'block';
+            });
+
+            // Close dialog on close button click
+            closeBtn.addEventListener('click', () => {
+            infoDialog.style.display = 'none';
+            });
+
+            // Close dialog if clicking outside the box
+            window.addEventListener('click', (event) => {
+            if (event.target === infoDialog) {
+                infoDialog.style.display = 'none';
+            }
+            });
+        </script>
+    </body>
+</html>
