@@ -63,11 +63,6 @@
         
         <div id="answers" class="answers">
         </div>
-        <script src="pickTheRightOne.js"></script>    
-        <script>
-            var consonants =["mid","high","low paired","low single"];
-            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/",consonants);
-        </script>
 
         <div id="popupContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
             <div id="popupContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px;">
@@ -78,6 +73,12 @@
                     &times;
                 </button>
         </div>
+        
+        <script src="pickTheRightOne.js"></script>    
+        <script>
+            var consonants =["mid","high","low paired","low single"];
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/",consonants);
+        </script>
         
     </body>
 </html>
