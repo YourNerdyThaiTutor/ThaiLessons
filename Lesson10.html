@@ -20,8 +20,26 @@
     </head>
 
     <body>
-        <a href="https://yournerdythaitutor.github.io/"> home</a>
-        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
+
+        <div class="topOfPageDiv">
+            <div class="leftSlot">
+                <a href="https://yournerdythaitutor.github.io/" >Home</a>
+            </div>
+
+            <div class="centerSlot">
+                <button 
+                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=Lesson10')" 
+                    class="myStats"
+                >
+                    My Stats 📊
+                </button>
+            </div>  
+                
+            <div class="rightSlot">
+                <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" >Other Games</a>
+            </div>
+        </div>
+
         <div id="score" class="score">Score: </div>
         <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson10.html" style="float: right">Lesson</a>
         <div id="question" class="question">
@@ -48,13 +66,22 @@
         <span style="position: fixed; bottom: 0; right: 20pt;" id="sass"></span>
         <img src="./sassy_mode/img/Eyebrows.gif" style="width: 100%; display: none; position: absolute; bottom: 50pt; left: 10pt;" id="buffalo">
         
+        <div id="popupContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+            <div id="popupContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px;">
+                <!-- Iframe will be inserted here -->
+                <button 
+                onclick="closePopup()" 
+                style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right;" >
+                    &times;
+                </button>
+        </div>
+
         <script src="fun_js/effects.js"></script>       
         <script>
             var vowels =["เ-ะ","เ","แ-ะ","แ","โ-ะ","โ","เ-าะ","-อ","เ-อะ","เ-อ","เ-ียะ","เ-ีย","เ-ือะ","เ-ือ","-ัวะ","-ัว"];
             setupGame("https://yournerdythaitutor.github.io/Alphabet_audios/",vowels);
              addToggle();
-        </script>
-           
+        </script>    
         
     </body>
 </html>
