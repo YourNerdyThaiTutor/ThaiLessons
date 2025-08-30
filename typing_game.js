@@ -35,6 +35,10 @@ function checkAnswer(txt){
             streak ++;
             document.getElementById("score").textContent = "Score: "+score;
             document.getElementById("streak").textContent = "Streak: "+streak;
+
+            //update local Storage correct
+            updateLocalStorage(false)
+
             try{
                 var celebrate = document.getElementById("celebrate");
                 celebrate.value = streak;
@@ -90,6 +94,9 @@ function checkAnswer(txt){
         
         document.getElementById("myBtn").style.background='#ff3333';
         alreadyWrong = true;
+
+        //update local storage
+        updateLessonAndAnswerLocalStorage(correct, true);
     }
 }
 function createQuestion(){
@@ -247,4 +254,137 @@ function playNumber(){
         document.getElementById("helper").textContent = "click here to play each word separately";
     }
     
+}
+
+function updateLocalStorage(wrong){
+    //update local storage
+    updateLessonAndAnswerLocalStorage(correct, wrong);
+
+    try{
+        updateLessonStreakLocalStorage(getLessonFromURL() + "Streak",streak) 
+    }catch{
+        console.log("failed to get url params and update streak")
+    }  
+}
+
+function getLessonFromURL(){
+    //get game name from url
+    try{
+
+        const url = window.location.href; 
+        const filename = url.substring(url.lastIndexOf('/') + 1); // ex: "Lesson1.html"
+        const lessonName = filename.replace('.html', '');         //ex: "Lesson1"
+
+        return lessonName
+    }catch{
+        console.log("failed to get url params")
+    }
+}
+
+function updateLessonAndAnswerLocalStorage(txt, wrong){
+
+    let lessonName = getLessonFromURL()
+
+    //update all local storage
+    if(wrong){
+        incrementLocalStorage(lessonName + "W")
+
+        let answerLocalSTRKey = txt + "W"
+        incrementLocalStorage(answerLocalSTRKey)
+        updateSpecificAnswerStreakLocalStorage(txt, wrong)
+    }else{
+        incrementLocalStorage(lessonName +"C")
+
+        let answerLocalSTRKey = txt + "C"
+        incrementLocalStorage(answerLocalSTRKey)
+        updateSpecificAnswerStreakLocalStorage(txt, wrong)
+    }
+}
+
+function incrementLocalStorage(key){
+
+    let gameData = localStorage.getItem(key)
+
+    if(!gameData){
+        //initialize it
+        gameData = "0"
+    }
+
+    //turn string into Number and increment
+    gameData = Number(gameData)
+    gameData = gameData + 1                    
+    localStorage.setItem(key, gameData.toString())
+}
+
+
+function updateLessonStreakLocalStorage(key, myStreak){
+
+    let gameData = localStorage.getItem(key)
+
+    if(!gameData){
+        //initialize it
+        gameData = "0"
+    }
+
+    //turn string into Number and increment
+    gameData = Number(gameData)
+    gameData = myStreak > gameData ? myStreak : gameData                   
+    localStorage.setItem(key, gameData.toString())
+
+}
+
+function updateSpecificAnswerStreakLocalStorage(key, wrong){
+
+    let gameDataCurrStreak = localStorage.getItem(key + "CurrentStreak") ? 
+        Number(localStorage.getItem(key + "CurrentStreak")) : 0;
+    let gameDataLongestStreak = localStorage.getItem(key + "Streak") ? 
+        Number(localStorage.getItem(key + "Streak")) : 0;
+
+    if(wrong){
+        localStorage.setItem(key + "CurrentStreak", 0)
+    }else{
+        gameDataCurrStreak = gameDataCurrStreak + 1
+        localStorage.setItem(key + "CurrentStreak", gameDataCurrStreak)
+        if(gameDataCurrStreak > gameDataLongestStreak){
+            localStorage.setItem(key + "Streak", gameDataCurrStreak)
+        }
+    }
+}
+
+function SetLessonStatNames(){
+
+    let lessonName = getLessonFromURL()
+    let statNames = lessonName + "," + choices.toString()
+
+    localStorage.setItem(lessonName,statNames)
+}
+
+function openIframePopup(url) {
+
+    //create local storage info
+    SetLessonStatNames()
+
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width = '80vw'; // Example width
+    iframe.style.height = '80vh'; // Example height
+    iframe.style.border = 'none';
+
+    // Get the content div and append the iframe
+    const popupContent = document.getElementById('popupContent');
+    popupContent.insertBefore(iframe, popupContent.lastChild); // Insert After the close button
+
+    // Display the popup container
+    document.getElementById('popupContainer').style.display = 'block';
+}
+
+function closePopup() {
+    const popupContainer = document.getElementById('popupContainer');
+    const popupContent = document.getElementById('popupContent');
+    const iframe = popupContent.querySelector('iframe');
+
+    if (iframe) {
+        popupContent.removeChild(iframe); // Remove the iframe when closing
+    }
+    popupContainer.style.display = 'none';
 }
