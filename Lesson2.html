@@ -91,7 +91,7 @@ border-radius: 10px;
             
 </style>
     <script>
-        var score = 0;
+        var streak = 0;
         var answer="เ";
         var vowels = {
          "ี":"above",
@@ -101,7 +101,7 @@ border-radius: 10px;
          "ู":"under"
     }
         function generateQuestion(){
-         document.getElementById("score").textContent = "Score: "+score;
+         document.getElementById("streak").textContent = "Streak: "+streak;
          var c = Math.floor(Math.random() * consonants.length);
          var v = Math.floor(Math.random() * vowels_list.length);
          document.getElementById("consonant").innerHTML = consonants[c];
@@ -116,7 +116,8 @@ function SetPage(){
     document.body.innerHTML=`
 <h1>Drag and drop the vowel to the correct placement</h1>
 
-<p id="score">Score: 0</p>      
+<p id="streak">Streak: 0</p>      
+
         
 
         
@@ -156,14 +157,41 @@ function dropHandler(ev) {
     ev.target.classList.remove('hoverOver');
     if(vowels[answer]==ev.target.id){
         document.getElementById(ev.target.id).style.background='#00ff00';
-        score ++;
+        streak++;
+        updateStreakLocalStorage(streak)
         
         setTimeout(() => SetPage(),700);
     }
     else{
         document.getElementById(ev.target.id).style.background='#ff003c';
+        streak = -1;
     }
 }
+
+  function updateStreakLocalStorage(streak){
+
+    try{
+
+      const url = window.location.href; 
+      const filename = url.substring(url.lastIndexOf('/') + 1); // ex: "Lesson1.html"
+      const lessonName = filename.replace('.html', '');         //ex: "Lesson1"
+
+      let gameData = localStorage.getItem(lessonName)
+
+      if(!gameData){
+          //initialize it
+          gameData = "0"
+      }
+
+      //turn string into Number and increment
+      gameData = Number(gameData)
+      gameData = streak > gameData ? streak : gameData   
+      localStorage.setItem(lessonName + "Streak", gameData.toString())
+
+    }catch{
+      console.log("couldn't get url name")
+    }
+  }
 
      var vowels_list=[ "ี","เ","แ","า", "ู"]
      var consonants =["ก","จ","ด","ต","บ","ป","อ"];
