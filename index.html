@@ -21,62 +21,64 @@
 
     <body>
 
-        <div class="topOfPageDiv">
-            <div class="leftSlot">
-                <a href="https://yournerdythaitutor.github.io/" >Home</a>
-            </div>
+        <div class="google-anno-skip">
+            <div class="topOfPageDiv">
+                <div class="leftSlot">
+                    <a href="https://yournerdythaitutor.github.io/" >Home</a>
+                </div>
 
-            <div class="centerSlot">
-                <button 
-                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=TonesGame')" 
-                    class="myStats"
-                >
-                    My Stats 📊
-                </button>
-            </div>  
+                <div class="centerSlot">
+                    <button 
+                        onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=TonesGame')" 
+                        class="myStats"
+                    >
+                        My Stats 📊
+                    </button>
+                </div>  
+                    
+                <div class="rightSlot">
+                    <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" >Other Games</a>
+                </div>
+            </div>
                 
-            <div class="rightSlot">
-                <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" >Other Games</a>
+            <div id="score" class="score">Score: </div>
+            <a href="https://yournerdythaitutor.github.io/Lessons/Lesson3.html" style="float: right">Lesson 3</a>
+            <div id="streak" class="streak">Streak: </div>
+            <a href="https://yournerdythaitutor.github.io/Lessons/Lesson5.html" style="float: right">Lesson 5</a>    
+            
+            <a href="TonesExplanation.html">Tones Table</a>
+            <div id="question" class="question">
+                <button class="selectedOption" id="mid">mid</button><button class = "options" id="single">single</button><button class="options" id="paired">paired</button><br><br><br>
+            <img src="images/audio%20still.png">
+                <audio controls id="audio">
+                    <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3">
+                    Your browser does not support the audio tag.
+                </audio>
+                
+                
             </div>
-        </div>
+            <div class="helper">
+                <button id="helper" class="options">click here to hear all tones</button>
+                <audio id="helper_audio">
+                    <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3">
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
             
-        <div id="score" class="score">Score: </div>
-        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson3.html" style="float: right">Lesson 3</a>
-        <div id="streak" class="streak">Streak: </div>
-        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson5.html" style="float: right">Lesson 5</a>    
-        
-        <a href="TonesExplanation.html">Tones Table</a>
-        <div id="question" class="question">
-            <button class="selectedOption" id="mid">mid</button><button class = "options" id="single">single</button><button class="options" id="paired">paired</button><br><br><br>
-        <img src="images/audio%20still.png">
-            <audio controls id="audio">
-                <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3">
-                Your browser does not support the audio tag.
-            </audio>
-            
-            
-        </div>
-        <div class="helper">
-            <button id="helper" class="options">click here to hear all tones</button>
-            <audio id="helper_audio">
-                <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3">
-                Your browser does not support the audio tag.
-            </audio>
-        </div>
-        
-        <div id="answers" class="answers">
-            <script src="script.js">
-            </script>
-        </div>
+            <div id="answers" class="answers">
+                <script src="script.js">
+                </script>
+            </div>
 
-        <div id="popupContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
-            <div id="popupContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px;">
-                <!-- Iframe will be inserted here -->
-                <button 
-                onclick="closePopup()" 
-                style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right;" >
-                    &times;
-                </button>
+            <div id="popupContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+                <div id="popupContent" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 5px;">
+                    <!-- Iframe will be inserted here -->
+                    <button 
+                    onclick="closePopup()" 
+                    style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right;" >
+                        &times;
+                    </button>
+                </div>
             </div>
         </div>
         
