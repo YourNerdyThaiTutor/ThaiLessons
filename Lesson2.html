@@ -3,116 +3,116 @@
 <html lang="en">
     <head>
         <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-  gtag('config', 'G-BQ56JZ1LM4');
-</script>
-        <meta charset="UTF-8" />
-        <title>Where does the vowel go</title>
-        <style>
-.box {
-  float: left;
-  width: 100px;
-  height: 100px;
-  margin: 10px;
-  padding: 10px;
-  border: 1px solid black;
-  text-align: center;
-}
-.box {
-  padding: 5px 5px;
-  border-radius: 15px;
-  cursor: pointer;
-  border: 0;
-  background-color: white;
-  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-size: 30px;
-  transition: all 0.5s ease;
-}
+          gtag('config', 'G-BQ56JZ1LM4');
+        </script>
+                <meta charset="UTF-8" />
+                <title>Where does the vowel go</title>
+                <style>
+        .box {
+          float: left;
+          width: 100px;
+          height: 100px;
+          margin: 10px;
+          padding: 10px;
+          border: 1px solid black;
+          text-align: center;
+        }
+        .box {
+          padding: 5px 5px;
+          border-radius: 15px;
+          cursor: pointer;
+          border: 0;
+          background-color: white;
+          box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          font-size: 30px;
+          transition: all 0.5s ease;
+        }
 
-.box:hover {
-  letter-spacing: 3px;
-  background-color: hsl(261deg 80% 48%);
-  color: hsl(0, 0%, 100%);
-  box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
-}
+        .box:hover {
+          letter-spacing: 3px;
+          background-color: hsl(261deg 80% 48%);
+          color: hsl(0, 0%, 100%);
+          box-shadow: rgb(93 24 220) 0px 7px 29px 0px;
+        }
 
-.box:active {
-  letter-spacing: 3px;
-  background-color: hsl(261deg 80% 48%);
-  color: hsl(0, 0%, 100%);
-  box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
-  transform: translateY(10px);
-  transition: 100ms;
-}            
-.con{
-    font-size: 100px;
-    text-align: center;
-}
-.dragElement, .dropZone {
-  width: 12rem;
-  height: 15rem;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  background: rgba( 255, 255, 255, 0.9 );
-backdrop-filter: blur( 4px );
--webkit-backdrop-filter: blur( 4px );
-border-radius: 10px;
-  transition: 0.3s;
-}
+        .box:active {
+          letter-spacing: 3px;
+          background-color: hsl(261deg 80% 48%);
+          color: hsl(0, 0%, 100%);
+          box-shadow: rgb(93 24 220) 0px 0px 0px 0px;
+          transform: translateY(10px);
+          transition: 100ms;
+        }            
+        .con{
+            font-size: 100px;
+            text-align: center;
+        }
+        .dragElement, .dropZone {
+          width: 12rem;
+          height: 15rem;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          background: rgba( 255, 255, 255, 0.9 );
+        backdrop-filter: blur( 4px );
+        -webkit-backdrop-filter: blur( 4px );
+        border-radius: 10px;
+          transition: 0.3s;
+        }
 
-.dropZone {
-  width: 13rem;
-  height: 16rem;
-  background: rgba( 0, 0, 0, 0.7 );
-backdrop-filter: blur( 4.5px );
--webkit-backdrop-filter: blur( 4.5px );
-border-radius: 10px;
-}
+        .dropZone {
+          width: 13rem;
+          height: 16rem;
+          background: rgba( 0, 0, 0, 0.7 );
+        backdrop-filter: blur( 4.5px );
+        -webkit-backdrop-filter: blur( 4.5px );
+        border-radius: 10px;
+        }
 
-.beingDragged {
- color: white;
-  background-color: #9d9d9d;
-}
+        .beingDragged {
+        color: white;
+          background-color: #9d9d9d;
+        }
 
-.hoverOver {
-  transition: 0.3s ease-out;
-  border: solid 5px #2a9d8f;
-}
+        .hoverOver {
+          transition: 0.3s ease-out;
+          border: solid 5px #2a9d8f;
+        }
             
-</style>
-    <script>
-        var streak = 0;
-        var answer="เ";
-        var vowels = {
-         "ี":"above",
-         "เ":"left",
-         "แ":"left",
-         "า":"right",
-         "ู":"under"
-    }
-        function generateQuestion(){
-         document.getElementById("streak").textContent = "Streak: "+streak;
-         var c = Math.floor(Math.random() * consonants.length);
-         var v = Math.floor(Math.random() * vowels_list.length);
-         document.getElementById("consonant").innerHTML = consonants[c];
-         answer = vowels_list[v];
-         document.getElementById("Draggable").innerHTML = answer;
-     }
-function dragstartHandler(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
-    ev.target.classList.add('beingDragged');
-}
-function SetPage(){
+        </style>
+            <script>
+                var streak = 0;
+                var answer="เ";
+                var vowels = {
+                "ี":"above",
+                "เ":"left",
+                "แ":"left",
+                "า":"right",
+                "ู":"under"
+                }
+                function generateQuestion(){
+                  document.getElementById("streak").textContent = "Streak: "+streak;
+                  var c = Math.floor(Math.random() * consonants.length);
+                  var v = Math.floor(Math.random() * vowels_list.length);
+                  document.getElementById("consonant").innerHTML = consonants[c];
+                  answer = vowels_list[v];
+                  document.getElementById("Draggable").innerHTML = answer;
+                }
+                function dragstartHandler(ev) {
+                    ev.dataTransfer.setData("text", ev.target.id);
+                    ev.target.classList.add('beingDragged');
+                }
+                function SetPage(){
     document.body.innerHTML=`
 <h1>Drag and drop the vowel to the correct placement</h1>
 
@@ -202,6 +202,14 @@ function dropHandler(ev) {
      }
      
 </script>
+
+    <meta property="og:title" content="Where Does the Long Vowel Go? | Thai Learning Game">
+    <meta property="og:description" content="A Thai Learning Game for Long Vowel Placement. Just like how we started with middle toned consonants, long vowels have straight forward rules, for now. You will stretch out the sounds of these vowels...">
+    <meta property="og:image" content="https://i.imgur.com/L8Jf1my.png">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://yournerdythaitutor.github.io/ThaiLessons/Lesson2.html">
+
+
 </head>
 <body>
 
