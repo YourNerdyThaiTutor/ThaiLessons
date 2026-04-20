@@ -23,7 +23,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Thai Vocab: Precision Grid</title>
+    <title>Thai Vocab: Seamless Engine</title>
     <script src="assets/vocabWords.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;600&display=swap" rel="stylesheet">
     <style>
@@ -34,7 +34,7 @@
             --cyan-glow: rgba(0, 242, 255, 0.3);
             --neon-pink: #ff00ff;
             --text-main: #fff;
-            --text-muted: #666;
+            --text-muted: #444;
             --cell-border: rgba(255, 255, 255, 0.1);
             --thai-font: "Leelawadee UI", "Tahoma", "Thonburi", sans-serif;
         }
@@ -50,7 +50,7 @@
             overflow-x: hidden;
         }
 
-        header { text-align: center; margin-bottom: 15px; width: 100%; }
+        header { text-align: center; margin-bottom: 15px; width: 100%; transition: opacity 0.3s; }
         h1 { 
             font-family: 'Syncopate', sans-serif; font-size: 1.8rem; letter-spacing: -1px;
             background: linear-gradient(to bottom, var(--text-main) 60%, var(--neon-cyan) 100%);
@@ -62,29 +62,28 @@
         .btn {
             background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink);
             padding: 6px 15px; font-size: 0.55rem; letter-spacing: 2px; cursor: pointer;
-            font-family: 'Syncopate'; font-weight: 700;
+            font-family: 'Syncopate'; font-weight: 700; transition: 0.3s;
         }
+        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 15px var(--neon-pink); }
 
         #game-container { 
             display: flex; flex-direction: column; align-items: center; 
             gap: 20px; width: 100%; max-width: 800px;
+            transition: opacity 0.4s ease;
         }
 
-        /* Responsive Grid Fix */
         #crossword-grid {
             display: grid; 
             grid-template-columns: repeat(15, 6.2vw); 
             grid-template-rows: repeat(15, 6.2vw);
             background: #000; border: 1px solid #222; padding: 2px;
-            user-select: none;
         }
 
         .cell { 
             width: 100%; height: 100%; 
             background: var(--cell-bg); 
             position: relative; border: 1px solid var(--cell-border);
-            display: flex; align-items: center; justify-content: center; /* Center wrapper */
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
         }
         .cell.black { background: #000; border: 1px solid transparent; }
         
@@ -92,11 +91,8 @@
             width: 100%; height: 100%; border: none; 
             text-align: center; outline: none;
             background: transparent; color: #fff;
-            font-family: var(--thai-font);
-            font-size: 1.1rem; /* Adjusted for mobile view */
-            padding: 0; margin: 0; /* Strip defaults */
-            line-height: 1; /* Prevent vertical shift */
-            display: block;
+            font-family: var(--thai-font); font-size: 1.1rem;
+            padding: 0; margin: 0; line-height: 1;
         }
 
         .cell .num { 
@@ -115,13 +111,16 @@
             border-bottom: 1px solid var(--neon-cyan); margin-bottom: 8px; 
         }
         .clue-item { padding: 3px 0; font-size: 0.7rem; color: #777; border-bottom: 1px solid #111; }
-        .clue-item.correct { color: var(--neon-pink); font-weight: 600; }
+        .clue-item.correct { color: var(--neon-pink); font-weight: 600; text-shadow: 0 0 5px var(--neon-pink); }
+
+        #success-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 3, 5, 0.98); backdrop-filter: blur(20px);
+            display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
+        }
 
         @media (min-width: 768px) {
-            #crossword-grid {
-                grid-template-columns: repeat(15, 42px);
-                grid-template-rows: repeat(15, 42px);
-            }
+            #crossword-grid { grid-template-columns: repeat(15, 42px); grid-template-rows: repeat(15, 42px); }
             #game-container { flex-direction: row; align-items: flex-start; }
             .clues-wrapper { grid-template-columns: 1fr; width: 280px; border-top: none; border-left: 1px solid var(--neon-pink); }
         }
@@ -129,11 +128,11 @@
 </head>
 <body>
 
-    <header>
+    <header id="main-header">
         <h1>THAI VOCAB</h1>
         <div class="controls">
-            <button class="btn" onclick="location.reload()">NEW GAME</button>
-            <button class="btn" id="manifest-toggle" onclick="toggleManifest()" style="border-color:#444; color:#444;">CHEAT</button>
+            <button class="btn" onclick="resetGame()">NEW GAME</button>
+            <button class="btn" id="manifest-btn" onclick="toggleManifest()" style="border-color:#444; color:#444;">CHEAT</button>
         </div>
     </header>
 
@@ -151,13 +150,18 @@
         </div>
     </div>
 
+    <div id="success-overlay">
+        <h2 style="font-family: 'Syncopate'; color: var(--neon-pink); font-size: 3rem; margin: 0;">ELITE</h2>
+        <p style="letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 30px;">LEVEL CLEARED</p>
+        <button class="btn" onclick="resetGame()">CONTINUE</button>
+    </div>
+
 <script>
-// Core logic remains identical to the previous strict-path version
 const SIZE = 15;
 const MAX_WORDS = 15;
 const MIN_WORDS = 5;
-window.currentPlaced = [];
-window.manifestActive = false;
+let currentPlaced = [];
+let manifestActive = false;
 
 function splitThaiStrict(w) {
     return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
@@ -169,19 +173,42 @@ function isPureConsonant(char) {
     return (code >= 0x0E01 && code <= 0x0E2E);
 }
 
+// THE NEW RESET LOGIC
+function resetGame() {
+    const container = document.getElementById('game-container');
+    const overlay = document.getElementById('success-overlay');
+    
+    // UI Feedback
+    container.style.opacity = '0';
+    overlay.style.display = 'none';
+    
+    // Short delay to allow opacity to fade before rebuilding
+    setTimeout(() => {
+        generate();
+        container.style.opacity = '1';
+        // Reset manifest state
+        manifestActive = false;
+        document.getElementById('manifest-btn').style.color = '#444';
+        document.getElementById('manifest-btn').style.borderColor = '#444';
+    }, 400);
+}
+
 function generate() {
     const allWords = vocabWords.trim().split('\n').map(line => {
         const [word, clue] = line.split(',');
         return { full: word.trim(), split: splitThaiStrict(word.trim()), clue: clue.trim() };
     });
+
     let grid, placed;
     let attempts = 0;
+
     while (attempts < 1000) {
         grid = Array(SIZE).fill().map(() => Array(SIZE).fill(null));
         placed = [];
         let pool = [...allWords].sort(() => Math.random() - 0.5);
         const first = pool.pop();
         addWordToGrid(first, 7, 3, 'across', grid, placed);
+
         for (let pass = 0; pass < 20; pass++) {
             if (placed.length >= MAX_WORDS) break;
             for (let i = 0; i < pool.length; i++) {
@@ -197,6 +224,7 @@ function generate() {
     render(grid, placed);
 }
 
+// Path logic remains strict as requested
 function tryToFit(wordObj, grid, placed) {
     const chars = wordObj.split;
     for (let r = 0; r < SIZE; r++) {
@@ -222,21 +250,19 @@ function tryToFit(wordObj, grid, placed) {
 
 function checkPath(chars, r, c, dir, grid, intersectIndex) {
     if (r < 0 || c < 0 || (dir === 'across' && c + chars.length > SIZE) || (dir === 'down' && r + chars.length > SIZE)) return false;
-    const beforeR = dir === 'down' ? r - 1 : r, beforeC = dir === 'across' ? c - 1 : c;
-    const afterR = dir === 'down' ? r + chars.length : r, afterC = dir === 'across' ? c + chars.length : c;
-    if (beforeR >= 0 && beforeC >= 0 && grid[beforeR][beforeC]) return false;
-    if (afterR < SIZE && afterC < SIZE && grid[afterR][afterC]) return false;
+    const bR = dir === 'down' ? r - 1 : r, bC = dir === 'across' ? c - 1 : c;
+    const aR = dir === 'down' ? r + chars.length : r, aC = dir === 'across' ? c + chars.length : c;
+    if (bR >= 0 && bC >= 0 && grid[bR][bC]) return false;
+    if (aR < SIZE && aC < SIZE && grid[aR][aC]) return false;
     let intersections = 0;
     for (let i = 0; i < chars.length; i++) {
-        const currR = dir === 'across' ? r : r + i, currC = dir === 'across' ? c + i : c;
-        if (grid[currR][currC]) {
-            if (i !== intersectIndex || grid[currR][currC].char !== chars[i]) return false;
+        const cR = dir === 'across' ? r : r + i, cC = dir === 'across' ? c + i : c;
+        if (grid[cR][cC]) {
+            if (i !== intersectIndex || grid[cR][cC].char !== chars[i]) return false;
             intersections++;
         } else {
-            const neighbors = dir === 'across' ? [[currR - 1, currC], [currR + 1, currC]] : [[currR, currC - 1], [currR, currC + 1]];
-            for (const [nr, nc] of neighbors) {
-                if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && grid[nr][nc]) return false;
-            }
+            const ns = dir === 'across' ? [[cR - 1, cC], [cR + 1, cC]] : [[cR, cC - 1], [cR, cC + 1]];
+            for (const [nr, nc] of ns) { if (nr >= 0 && nr < SIZE && nc >= 0 && nc < SIZE && grid[nr][nc]) return false; }
         }
     }
     return intersections === 1;
@@ -253,7 +279,7 @@ function addWordToGrid(wordObj, r, c, dir, grid, placed) {
 }
 
 function render(grid, placed) {
-    window.currentPlaced = placed;
+    currentPlaced = placed;
     const container = document.getElementById('crossword-grid');
     container.innerHTML = '';
     for (let r = 0; r < SIZE; r++) {
@@ -271,31 +297,38 @@ function render(grid, placed) {
             container.appendChild(cell);
         }
     }
-    const acList = document.getElementById('across-clues'), dnList = document.getElementById('down-clues');
-    acList.innerHTML = ''; dnList.innerHTML = '';
+    const ac = document.getElementById('across-clues'), dn = document.getElementById('down-clues');
+    ac.innerHTML = ''; dn.innerHTML = '';
     placed.sort((a,b) => a.num - b.num).forEach(p => {
         const div = document.createElement('div');
         div.className = 'clue-item';
         div.id = `clue-${p.num}-${p.dir}`;
         div.innerText = `${p.num}. ${p.clue}`;
-        (p.dir === 'across' ? acList : dnList).appendChild(div);
+        (p.dir === 'across' ? ac : dn).appendChild(div);
     });
 }
 
 function checkWin() {
-    window.currentPlaced.forEach(p => {
+    let allOk = true;
+    currentPlaced.forEach(p => {
         let user = "";
         for (let i = 0; i < p.split.length; i++) {
             const row = p.dir === 'across' ? p.r : p.r + i, col = p.dir === 'across' ? p.c + i : p.c;
             user += document.querySelector(`input[data-r="${row}"][data-c="${col}"]`).value;
         }
-        document.getElementById(`clue-${p.num}-${p.dir}`).classList.toggle('correct', (user === p.full));
+        const isMatch = (user === p.full);
+        document.getElementById(`clue-${p.num}-${p.dir}`).classList.toggle('correct', isMatch);
+        if (!isMatch) allOk = false;
     });
+    if (allOk) document.getElementById('success-overlay').style.display = 'flex';
 }
 
 function toggleManifest() {
-    window.manifestActive = !window.manifestActive;
-    document.querySelectorAll('input').forEach(i => i.placeholder = window.manifestActive ? i.dataset.ans : "");
+    manifestActive = !manifestActive;
+    const btn = document.getElementById('manifest-btn');
+    btn.style.color = manifestActive ? 'var(--neon-cyan)' : '#444';
+    btn.style.borderColor = manifestActive ? 'var(--neon-cyan)' : '#444';
+    document.querySelectorAll('input').forEach(i => i.placeholder = manifestActive ? i.dataset.ans : "");
 }
 
 window.onload = generate;
