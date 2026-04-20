@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thai Wordle: Cyber Edition</title>
+    <script src="assets/vocabWords.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-noir: #030305;
+            --cell-bg: #1c2025;
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #39ff14;
+            --neon-orange: #ff9900;
+            --text-main: #fff;
+            --thai-font: "Leelawadee UI", "Tahoma", "Thonburi", sans-serif;
+        }
+
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-noir);
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 20px; min-height: 100vh; margin: 0;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        header { text-align: center; margin-bottom: 20px; }
+        h1 { 
+            font-family: 'Syncopate', sans-serif; font-size: 1.8rem;
+            background: linear-gradient(to bottom, #fff 60%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        #board {
+            display: grid;
+            grid-template-rows: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: repeat(5, 55px);
+            gap: 8px;
+        }
+
+        .tile {
+            width: 55px; height: 55px;
+            border: 2px solid #333;
+            background: var(--cell-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--thai-font);
+            font-size: 1.5rem; font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .tile.active { border-color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); }
+
+        /* States */
+        .tile.correct { background: var(--neon-green); border-color: var(--neon-green); color: #000; }
+        .tile.partial { background: var(--neon-orange); border-color: var(--neon-orange); color: #000; }
+        .tile.present { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; }
+        .tile.absent { background: #333; border-color: #333; opacity: 0.6; }
+
+        .controls { display: flex; gap: 10px; margin-top: 10px; }
+        .btn {
+            background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink);
+            padding: 10px 20px; font-family: 'Syncopate'; font-size: 0.6rem; cursor: pointer;
+            text-decoration: none; transition: 0.3s;
+        }
+        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 15px var(--neon-pink); }
+
+        #msg { 
+            margin-top: 10px; font-family: 'Syncopate'; color: var(--neon-cyan); 
+            font-size: 0.7rem; letter-spacing: 2px; text-align: center; height: 1.2rem;
+        }
+
+        @media (max-width: 400px) {
+            .row { grid-template-columns: repeat(5, 14vw); gap: 2vw; }
+            .tile { width: 14vw; height: 14vw; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>THAI WORDLE</h1>
+        <div id="msg">LOADED AND READY</div>
+    </header>
+
+    <div id="board"></div>
+
+    <div id="msg-sub" style="font-size: 0.5rem; color: #555; margin-bottom: 15px;">TYPE ON KEYBOARD TO GUESS</div>
+
+    <div class="controls">
+        <button class="btn" onclick="initGame()">NEW GAME</button>
+        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn">STUDY</a>
+    </div>
+
+<script>
+let targetWord = [];
+let targetFull = "";
+let currentGuessParts = [];
+let currentRow = 0;
+let gameOver = false;
+const MAX_GUESSES = 6;
+const WORD_LENGTH = 5;
+
+function splitThaiStrict(w) {
+    return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+}
+
+function initGame() {
+    const validWords = vocabWords.trim().split('\n').map(line => line.split(',')[0].trim())
+        .filter(word => splitThaiStrict(word).length === WORD_LENGTH);
+
+    targetFull = validWords[Math.floor(Math.random() * validWords.length)];
+    targetWord = splitThaiStrict(targetFull);
+    
+    currentRow = 0;
+    currentGuessParts = [];
+    gameOver = false;
+    
+    const board = document.getElementById('board');
+    board.innerHTML = '';
+    for (let i = 0; i < MAX_GUESSES; i++) {
+        const row = document.createElement('div');
+        row.className = 'row';
+        for (let j = 0; j < WORD_LENGTH; j++) {
+            const tile = document.createElement('div');
+            tile.className = 'tile';
+            tile.id = `tile-${i}-${j}`;
+            row.appendChild(tile);
+        }
+        board.appendChild(row);
+    }
+    document.getElementById('msg').innerText = "GUESS THE 5-LETTER WORD";
+}
+
+// KEYBOARD LISTENER (Desktop Friendly)
+window.addEventListener('keydown', (e) => {
+    if (gameOver) return;
+
+    if (e.key === 'Enter') {
+        if (currentGuessParts.length === WORD_LENGTH) {
+            submitGuess();
+        } else {
+            document.getElementById('msg').innerText = "TOO SHORT";
+        }
+    } else if (e.key === 'Backspace') {
+        currentGuessParts.pop();
+        updateBoard();
+    } else {
+        // Only accept Thai characters (and their vowels/tones)
+        const isThai = /[\u0E00-\u0E7F]/.test(e.key);
+        if (isThai && currentGuessParts.length < WORD_LENGTH) {
+            // Because typing tone marks usually "attaches" to the previous char in the OS, 
+            // but we need to treat them as independent inputs for our splitter:
+            const tempVal = currentGuessParts.join('') + e.key;
+            currentGuessParts = splitThaiStrict(tempVal);
+            
+            // Limit to 5
+            if (currentGuessParts.length > WORD_LENGTH) {
+                currentGuessParts = currentGuessParts.slice(0, 5);
+            }
+            updateBoard();
+        }
+    }
+});
+
+function updateBoard() {
+    for (let i = 0; i < WORD_LENGTH; i++) {
+        const tile = document.getElementById(`tile-${currentRow}-${i}`);
+        tile.innerText = currentGuessParts[i] || "";
+        tile.classList.toggle('active', !!currentGuessParts[i]);
+    }
+}
+
+function submitGuess() {
+    const rowTiles = [];
+    for (let i = 0; i < WORD_LENGTH; i++) {
+        rowTiles.push(document.getElementById(`tile-${currentRow}-${i}`));
+    }
+
+    const remainingTarget = [...targetWord];
+    const guess = [...currentGuessParts];
+
+    // PASS 1: Correct (Green)
+    guess.forEach((char, i) => {
+        if (char === targetWord[i]) {
+            rowTiles[i].classList.add('correct');
+            remainingTarget[i] = null;
+        }
+    });
+
+    // PASS 2: Partial/Present
+    guess.forEach((char, i) => {
+        if (rowTiles[i].classList.contains('correct')) return;
+
+        const baseChar = char[0]; 
+        
+        // Correct base, wrong tone (Orange)
+        if (targetWord[i][0] === baseChar) {
+            rowTiles[i].classList.add('partial');
+        } 
+        // Exists elsewhere (Cyan)
+        else if (remainingTarget.some(t => t && t[0] === baseChar)) {
+            rowTiles[i].classList.add('present');
+            const idx = remainingTarget.findIndex(t => t && t[0] === baseChar);
+            remainingTarget[idx] = null;
+        } 
+        else {
+            rowTiles[i].classList.add('absent');
+        }
+    });
+
+    if (guess.join('') === targetFull) {
+        document.getElementById('msg').innerText = "ELITE: " + targetFull;
+        gameOver = true;
+    } else if (currentRow === MAX_GUESSES - 1) {
+        document.getElementById('msg').innerText = "CORE FAILED: " + targetFull;
+        gameOver = true;
+    } else {
+        currentRow++;
+        currentGuessParts = [];
+        document.getElementById('msg').innerText = "KEEP GOING...";
+    }
+}
+
+window.onload = initGame;
+</script>
+</body>
+</html>
