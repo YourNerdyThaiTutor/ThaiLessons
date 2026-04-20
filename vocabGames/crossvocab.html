@@ -151,9 +151,9 @@
     </div>
 
     <div id="success-overlay">
-        <h2 style="font-family: 'Syncopate'; color: var(--neon-pink); font-size: 3rem; margin: 0;">ELITE</h2>
-        <p style="letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 30px;">LEVEL CLEARED</p>
-        <button class="btn" onclick="resetGame()">CONTINUE</button>
+        <h2 style="font-family: 'Syncopate'; color: var(--neon-pink); font-size: 3rem; margin: 0;">CONGRATS</h2>
+        <p style="letter-spacing: 4px; color: var(--neon-cyan); margin-bottom: 30px;">PUZZLE CLEARED</p>
+        <button class="btn" onclick="closeWin()">ClOSE</button>
     </div>
 
 <script>
@@ -191,6 +191,11 @@ function resetGame() {
         document.getElementById('manifest-btn').style.color = '#444';
         document.getElementById('manifest-btn').style.borderColor = '#444';
     }, 400);
+}
+
+function closeWin() {
+    const overlay = document.getElementById('success-overlay');
+    overlay.style.display = 'none';
 }
 
 function generate() {
