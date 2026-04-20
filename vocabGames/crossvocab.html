@@ -66,6 +66,19 @@
         }
         .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 15px var(--neon-pink); }
 
+        /* Specific style for the study link */
+        .btn-study {
+            border-color: var(--neon-pink); /* Matches New Game button */
+            color: var(--neon-pink);        /* Matches New Game button */
+            text-decoration: none;         /* Removes the underline */
+        }
+
+        .btn-study:hover {
+            background: var(--neon-pink);
+            color: #000;
+            box-shadow: 0 0 15px var(--neon-pink);
+        }
+        
         #game-container { 
             display: flex; flex-direction: column; align-items: center; 
             gap: 20px; width: 100%; max-width: 800px;
@@ -133,6 +146,7 @@
         <div class="controls">
             <button class="btn" onclick="resetGame()">NEW GAME</button>
             <button class="btn" id="manifest-btn" onclick="toggleManifest()" style="border-color:#444; color:#444;">CHEAT</button>
+            <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn btn-study">STUDY THAI</a>
         </div>
     </header>
 
