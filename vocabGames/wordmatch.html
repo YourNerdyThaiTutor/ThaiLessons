@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Thai Wordle: Cyber Edition</title>
+    <title>Thai Wordle: Full Alphabet</title>
     <script src="assets/vocabWords.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-noir: #030305;
@@ -15,6 +15,7 @@
             --neon-green: #39ff14;
             --neon-orange: #ff9900;
             --text-main: #fff;
+            --kbd-key: #3a3a3c;
             --thai-font: "Leelawadee UI", "Tahoma", "Thonburi", sans-serif;
         }
 
@@ -23,93 +24,209 @@
             background-color: var(--bg-noir);
             color: var(--text-main);
             display: flex; flex-direction: column; align-items: center; 
-            padding: 20px; min-height: 100vh; margin: 0;
+            padding: 10px; min-height: 100vh; margin: 0;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
-        header { text-align: center; margin-bottom: 20px; }
+        header { text-align: center; margin-bottom: 5px; }
         h1 { 
-            font-family: 'Syncopate', sans-serif; font-size: 1.8rem;
+            font-family: 'Syncopate', sans-serif; font-size: 1.2rem;
             background: linear-gradient(to bottom, #fff 60%, var(--neon-cyan) 100%);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
+            margin: 5px 0;
         }
 
         #board {
             display: grid;
             grid-template-rows: repeat(6, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
+            gap: 5px;
+            margin-bottom: 15px;
         }
 
         .row {
             display: grid;
-            grid-template-columns: repeat(5, 55px);
-            gap: 8px;
+            grid-template-columns: repeat(5, 50px);
+            gap: 5px;
         }
 
         .tile {
-            width: 55px; height: 55px;
+            width: 50px; height: 50px;
             border: 2px solid #333;
             background: var(--cell-bg);
             display: flex; align-items: center; justify-content: center;
             font-family: var(--thai-font);
-            font-size: 1.5rem; font-weight: bold;
+            font-size: 1.4rem; font-weight: bold;
             transition: all 0.2s;
         }
 
-        .tile.active { border-color: var(--neon-pink); box-shadow: 0 0 10px rgba(255, 0, 255, 0.2); }
+        .tile.focused { 
+            border-color: var(--neon-pink); 
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
 
-        /* States */
-        .tile.correct { background: var(--neon-green); border-color: var(--neon-green); color: #000; }
-        .tile.partial { background: var(--neon-orange); border-color: var(--neon-orange); color: #000; }
-        .tile.present { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #000; }
-        .tile.absent { background: #333; border-color: #333; opacity: 0.6; }
+        .correct { background: var(--neon-green) !important; border-color: var(--neon-green) !important; color: #000 !important; }
+        .partial { background: var(--neon-orange) !important; border-color: var(--neon-orange) !important; color: #000 !important; }
+        .present { background: var(--neon-cyan) !important; border-color: var(--neon-cyan) !important; color: #000 !important; }
+        .absent { background: #111 !important; border-color: #222 !important; color: #444 !important; opacity: 0.5; }
 
-        .controls { display: flex; gap: 10px; margin-top: 10px; }
+        #overlay {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px);
+            padding: 20px;
+        }
+
+        #keyboard {
+            display: flex; flex-direction: column; gap: 5px;
+            width: 100%; max-width: 600px; padding: 10px;
+            background: rgba(255,255,255,0.03); border-radius: 10px;
+        }
+        .k-row { display: flex; justify-content: center; gap: 3px; width: 100%; }
+        
+        .key {
+            background: var(--kbd-key); color: #fff;
+            flex: 1; height: 42px; border-radius: 4px; cursor: pointer;
+            font-family: var(--thai-font); font-size: 1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: 0.1s; user-select: none;
+        }
+
+        .key.special { background: #555; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: bold; flex: 1.5; }
+        .key.active-shift { background: var(--neon-pink) !important; color: #fff !important; }
+
+        .stats-container {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            margin: 15px 0; text-align: center;
+        }
+        .stat-val { font-size: 1.4rem; font-weight: bold; color: var(--neon-cyan); }
+        .stat-lbl { font-size: 0.6rem; font-family: 'Syncopate'; }
+
+        .controls { 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+            justify-content: center;
+        }
+
         .btn {
-            background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink);
-            padding: 10px 20px; font-family: 'Syncopate'; font-size: 0.6rem; cursor: pointer;
-            text-decoration: none; transition: 0.3s;
+            background: transparent; 
+            border: 1px solid var(--neon-pink); 
+            color: var(--neon-pink);
+            padding: 10px 20px; 
+            font-family: 'Syncopate', sans-serif; 
+            font-size: 0.6rem; 
+            cursor: pointer;
+            transition: 0.2s;
+            text-transform: uppercase;
+            display: inline-block;
         }
-        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 15px var(--neon-pink); }
 
-        #msg { 
-            margin-top: 10px; font-family: 'Syncopate'; color: var(--neon-cyan); 
-            font-size: 0.7rem; letter-spacing: 2px; text-align: center; height: 1.2rem;
+        .btn:hover { 
+            background: var(--neon-pink); 
+            color: #000; 
+            box-shadow: 0 0 10px var(--neon-pink);
         }
 
-        @media (max-width: 400px) {
-            .row { grid-template-columns: repeat(5, 14vw); gap: 2vw; }
-            .tile { width: 14vw; height: 14vw; font-size: 1.2rem; }
+        #msg { font-family: 'Syncopate'; color: var(--neon-cyan); font-size: 0.6rem; height: 1rem; margin-bottom: 5px;}
+
+        @media (max-width: 480px) {
+            .row { grid-template-columns: repeat(5, 17vw); }
+            .tile { width: 17vw; height: 17vw; }
+            .key { height: 38px; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
+    <div id="overlay">
+        <h2 id="result-title">RESULT</h2>
+        <p>Word: <span id="result-word" style="color:white;"></span></p>
+        <div class="stats-container">
+            <div><span class="stat-val" id="stat-win-pct">0%</span><div class="stat-lbl">Win Rate</div></div>
+            <div><span class="stat-val" id="stat-avg-guesses">0</span><div class="stat-lbl">Avg Guesses</div></div>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn" onclick="initGame()">PLAY AGAIN</button>
+            <button class="btn" style="border-color:#777; color:#ccc;" onclick="closeOverlay()">VIEW BOARD</button>
+        </div>
+    </div>
+
     <header>
         <h1>THAI WORD MATCH</h1>
-        <div id="msg">LOADED AND READY</div>
     </header>
 
     <div id="board"></div>
 
-    <div id="msg-sub" style="font-size: 0.5rem; color: #555; margin-bottom: 15px;">TYPE ON KEYBOARD TO GUESS</div>
-
     <div class="controls">
         <button class="btn" onclick="initGame()">NEW GAME</button>
-        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn">STUDY</a>
+        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn" style="text-decoration:none;">STUDY</a>
+    </div>
+
+    <div id="keyboard">
+        <div class="k-row" id="row-1"></div>
+        <div class="k-row" id="row-2"></div>
+        <div class="k-row" id="row-3"></div>
+        <div class="k-row" id="row-4"></div>
+        <div class="k-row" id="row-5"></div>
     </div>
 
 <script>
-let targetWord = [];
-let targetFull = "";
-let currentGuessParts = [];
-let currentRow = 0;
-let gameOver = false;
-const MAX_GUESSES = 6;
-const WORD_LENGTH = 5;
+let targetWord = [], targetFull = "", currentGuessParts = ["", "", "", "", ""], keyStates = {};
+let focusIndex = 0, currentRow = 0, gameOver = false, isShift = false;
+
+const WORD_LENGTH = 5, MAX_GUESSES = 6;
+
+// COMPREHENSIVE LAYOUT: 44 Consonants + All Vowels + Tone Marks
+const layout = {
+    r1: { n: "ไำพะัีรนยบล", s: "โฌ็๋ษศซฉฮฺ" },
+    r2: { n: "ฟหกดเ้่าสวง", s: "ฤฆฏโฌ็๋ษศซ" }, // Shared commonalities
+    r3: { n: "ผปแอิืทมใฝ", s: "ธณฯญฐู฿ฎฑ" }, 
+    r4: { n: "คตจขชๆภถค", s: "ฃฅฬฒอฮ์่้" }, // Added rare consonants and remaining tones
+    r5: { n: "ุูึืโอะอัว", s: "ำไใเแาิีุ" }  // Dedicated vowel row for easy stacking
+};
+
+function isCombining(char) {
+    const code = char.charCodeAt(0);
+    // These are ONLY the marks that go ABOVE or BELOW the letter.
+    // We EXCLUDE 'า' (0x0E32) and 'ำ' (0x0E33) so they get their own boxes.
+    return (code >= 0x0E31 && code <= 0x0E31) || // Mai Han-Akat
+           (code >= 0x0E34 && code <= 0x0E3A) || // Upper/Lower vowels
+           (code >= 0x0E47 && code <= 0x0E4E);   // Tones and Garans
+}
+
+function handleKey(key) {
+    if (gameOver) return;
+    const msg = document.getElementById('msg');
+
+    if (key === 'Enter') {
+        if (currentGuessParts.every(p => p !== "")) submitGuess();
+        else msg.innerText = "INCOMPLETE";
+    } else if (key === 'Backspace' || key === 'Delete') {
+        let cur = currentGuessParts[focusIndex];
+        if (cur.length > 1) {
+            currentGuessParts[focusIndex] = cur.slice(0, -1);
+        } else { 
+            currentGuessParts[focusIndex] = ""; 
+            if (focusIndex > 0) focusIndex--; 
+        }
+        updateBoardVisuals();
+    } else if (/[\u0E00-\u0E7F]/.test(key)) {
+        // If it's a 'Side Vowel' (า, ะ, เ, แ, โ, ไ, ใ) or a Consonant, it's a BASE.
+        if (!isCombining(key)) {
+            currentGuessParts[focusIndex] = key;
+            if (focusIndex < WORD_LENGTH - 1) focusIndex++;
+        } else {
+            // It's a stacking mark (tone or above/below vowel), attach to existing letter.
+            if (currentGuessParts[focusIndex] !== "") {
+                currentGuessParts[focusIndex] += key;
+            }
+        }
+        updateBoardVisuals();
+    }
+}
 
 function splitThaiStrict(w) {
     return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
@@ -118,120 +235,127 @@ function splitThaiStrict(w) {
 function initGame() {
     const validWords = vocabWords.trim().split('\n').map(line => line.split(',')[0].trim())
         .filter(word => splitThaiStrict(word).length === WORD_LENGTH);
-
     targetFull = validWords[Math.floor(Math.random() * validWords.length)];
     targetWord = splitThaiStrict(targetFull);
-    
-    currentRow = 0;
-    currentGuessParts = [];
-    gameOver = false;
-    
-    const board = document.getElementById('board');
-    board.innerHTML = '';
+    console.log("Debug Answer: " + targetFull);
+
+    currentRow = 0; currentGuessParts = ["", "", "", "", ""]; keyStates = {}; focusIndex = 0; gameOver = false;
+    buildBoard(); renderKeyboard(); updateFocus(); closeOverlay();
+}
+
+function buildBoard() {
+    const board = document.getElementById('board'); board.innerHTML = '';
     for (let i = 0; i < MAX_GUESSES; i++) {
-        const row = document.createElement('div');
-        row.className = 'row';
+        const row = document.createElement('div'); row.className = 'row';
         for (let j = 0; j < WORD_LENGTH; j++) {
-            const tile = document.createElement('div');
-            tile.className = 'tile';
+            const tile = document.createElement('div'); tile.className = 'tile';
             tile.id = `tile-${i}-${j}`;
+            tile.onclick = () => { if (i === currentRow && !gameOver) { focusIndex = j; updateFocus(); } };
             row.appendChild(tile);
         }
         board.appendChild(row);
     }
-    document.getElementById('msg').innerText = "GUESS THE 5-LETTER WORD";
 }
 
-// KEYBOARD LISTENER (Desktop Friendly)
-window.addEventListener('keydown', (e) => {
-    if (gameOver) return;
+function renderKeyboard() {
+    ['r1', 'r2', 'r3', 'r4', 'r5'].forEach((r, idx) => {
+        const container = document.getElementById(`row-${idx+1}`);
+        container.innerHTML = '';
+        const chars = isShift ? layout[r].s : layout[r].n;
 
-    if (e.key === 'Enter') {
-        if (currentGuessParts.length === WORD_LENGTH) {
-            submitGuess();
-        } else {
-            document.getElementById('msg').innerText = "TOO SHORT";
+        if (idx === 3) { // Row 4 special keys
+            const shiftBtn = document.createElement('div');
+            shiftBtn.className = `key special ${isShift ? 'active-shift' : ''}`;
+            shiftBtn.innerText = 'SHIFT';
+            shiftBtn.onclick = () => { isShift = !isShift; renderKeyboard(); };
+            container.appendChild(shiftBtn);
         }
-    } else if (e.key === 'Backspace') {
-        currentGuessParts.pop();
-        updateBoard();
-    } else {
-        // Only accept Thai characters (and their vowels/tones)
-        const isThai = /[\u0E00-\u0E7F]/.test(e.key);
-        if (isThai && currentGuessParts.length < WORD_LENGTH) {
-            // Because typing tone marks usually "attaches" to the previous char in the OS, 
-            // but we need to treat them as independent inputs for our splitter:
-            const tempVal = currentGuessParts.join('') + e.key;
-            currentGuessParts = splitThaiStrict(tempVal);
-            
-            // Limit to 5
-            if (currentGuessParts.length > WORD_LENGTH) {
-                currentGuessParts = currentGuessParts.slice(0, 5);
-            }
-            updateBoard();
-        }
-    }
-});
 
-function updateBoard() {
-    for (let i = 0; i < WORD_LENGTH; i++) {
-        const tile = document.getElementById(`tile-${currentRow}-${i}`);
-        tile.innerText = currentGuessParts[i] || "";
-        tile.classList.toggle('active', !!currentGuessParts[i]);
-    }
+        chars.split('').forEach(char => {
+            const key = document.createElement('div');
+            key.className = `key ${keyStates[char] || ''}`;
+            key.innerText = char;
+            key.onclick = () => handleKey(char);
+            container.appendChild(key);
+        });
+
+        if (idx === 3) {
+            const delBtn = document.createElement('div');
+            delBtn.className = 'key special';
+            delBtn.innerText = 'DEL';
+            delBtn.onclick = () => handleKey('Backspace');
+            container.appendChild(delBtn);
+        }
+        
+        if (idx === 4) { // Add Enter to last row
+            const entBtn = document.createElement('div');
+            entBtn.className = 'key special';
+            entBtn.innerText = 'ENTER';
+            entBtn.onclick = () => handleKey('Enter');
+            container.appendChild(entBtn);
+        }
+    });
+}
+
+function updateBoardVisuals() {
+    for (let j = 0; j < WORD_LENGTH; j++) document.getElementById(`tile-${currentRow}-${j}`).innerText = currentGuessParts[j];
+    updateFocus();
+}
+
+function updateFocus() {
+    document.querySelectorAll('.tile').forEach(t => t.classList.remove('focused'));
+    if (!gameOver) document.getElementById(`tile-${currentRow}-${focusIndex}`).classList.add('focused');
 }
 
 function submitGuess() {
-    const rowTiles = [];
-    for (let i = 0; i < WORD_LENGTH; i++) {
-        rowTiles.push(document.getElementById(`tile-${currentRow}-${i}`));
+    const tiles = [];
+    for (let j = 0; j < WORD_LENGTH; j++) tiles.push(document.getElementById(`tile-${currentRow}-${j}`));
+    const remainingTarget = [...targetWord], guess = [...currentGuessParts];
+    const priority = { 'correct': 4, 'partial': 3, 'present': 2, 'absent': 1 };
+
+    function setKey(char, state) {
+        if (!keyStates[char] || priority[state] > priority[keyStates[char]]) keyStates[char] = state;
     }
 
-    const remainingTarget = [...targetWord];
-    const guess = [...currentGuessParts];
-
-    // PASS 1: Correct (Green)
     guess.forEach((char, i) => {
-        if (char === targetWord[i]) {
-            rowTiles[i].classList.add('correct');
-            remainingTarget[i] = null;
-        }
+        if (char === targetWord[i]) { tiles[i].classList.add('correct'); setKey(char, 'correct'); remainingTarget[i] = null; }
     });
 
-    // PASS 2: Partial/Present
     guess.forEach((char, i) => {
-        if (rowTiles[i].classList.contains('correct')) return;
-
-        const baseChar = char[0]; 
-        
-        // Correct base, wrong tone (Orange)
-        if (targetWord[i][0] === baseChar) {
-            rowTiles[i].classList.add('partial');
-        } 
-        // Exists elsewhere (Cyan)
-        else if (remainingTarget.some(t => t && t[0] === baseChar)) {
-            rowTiles[i].classList.add('present');
-            const idx = remainingTarget.findIndex(t => t && t[0] === baseChar);
-            remainingTarget[idx] = null;
-        } 
-        else {
-            rowTiles[i].classList.add('absent');
-        }
+        if (tiles[i].classList.contains('correct')) return;
+        const base = char[0];
+        if (targetWord[i][0] === base) { tiles[i].classList.add('partial'); setKey(char, 'partial'); }
+        else if (remainingTarget.some(t => t && t[0] === base)) {
+            tiles[i].classList.add('present'); setKey(char, 'present');
+            remainingTarget[remainingTarget.findIndex(t => t && t[0] === base)] = null;
+        } else { tiles[i].classList.add('absent'); setKey(char, 'absent'); }
     });
 
-    if (guess.join('') === targetFull) {
-        document.getElementById('msg').innerText = "ELITE: " + targetFull;
-        gameOver = true;
-    } else if (currentRow === MAX_GUESSES - 1) {
-        document.getElementById('msg').innerText = "CORE FAILED: " + targetFull;
-        gameOver = true;
-    } else {
-        currentRow++;
-        currentGuessParts = [];
-        document.getElementById('msg').innerText = "KEEP GOING...";
-    }
+    renderKeyboard();
+    if (guess.join('') === targetFull) finalizeGame(true);
+    else if (currentRow === MAX_GUESSES - 1) finalizeGame(false);
+    else { currentRow++; currentGuessParts = ["", "", "", "", ""]; focusIndex = 0; updateFocus(); }
 }
 
+function finalizeGame(isWin) {
+    gameOver = true;
+    updateStats(isWin, currentRow + 1);
+    const overlay = document.getElementById('overlay');
+    document.getElementById('result-title').innerText = isWin ? "YOU WIN" : "YOU LOST";
+    document.getElementById('result-title').style.color = isWin ? "var(--neon-green)" : "var(--neon-pink)";
+    document.getElementById('result-word').innerText = targetFull;
+    overlay.style.display = 'flex';
+}
+
+function updateStats(isWin, guesses) {
+    let stats = JSON.parse(localStorage.getItem('thaiWordleStats')) || { wins: 0, total: 0, guessHistory: [] };
+    stats.total++; if (isWin) { stats.wins++; stats.guessHistory.push(guesses); }
+    localStorage.setItem('thaiWordleStats', JSON.stringify(stats));
+    document.getElementById('stat-win-pct').innerText = Math.round((stats.wins / stats.total) * 100) + "%";
+    document.getElementById('stat-avg-guesses').innerText = stats.guessHistory.length ? (stats.guessHistory.reduce((a,b)=>a+b,0)/stats.guessHistory.length).toFixed(1) : 0;
+}
+
+function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
 window.onload = initGame;
 </script>
 </body>
