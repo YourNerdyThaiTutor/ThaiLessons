@@ -44,7 +44,7 @@ const vocabWords = `ศูนย์,0
 พิมพ์,to type
 คอมพิวเตอร์,computer
 โชว์,to show
-ลิฟท์,"elevator" or "lift"
+ลิฟต์,"elevator" or "lift"
 โทรศัพท์,phone
 พระจันทร์,the moon
 พระอาทิตย์,the sun
