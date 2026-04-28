@@ -100,6 +100,13 @@ border-radius: 10px;
   transition: 0.3s ease-out;
   border: solid 5px #2a9d8f;
 }
+
+#Draggable {
+  touch-action: none; /* Prevents scrolling while dragging */
+  user-select: none;
+  position: relative; /* Allows manual movement */
+  z-index: 1000;
+}
             
 </style>
     <script>
@@ -110,7 +117,12 @@ border-radius: 10px;
          "ิ":"above",
          "ึ":"above",
          "ุ":"under"
-    }
+        };
+
+        let isDragging = false;
+        let startX, startY;
+
+
         function generateQuestion(){
          document.getElementById("streak").textContent = "streak: "+streak;
          var c = Math.floor(Math.random() * consonants.length);
@@ -152,7 +164,80 @@ function SetPage(){
 
             <div id="Draggable" src="img_w3slogo.gif" draggable="true" class="con" ondragstart="dragstartHandler(event)" width="100" height="100">Sa</div>
         </div>`;
+    const draggable = document.getElementById("Draggable");
+    
+    draggable.onpointerdown = onPointerDown;
+    draggable.onpointermove = onPointerMove;
+    draggable.onpointerup = onPointerUp;
+    draggable.onpointercancel = onPointerUp; // Safety for when touch is interrupted
+    
     generateQuestion();
+}
+function onPointerDown(ev) {
+    isDragging = true;
+    startX = ev.clientX;
+    startY = ev.clientY;
+    ev.target.setPointerCapture(ev.pointerId); // Keeps tracking the finger even if it leaves the element
+    ev.target.classList.add('beingDragged');
+}
+
+function onPointerMove(ev) {
+    if (!isDragging) return;
+
+    const el = ev.target;
+    // Calculate movement
+    const dx = ev.clientX - startX;
+    const dy = ev.clientY - startY;
+
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+    
+    // Check if we are hovering over a drop zone
+    const target = getDropZoneUnderPointer(ev.clientX, ev.clientY);
+    
+    // Clear previous highlights
+    document.querySelectorAll('.box').forEach(b => b.classList.remove('hoverOver'));
+    if (target && target.classList.contains('box') && target.id !== 'div1') {
+        target.classList.add('hoverOver');
+    }
+}
+
+function onPointerUp(ev) {
+    if (!isDragging) return;
+    isDragging = false;
+    
+    const el = ev.target;
+    const dropZone = getDropZoneUnderPointer(ev.clientX, ev.clientY);
+    
+    el.style.transform = 'none'; // Reset position
+    el.classList.remove('beingDragged');
+
+    if (dropZone && dropZone.classList.contains('box') && dropZone.id !== 'div1') {
+        handleDropLogic(dropZone, el);
+    }
+}
+
+function getDropZoneUnderPointer(x, y) {
+    // Hide the element temporarily to see what is underneath it
+    const el = document.getElementById("Draggable");
+    el.style.display = 'none';
+    const target = document.elementFromPoint(x, y);
+    el.style.display = 'flex';
+    return target;
+}
+
+function handleDropLogic(targetZone, draggableEl) {
+    targetZone.appendChild(draggableEl);
+    
+    if (vowels[answer] === targetZone.id) {
+        targetZone.style.background = '#00ff00';
+        streak++;
+        updateStreakLocalStorage(streak);
+        setTimeout(() => SetPage(), 700);
+    } else {
+        targetZone.style.background = '#ff003c';
+        streak = -1;
+        document.getElementById("streak").textContent = "streak: 0";
+    }
 }
 
 function dragoverHandler(ev) {
