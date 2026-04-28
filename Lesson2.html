@@ -95,6 +95,17 @@
           transition: 0.3s ease-out;
           border: solid 5px #2a9d8f;
         }
+
+        #Draggable {
+          touch-action: none;   /* CRITICAL: Stops the page from bouncing/scrolling */
+          user-select: none;    /* Prevents highlighting text while dragging */
+          position: relative;   /* Allows us to move it with JS */
+          z-index: 1000;        /* Ensures it stays on top of other boxes */
+        }
+
+        .hoverOver {
+          border: solid 5px #2a9d8f !important; /* Highlights the target box */
+        }
             
         </style>
             <script>
@@ -115,63 +126,103 @@
                   answer = vowels_list[v];
                   document.getElementById("Draggable").innerHTML = answer;
                 }
-                function dragstartHandler(ev) {
-                    ev.dataTransfer.setData("text", ev.target.id);
-                    ev.target.classList.add('beingDragged');
-                }
+                
                 function SetPage(){
-    document.body.innerHTML=`
+                  document.body.innerHTML = `
 <h1>Drag and drop the vowel to the correct placement</h1>
-
 <p id="streak">Streak: 0</p>      
+<table>
+    <tr>
+        <td></td>
+        <td><div id="above" class="box"></div></td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><div id="left" class="box"></div></td>
+        <td class="con" id="consonant"></td>
+        <td><div id="right" class="box"></div></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><div id="under" class="box"></div></td>
+        <td></td>
+    </tr>
+</table>
+<div id="div1" class="box" style="margin: 0 auto; float: none;">
+    <div id="Draggable" class="con">Sa</div>
+</div>`;
 
-        
-
-        
-    <table>
-        <tr>
-            <td></td>
-            <td><div id="above" class = "box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><div id="left"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
-            <td class="con" id="consonant"></td>
-            <td><div id="right"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><div id="under"  class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)"></div></td>
-            <td></td>
-        </tr>
-    </table>
-    <div id="div1" class="box" ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">
-
-            <div id="Draggable" src="img_w3slogo.gif" draggable="true" class="con" ondragstart="dragstartHandler(event)" width="100" height="100">Sa</div>
-        </div>`;
+    // Attach the new event listeners right here
+    const dragEl = document.getElementById("Draggable");
+    dragEl.onpointerdown = startDrag;
+    dragEl.onpointermove = moveDrag;
+    dragEl.onpointerup = endDrag;
+    dragEl.onpointercancel = endDrag;
     generateQuestion();
 }
 
-function dragoverHandler(ev) {
-  ev.preventDefault();
+let isDragging = false;
+let startX, startY;
+
+function startDrag(ev) {
+    isDragging = true;
+    startX = ev.clientX;
+    startY = ev.clientY;
+    ev.target.setPointerCapture(ev.pointerId); // Locks the input to this element
+    ev.target.classList.add('beingDragged');
 }
 
-function dropHandler(ev) {
-  ev.preventDefault();
-  const data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
-    document.getElementById(data).classList.remove('beingDragged');
-    ev.target.classList.remove('hoverOver');
-    if(vowels[answer]==ev.target.id){
-        document.getElementById(ev.target.id).style.background='#00ff00';
-        streak++;
-        updateStreakLocalStorage(streak)
-        
-        setTimeout(() => SetPage(),700);
+function moveDrag(ev) {
+    if (!isDragging) return;
+    const el = ev.target;
+    const dx = ev.clientX - startX;
+    const dy = ev.clientY - startY;
+    
+    // Move the element under the finger/cursor
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+
+    // Logic to highlight the box you are currently hovering over
+    const target = getElementUnderPointer(ev.clientX, ev.clientY);
+    document.querySelectorAll('.box').forEach(b => b.classList.remove('hoverOver'));
+    if (target && target.classList.contains('box') && target.id !== 'div1') {
+        target.classList.add('hoverOver');
     }
-    else{
-        document.getElementById(ev.target.id).style.background='#ff003c';
-        streak = -1;
+}
+
+function endDrag(ev) {
+    if (!isDragging) return;
+    isDragging = false;
+    const el = ev.target;
+    const dropZone = getElementUnderPointer(ev.clientX, ev.clientY);
+    
+    el.style.transform = 'none'; // Reset position so it snaps into the box
+    el.classList.remove('beingDragged');
+
+    if (dropZone && dropZone.classList.contains('box') && dropZone.id !== 'div1') {
+        // Reuse your existing logic for checking if the answer is correct
+        processDrop(dropZone, el); 
+    }
+}
+
+function getElementUnderPointer(x, y) {
+    const el = document.getElementById("Draggable");
+    el.style.visibility = 'hidden'; // Hide vowel for a millisecond to see what's under it
+    const target = document.elementFromPoint(x, y);
+    el.style.visibility = 'visible';
+    return target;
+}
+
+function processDrop(target, el) {
+    target.appendChild(el);
+    if (vowels[answer] === target.id) {
+        target.style.background = '#00ff00';
+        streak++;
+        updateStreakLocalStorage(streak);
+        setTimeout(() => SetPage(), 700);
+    } else {
+        target.style.background = '#ff003c';
+        streak = 0;
+        document.getElementById("streak").textContent = "Streak: 0";
     }
 }
 
