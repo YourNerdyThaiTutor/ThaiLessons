@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BQ56JZ1LM4');
+    </script>
+    
+    <script 
+        async 
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+        crossorigin="anonymous">
+    </script>
+    
+    <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
+    <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
+    <meta property="og:image" content="">
+    <meta property="og:type" content="article">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Hangman Vocab</title>
+    <script src="assets/vocabWords.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --soft-cream: #fcfaf2;
+            --petal-pink: #ffc2d1;
+            --lavender: #e2afff;
+            --matcha: #b7e4c7;
+            --charcoal: #2d2d2d;
+            --thai-font: "Leelawadee UI", sans-serif;
+        }
+
+        body {
+            background: var(--soft-cream);
+            color: var(--charcoal);
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0; padding: 20px;
+        }
+
+        #top-nav {
+            width: 100%; max-width: 850px;
+            display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            background: white; border: 1px solid var(--lavender);
+            padding: 8px 15px; border-radius: 50px; cursor: pointer;
+            font-family: 'Syncopate'; font-size: 0.6rem; color: var(--lavender);
+        }
+
+        #body-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 10px; width: 150px; height: 180px; margin-bottom: 15px; font-size: 2.8rem;
+            align-items: center; justify-items: center;
+        }
+        .grid-hat { grid-column: 2; }
+        .grid-arm-l { grid-column: 1; }
+        .grid-torso { grid-column: 2; }
+        .grid-arm-r { grid-column: 3; }
+        .grid-leg-l { grid-column: 1; }
+        .grid-leg-r { grid-column: 3; }
+        .part { opacity: 0; transition: opacity 0.3s ease; }
+        .part.visible { opacity: 1; }
+
+        #definition-box {
+            background: white; padding: 15px 25px; border-radius: 20px;
+            border: 2px solid var(--petal-pink); font-size: 0.8rem;
+            max-width: 320px; text-align: center; margin-bottom: 10px;
+        }
+
+        #word-display {
+            font-family: var(--thai-font); font-size: 3rem; letter-spacing: 12px;
+            margin: 10px 0; font-weight: 600;
+        }
+
+        .kb-section { width: 100%; max-width: 850px; margin-bottom: 15px; }
+        .kb-label { font-family: 'Syncopate'; font-size: 0.55rem; color: var(--lavender); margin-bottom: 5px; display: block; }
+        .keyboard { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; }
+        .key {
+            background: white; border: 1px solid #eee; padding: 12px 0;
+            font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer;
+            border-radius: 8px;
+        }
+        .key.used { opacity: 0.3; pointer-events: none; }
+        .key.wrong { background: var(--lavender); color: white; }
+
+        /* REINFORCED OVERLAYS */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(252, 250, 242, 0.99) !important;
+            display: none; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 10000 !important; text-align: center; padding: 20px;
+        }
+        .overlay h2 { font-family: 'Syncopate'; font-size: 2.5rem; margin-bottom: 15px; }
+        .stats-list { text-align: left; max-width: 400px; width: 100%; overflow-y: auto; max-height: 50vh; margin: 10px 0; }
+        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            .keyboard { grid-template-columns: repeat(6, 1fr); }
+            #word-display { font-size: 1.8rem; letter-spacing: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="top-nav">
+        <button class="nav-btn" onclick="toggleStats(true)">📊 VIEW STATS</button>
+        <div style="font-family:'Syncopate'; font-size: 0.6rem; color: var(--lavender);">WIN RATE: <span id="global-win-rate">0%</span></div>
+    </div>
+
+    <div id="body-grid">
+        <span class="part grid-hat" id="p-0"></span>
+        <span class="part grid-torso" id="p-1"></span>
+        <span class="part grid-arm-l" id="p-2"></span>
+        <span class="part grid-arm-r" id="p-3"></span>
+        <span class="part grid-leg-l" id="p-4"></span>
+        <span class="part grid-leg-r" id="p-5"></span>
+    </div>
+
+    <div id="definition-box">
+        <span style="font-weight:800; color:var(--petal-pink)">DEFINITION:</span><br>
+        <span id="word-def">...</span>
+    </div>
+
+    <div id="word-display"></div>
+    
+    <div class="kb-section">
+        <span class="kb-label">Consonants</span>
+        <div class="keyboard" id="kb-consonants"></div>
+    </div>
+    <div class="kb-section">
+        <span class="kb-label">Details</span>
+        <div class="keyboard" id="kb-details"></div>
+    </div>
+
+    <div id="game-overlay" class="overlay">
+        <h2 id="result-title">YOU WIN</h2>
+        <div id="result-info" style="margin-bottom:25px; line-height:1.6; font-size: 1rem;"></div>
+        <button onclick="initGame()" class="nav-btn" style="padding:15px 40px; font-size:0.8rem; background:var(--charcoal); color:white; border:none;">NEXT WORD</button>
+    </div>
+
+    <div id="stats-overlay" class="overlay">
+        <h2 style="font-size:1.5rem">STATS VAULT</h2>
+        <div class="stats-list" id="stats-container"></div>
+        <button onclick="toggleStats(false)" class="nav-btn" style="margin-top:20px; border-color: var(--charcoal); color: var(--charcoal);">CLOSE</button>
+    </div>
+
+<script>
+    let targetWord = "", definition = "";
+    let splitWord = [], guessedChars = [], mistakes = 0;
+    let isGameOver = false;
+
+    const closet = {
+        hats: ["👒", "👑", "🎀", "🧢", "🎩"],
+        torsos: ["👚", "👗", "🥋", "👕", "🧥"],
+        arms: ["💅", "🛍️", "🤳", "🧤", "✨"],
+        legs: ["🩰", "👟", "🩴", "👠", "👖"]
+    };
+
+    function initGame() {
+        isGameOver = false;
+        const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["ภาษา,Language"];
+        const pair = list[Math.floor(Math.random() * list.length)].split(',');
+        targetWord = pair[0].trim();
+        definition = pair[1] ? pair[1].trim() : "???";
+        
+        splitWord = targetWord.split("");
+        guessedChars = []; mistakes = 0;
+        
+        document.getElementById('word-def').innerText = definition;
+        document.getElementById('game-overlay').style.display = 'none';
+        document.getElementById('stats-overlay').style.display = 'none';
+        
+        randomizeOutfit();
+        updateGlobalWinRate();
+        renderWord();
+        renderKeyboards();
+    }
+
+    function randomizeOutfit() {
+        const slots = [closet.hats, closet.torsos, closet.arms, closet.arms, closet.legs, closet.legs];
+        slots.forEach((list, i) => {
+            const el = document.getElementById(`p-${i}`);
+            if(el) {
+                el.innerText = list[Math.floor(Math.random() * list.length)];
+                el.classList.remove('visible');
+            }
+        });
+    }
+
+    function renderWord() {
+        const display = splitWord.map(char => guessedChars.includes(char) ? char : "_").join("");
+        document.getElementById('word-display').innerHTML = display;
+        if (!display.includes("_") && !isGameOver && targetWord !== "") {
+            end(true);
+        }
+    }
+
+    function handleGuess(char, btn) {
+        if (isGameOver || guessedChars.includes(char)) return;
+        
+        guessedChars.push(char);
+        btn.classList.add('used');
+
+        if (targetWord.includes(char)) {
+            renderWord();
+        } else {
+            const part = document.getElementById(`p-${mistakes}`);
+            if(part) part.classList.add('visible');
+            mistakes++;
+            btn.classList.add('wrong');
+            if (mistakes >= 6) end(false);
+        }
+    }
+
+    function end(win) {
+        isGameOver = true;
+        const overlay = document.getElementById('game-overlay');
+        const title = document.getElementById('result-title');
+        const info = document.getElementById('result-info');
+
+        // Bulletproof Storage Initialization
+        let stats;
+        try {
+            const saved = localStorage.getItem('thaiStats');
+            stats = saved ? JSON.parse(saved) : { wins: 0, total: 0, words: {} };
+        } catch(e) {
+            stats = { wins: 0, total: 0, words: {} };
+        }
+
+        // Sanity check for word object
+        if (!stats.words) stats.words = {};
+        if (!stats.words[targetWord]) stats.words[targetWord] = { got: 0, seen: 0 };
+
+        stats.total++;
+        stats.words[targetWord].seen++;
+        if (win) {
+            stats.wins++;
+            stats.words[targetWord].got++;
+        }
+        
+        localStorage.setItem('thaiStats', JSON.stringify(stats));
+
+        // Stats Calcs
+        const wordAccuracy = Math.round((stats.words[targetWord].got / stats.words[targetWord].seen) * 100);
+        const totalWinRate = Math.round((stats.wins / stats.total) * 100);
+
+        title.innerText = win ? "YOU WIN" : "YOU LOSE";
+        title.style.color = win ? "var(--matcha)" : "var(--petal-pink)";
+        
+        info.innerHTML = `
+            Word: <b style="font-family:var(--thai-font); font-size:1.5rem;">${targetWord}</b><br>
+            <i>"${definition}"</i><br><br>
+            Total Win Ratio: <b>${totalWinRate}%</b><br>
+            Word Accuracy: <b>${wordAccuracy}%</b>
+        `;
+        
+        overlay.style.display = 'flex';
+    }
+
+    function updateGlobalWinRate() {
+        const saved = localStorage.getItem('thaiStats');
+        const stats = saved ? JSON.parse(saved) : { wins: 0, total: 0 };
+        const rateEl = document.getElementById('global-win-rate');
+        if (stats.total > 0) {
+            rateEl.innerText = Math.round((stats.wins / stats.total) * 100) + "%";
+        }
+    }
+
+    function toggleStats(show) {
+        const overlay = document.getElementById('stats-overlay');
+        if (!show) { overlay.style.display = 'none'; return; }
+        
+        overlay.style.display = 'flex';
+        const saved = localStorage.getItem('thaiStats');
+        const stats = saved ? JSON.parse(saved) : { words: {} };
+        const container = document.getElementById('stats-container');
+        container.innerHTML = "";
+
+        // Convert object to array and calculate percentages for sorting
+        const entries = Object.entries(stats.words || {}).map(([word, data]) => {
+            const percentage = Math.round((data.got / data.seen) * 100);
+            return { word, ...data, percentage };
+        });
+
+        // SORTING: Lowest percentage first (the ones you need to study!)
+        entries.sort((a, b) => a.percentage - b.percentage);
+
+        if (entries.length === 0) {
+            container.innerHTML = "<p style='text-align:center'>Keep playing to track stats!</p>";
+        } else {
+            entries.forEach((item) => {
+                const fails = item.seen - item.got;
+                const itemEl = document.createElement('div');
+                itemEl.className = 'stat-item';
+                
+                // Apply a soft red color if accuracy is low (< 50%)
+                const colorStyle = item.percentage < 50 ? 'color: #ff8fa3; font-weight:bold;' : '';
+                
+                itemEl.innerHTML = `
+                    <span style="font-family:var(--thai-font); font-size:1.1rem;">${item.word}</span> 
+                    <span style="${colorStyle}">${item.percentage}% Accuracy <small style="color:#aaa; font-size:0.6rem; margin-left:5px;">(${fails} Fails)</small></span>
+                `;
+                container.appendChild(itemEl);
+            });
+        }
+    }
+
+    function renderKeyboards() {
+        const setup = (id, list) => {
+            const el = document.getElementById(id);
+            el.innerHTML = "";
+            list.forEach(c => {
+                const b = document.createElement('button');
+                b.className = 'key'; b.innerText = c;
+                b.onclick = () => handleGuess(c, b);
+                el.appendChild(b);
+            });
+        };
+        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split(""));
+        setup('kb-details', "ะาิีึืุูเแโใไ็่้๊๋์ํ".split(""));
+    }
+
+    window.onload = initGame;
+</script>
+</body>
+</html>
