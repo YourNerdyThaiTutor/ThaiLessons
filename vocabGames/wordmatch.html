@@ -23,7 +23,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Thai Wordle: Full Alphabet</title>
+    <title>Thai Word Match Puzzle | Thai Learning Game</title>
     <script src="assets/vocabWords.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
     <style>
@@ -57,138 +57,60 @@
             margin: 5px 0;
         }
 
-        #board {
-            display: grid;
-            grid-template-rows: repeat(6, 1fr);
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-
-        .row {
-            display: grid;
-            grid-template-columns: repeat(5, 50px);
-            gap: 5px;
-        }
-
+        #board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; margin-bottom: 15px; }
+        .row { display: grid; grid-template-columns: repeat(5, 50px); gap: 5px; }
         .tile {
-            width: 50px; height: 50px;
-            border: 2px solid #333;
-            background: var(--cell-bg);
+            width: 50px; height: 50px; border: 2px solid #333; background: var(--cell-bg);
             display: flex; align-items: center; justify-content: center;
-            font-family: var(--thai-font);
-            font-size: 1.4rem; font-weight: bold;
-            transition: all 0.2s;
+            font-family: var(--thai-font); font-size: 1.4rem; font-weight: bold; transition: all 0.2s;
         }
+        .tile.focused { border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
-        .tile.focused { 
-            border-color: var(--neon-pink); 
-            box-shadow: 0 0 10px var(--neon-pink);
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; }
+        .btn {
+            background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink);
+            padding: 10px 20px; font-family: 'Syncopate'; font-size: 0.6rem; cursor: pointer;
+            transition: 0.2s; text-decoration: none; text-transform: uppercase;
         }
+        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 10px var(--neon-pink); }
 
-        .correct { background: var(--neon-green) !important; border-color: var(--neon-green) !important; color: #000 !important; }
-        .partial { background: var(--neon-orange) !important; border-color: var(--neon-orange) !important; color: #000 !important; }
-        .present { background: var(--neon-cyan) !important; border-color: var(--neon-cyan) !important; color: #000 !important; }
-        .absent { background: #111 !important; border-color: #222 !important; color: #444 !important; opacity: 0.5; }
-
-        #overlay {
-            display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
-            z-index: 100; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(10px);
-            padding: 20px;
-        }
-
-        #keyboard {
-            display: flex; flex-direction: column; gap: 5px;
-            width: 100%; max-width: 600px; padding: 10px;
-            background: rgba(255,255,255,0.03); border-radius: 10px;
-        }
-        .k-row { display: flex; justify-content: center; gap: 3px; width: 100%; }
+        #keyboard-area { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+        .kb-label { font-family: 'Syncopate'; font-size: 0.55rem; color: var(--neon-cyan); margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .keyboard { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
         
         .key {
-            background: var(--kbd-key); color: #fff;
-            flex: 1; height: 42px; border-radius: 4px; cursor: pointer;
-            font-family: var(--thai-font); font-size: 1rem;
-            display: flex; align-items: center; justify-content: center;
+            background: var(--kbd-key); color: #fff; height: 42px; border-radius: 4px; cursor: pointer;
+            font-family: var(--thai-font); font-size: 1rem; display: flex; align-items: center; justify-content: center;
             transition: 0.1s; user-select: none;
         }
+        .key.special { background: #555; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: bold; }
 
-        .key.special { background: #555; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: bold; flex: 1.5; }
-        .key.active-shift { background: var(--neon-pink) !important; color: #fff !important; }
+        .correct { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; }
+        .partial { background: var(--neon-orange) !important; color: #000 !important; border-color: var(--neon-orange) !important; }
+        .present { background: var(--neon-cyan) !important; color: #000 !important; border-color: var(--neon-cyan) !important; }
+        .absent { background: #111 !important; opacity: 0.5; border-color: #222 !important; }
 
-        .stats-container {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            margin: 15px 0; text-align: center;
-        }
-        .stat-val { font-size: 1.4rem; font-weight: bold; color: var(--neon-cyan); }
-        .stat-lbl { font-size: 0.6rem; font-family: 'Syncopate'; }
-
-        .controls { 
-            display: flex; 
-            gap: 15px; 
-            margin-bottom: 20px; 
-            justify-content: center;
-        }
-
-        .btn {
-            background: transparent; 
-            border: 1px solid var(--neon-pink); 
-            color: var(--neon-pink);
-            padding: 10px 20px; 
-            font-family: 'Syncopate', sans-serif; 
-            font-size: 0.6rem; 
-            cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
-            display: inline-block;
-        }
-
-        .btn:hover { 
-            background: var(--neon-pink); 
-            color: #000; 
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        #msg { font-family: 'Syncopate'; color: var(--neon-cyan); font-size: 0.6rem; height: 1rem; margin-bottom: 5px;}
-
-        .action-row {
-            width: 100%;
-            max-width: 550px;
-            margin: 15px 0;
-            padding: 0 10px;
-            box-sizing: border-box;
-        }
-
+        .action-row { width: 100%; max-width: 550px; margin-top: 15px; }
         .enter-btn-large {
-            width: 100%;
-            height: 60px;
-            background: transparent;
-            border: 2px solid var(--neon-green);
-            color: var(--neon-green);
-            font-family: 'Syncopate', sans-serif;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            box-shadow: 0 0 5px rgba(57, 255, 20, 0.2);
+            width: 100%; height: 60px; background: transparent; border: 2px solid var(--neon-green);
+            color: var(--neon-green); font-family: 'Syncopate'; font-size: 1rem; border-radius: 10px; cursor: pointer;
+            transition: 0.2s;
         }
+        .enter-btn-large:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 15px var(--neon-green); }
 
-        .enter-btn-large:hover {
-            background: var(--neon-green);
-            color: #000;
-            box-shadow: 0 0 20px var(--neon-green);
+        #overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px); padding: 20px; text-align: center;
         }
-
-        .enter-btn-large:active {
-            transform: scale(0.98);
-        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; width: 100%; max-width: 300px; }
+        .stat-box { font-family: 'Syncopate'; font-size: 0.7rem; color: var(--neon-cyan); }
+        .stat-num { display: block; font-size: 1.5rem; color: white; margin-top: 5px; }
 
         @media (max-width: 480px) {
             .row { grid-template-columns: repeat(5, 17vw); }
             .tile { width: 17vw; height: 17vw; }
+            .keyboard { grid-template-columns: repeat(7, 1fr); }
             .key { height: 38px; font-size: 0.85rem; }
         }
     </style>
@@ -196,35 +118,37 @@
 <body>
 
     <div id="overlay">
-        <h2 id="result-title">RESULT</h2>
-        <p>Word: <span id="result-word" style="color:white;"></span></p>
-        <div class="stats-container">
-            <div><span class="stat-val" id="stat-win-pct">0%</span><div class="stat-lbl">Win Rate</div></div>
-            <div><span class="stat-val" id="stat-avg-guesses">0</span><div class="stat-lbl">Avg Guesses</div></div>
-        </div>
+        <h2 id="result-title" style="font-family:'Syncopate'; font-size: 2rem;">RESULT</h2>
+        <p style="margin-top:10px; font-family:'Montserrat';">The word was:<br>
+           <span id="result-word" style="color:var(--neon-pink); font-family:var(--thai-font); font-size: 2.2rem;"></span>
+        </p>
+        
+        <div id="stats-display" class="stats-grid"></div>
+
         <div style="display:flex; gap:10px;">
             <button class="btn" onclick="initGame()">PLAY AGAIN</button>
-            <button class="btn" style="border-color:#777; color:#ccc;" onclick="closeOverlay()">VIEW BOARD</button>
+            <button class="btn" style="border-color:#777; color:#ccc;" onclick="document.getElementById('overlay').style.display='none'">CLOSE</button>
         </div>
     </div>
 
-    <header>
-        <h1>THAI WORD MATCH</h1>
-    </header>
+    <header><h1>THAI WORD MATCH</h1></header>
 
     <div id="board"></div>
 
     <div class="controls">
         <button class="btn" onclick="initGame()">NEW GAME</button>
-        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn" style="text-decoration:none;">STUDY</a>
+        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn">STUDY</a>
     </div>
 
-    <div id="keyboard">
-        <div class="k-row" id="row-1"></div>
-        <div class="k-row" id="row-2"></div>
-        <div class="k-row" id="row-3"></div>
-        <div class="k-row" id="row-4"></div>
-        <div class="k-row" id="row-5"></div>
+    <div id="keyboard-area">
+        <div class="kb-section">
+            <span class="kb-label">Consonants</span>
+            <div class="keyboard" id="kb-consonants"></div>
+        </div>
+        <div class="kb-section">
+            <span class="kb-label">Vowels & Tones</span>
+            <div class="keyboard" id="kb-details"></div>
+        </div>
     </div>
 
     <div class="action-row">
@@ -233,72 +157,44 @@
 
 <script>
 let targetWord = [], targetFull = "", currentGuessParts = ["", "", "", "", ""], keyStates = {};
-let focusIndex = 0, currentRow = 0, gameOver = false, isShift = false;
+let focusIndex = 0, currentRow = 0, gameOver = false;
 
 const WORD_LENGTH = 5, MAX_GUESSES = 6;
-
-// COMPREHENSIVE LAYOUT: 44 Consonants + All Vowels + Tone Marks
-const layout = {
-    r1: { n: "ไำพะัีรนยบล", s: "โฌ็๋ษศซฉฮฺ" },
-    r2: { n: "ฟหกดเ้่าสวง", s: "ฤฆฏโฌ็๋ษศซ" }, // Shared commonalities
-    r3: { n: "ผปแอิืทมใฝ", s: "ธณฯญฐู฿ฎฑ" }, 
-    r4: { n: "คตจขชๆภถค", s: "ฃฅฬฒอฮ์่้" }, // Added rare consonants and remaining tones
-    r5: { n: "ุูึืโอะอัว", s: "ำไใเแาิีุ" }  // Dedicated vowel row for easy stacking
-};
-
-function isCombining(char) {
-    const code = char.charCodeAt(0);
-    // These are ONLY the marks that go ABOVE or BELOW the letter.
-    // We EXCLUDE 'า' (0x0E32) and 'ำ' (0x0E33) so they get their own boxes.
-    return (code >= 0x0E31 && code <= 0x0E31) || // Mai Han-Akat
-           (code >= 0x0E34 && code <= 0x0E3A) || // Upper/Lower vowels
-           (code >= 0x0E47 && code <= 0x0E4E);   // Tones and Garans
-}
-
-function handleKey(key) {
-    if (gameOver) return;
-    const msg = document.getElementById('msg');
-
-    if (key === 'Enter') {
-        if (currentGuessParts.every(p => p !== "")) submitGuess();
-        else msg.innerText = "INCOMPLETE";
-    } else if (key === 'Backspace' || key === 'Delete') {
-        let cur = currentGuessParts[focusIndex];
-        if (cur.length > 1) {
-            currentGuessParts[focusIndex] = cur.slice(0, -1);
-        } else { 
-            currentGuessParts[focusIndex] = ""; 
-            if (focusIndex > 0) focusIndex--; 
-        }
-        updateBoardVisuals();
-    } else if (/[\u0E00-\u0E7F]/.test(key)) {
-        // If it's a 'Side Vowel' (า, ะ, เ, แ, โ, ไ, ใ) or a Consonant, it's a BASE.
-        if (!isCombining(key)) {
-            currentGuessParts[focusIndex] = key;
-            if (focusIndex < WORD_LENGTH - 1) focusIndex++;
-        } else {
-            // It's a stacking mark (tone or above/below vowel), attach to existing letter.
-            if (currentGuessParts[focusIndex] !== "") {
-                currentGuessParts[focusIndex] += key;
-            }
-        }
-        updateBoardVisuals();
-    }
-}
+const consonants = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split("");
+const details = "ะาำิีึืุูเแโใไ็่้๊๋์ํ".split("");
 
 function splitThaiStrict(w) {
+    // ำ matches standalone to occupy its own tile
     return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
 }
 
+function isCombining(char) {
+    const code = char.charCodeAt(0);
+    if (char === 'ำ') return false; 
+    return (code >= 0x0E31 && code <= 0x0E31) || (code >= 0x0E34 && code <= 0x0E3A) || (code >= 0x0E47 && code <= 0x0E4E);
+}
+
 function initGame() {
-    const validWords = vocabWords.trim().split('\n').map(line => line.split(',')[0].trim())
-        .filter(word => splitThaiStrict(word).length === WORD_LENGTH);
-    targetFull = validWords[Math.floor(Math.random() * validWords.length)];
+    const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["ภาษา,Language"];
+    const validWords = list.map(line => line.split(',')[0].trim()).filter(w => splitThaiStrict(w).length === WORD_LENGTH);
+    
+    if (validWords.length === 0) {
+        targetFull = "ภาษา"; 
+    } else {
+        targetFull = validWords[Math.floor(Math.random() * validWords.length)];
+    }
+    
     targetWord = splitThaiStrict(targetFull);
-    console.log("Debug Answer: " + targetFull);
+
+    // RESTORED: Logging for debugging
+    console.log("DEBUG: Target Word -> ", targetFull);
+    console.log("DEBUG: Tile breakdown -> ", targetWord);
 
     currentRow = 0; currentGuessParts = ["", "", "", "", ""]; keyStates = {}; focusIndex = 0; gameOver = false;
-    buildBoard(); renderKeyboard(); updateFocus(); closeOverlay();
+    document.getElementById('overlay').style.display = 'none';
+    buildBoard();
+    renderKeyboards();
+    updateFocus();
 }
 
 function buildBoard() {
@@ -315,105 +211,147 @@ function buildBoard() {
     }
 }
 
-function renderKeyboard() {
-    ['r1', 'r2', 'r3', 'r4', 'r5'].forEach((r, idx) => {
-        const container = document.getElementById(`row-${idx+1}`);
-        container.innerHTML = '';
-        const chars = isShift ? layout[r].s : layout[r].n;
-
-        if (idx === 3) { // Row 4 special keys
-            const shiftBtn = document.createElement('div');
-            shiftBtn.className = `key special ${isShift ? 'active-shift' : ''}`;
-            shiftBtn.innerText = 'SHIFT';
-            shiftBtn.onclick = () => { isShift = !isShift; renderKeyboard(); };
-            container.appendChild(shiftBtn);
-        }
-
-        chars.split('').forEach(char => {
-            const key = document.createElement('div');
-            key.className = `key ${keyStates[char] || ''}`;
-            key.innerText = char;
-            key.onclick = () => handleKey(char);
-            container.appendChild(key);
+function renderKeyboards() {
+    const fill = (id, list, addDel) => {
+        const el = document.getElementById(id); el.innerHTML = '';
+        list.forEach(char => {
+            const k = document.createElement('div');
+            k.className = `key ${keyStates[char] || ''}`;
+            k.innerText = char;
+            k.onclick = () => handleKey(char);
+            el.appendChild(k);
         });
+        if(addDel) {
+            const del = document.createElement('div');
+            del.className = 'key special'; del.innerText = 'DEL';
+            del.onclick = () => handleKey('Backspace');
+            el.appendChild(del);
+        }
+    };
+    fill('kb-consonants', consonants, false);
+    fill('kb-details', details, true);
+}
 
-        if (idx === 3) {
-            const delBtn = document.createElement('div');
-            delBtn.className = 'key special';
-            delBtn.innerText = 'DEL';
-            delBtn.onclick = () => handleKey('Backspace');
-            container.appendChild(delBtn);
+function handleKey(key) {
+    if (gameOver) return;
+    if (key === 'Enter') {
+        if (currentGuessParts.every(p => p !== "")) submitGuess();
+    } else if (key === 'Backspace') {
+        let cur = currentGuessParts[focusIndex];
+        if (cur.length > 1) currentGuessParts[focusIndex] = cur.slice(0, -1);
+        else { currentGuessParts[focusIndex] = ""; if (focusIndex > 0) focusIndex--; }
+        updateBoardVisuals();
+    } else {
+        if (isCombining(key)) {
+            if (currentGuessParts[focusIndex] !== "") currentGuessParts[focusIndex] += key;
+        } else {
+            currentGuessParts[focusIndex] = key;
+            if (focusIndex < WORD_LENGTH - 1) focusIndex++;
         }
-        
-        if (idx === 4) { // Add Enter to last row
-            const entBtn = document.createElement('div');
-            entBtn.className = 'key special';
-            entBtn.innerText = 'ENTER';
-            entBtn.onclick = () => handleKey('Enter');
-            container.appendChild(entBtn);
-        }
-    });
+        updateBoardVisuals();
+    }
 }
 
 function updateBoardVisuals() {
-    for (let j = 0; j < WORD_LENGTH; j++) document.getElementById(`tile-${currentRow}-${j}`).innerText = currentGuessParts[j];
+    for (let j = 0; j < WORD_LENGTH; j++) {
+        document.getElementById(`tile-${currentRow}-${j}`).innerText = currentGuessParts[j];
+    }
     updateFocus();
 }
 
 function updateFocus() {
     document.querySelectorAll('.tile').forEach(t => t.classList.remove('focused'));
-    if (!gameOver) document.getElementById(`tile-${currentRow}-${focusIndex}`).classList.add('focused');
+    const current = document.getElementById(`tile-${currentRow}-${focusIndex}`);
+    if (current) current.classList.add('focused');
 }
 
 function submitGuess() {
     const tiles = [];
     for (let j = 0; j < WORD_LENGTH; j++) tiles.push(document.getElementById(`tile-${currentRow}-${j}`));
-    const remainingTarget = [...targetWord], guess = [...currentGuessParts];
-    const priority = { 'correct': 4, 'partial': 3, 'present': 2, 'absent': 1 };
+    
+    let remainingTarget = [...targetWord];
+    let guess = [...currentGuessParts];
 
-    function setKey(char, state) {
-        if (!keyStates[char] || priority[state] > priority[keyStates[char]]) keyStates[char] = state;
-    }
+    const setKeyState = (char, state) => {
+        const priority = { 'correct': 4, 'partial': 3, 'present': 2, 'absent': 1 };
+        if (!keyStates[char] || priority[state] > priority[keyStates[char]]) {
+            keyStates[char] = state;
+        }
+    };
 
     guess.forEach((char, i) => {
-        if (char === targetWord[i]) { tiles[i].classList.add('correct'); setKey(char, 'correct'); remainingTarget[i] = null; }
+        if (char === targetWord[i]) {
+            tiles[i].classList.add('correct');
+            char.split('').forEach(c => setKeyState(c, 'correct'));
+            remainingTarget[i] = null;
+        }
     });
 
     guess.forEach((char, i) => {
         if (tiles[i].classList.contains('correct')) return;
-        const base = char[0];
-        if (targetWord[i][0] === base) { tiles[i].classList.add('partial'); setKey(char, 'partial'); }
-        else if (remainingTarget.some(t => t && t[0] === base)) {
-            tiles[i].classList.add('present'); setKey(char, 'present');
-            remainingTarget[remainingTarget.findIndex(t => t && t[0] === base)] = null;
-        } else { tiles[i].classList.add('absent'); setKey(char, 'absent'); }
+        
+        const baseGuess = char[0];
+        const baseTargetAtPos = targetWord[i] ? targetWord[i][0] : null;
+
+        if (baseGuess === baseTargetAtPos && baseGuess !== undefined) {
+            tiles[i].classList.add('partial');
+            setKeyState(baseGuess, 'correct');
+            char.split('').slice(1).forEach(mark => {
+                if (targetWord[i].includes(mark)) setKeyState(mark, 'correct');
+                else if (targetFull.includes(mark)) setKeyState(mark, 'present');
+                else setKeyState(mark, 'absent');
+            });
+            remainingTarget[i] = null; 
+        } 
+        else {
+            let foundIdx = remainingTarget.indexOf(char);
+            if (foundIdx !== -1) {
+                tiles[i].classList.add('present');
+                char.split('').forEach(c => setKeyState(c, 'present'));
+                remainingTarget[foundIdx] = null;
+            } else {
+                tiles[i].classList.add('absent');
+                char.split('').forEach(c => {
+                    if (targetFull.includes(c)) setKeyState(c, 'present');
+                    else setKeyState(c, 'absent');
+                });
+            }
+        }
     });
 
-    renderKeyboard();
-    if (guess.join('') === targetFull) finalizeGame(true);
-    else if (currentRow === MAX_GUESSES - 1) finalizeGame(false);
+    renderKeyboards();
+    if (guess.join('') === targetFull) finalize(true);
+    else if (currentRow === MAX_GUESSES - 1) finalize(false);
     else { currentRow++; currentGuessParts = ["", "", "", "", ""]; focusIndex = 0; updateFocus(); }
 }
 
-function finalizeGame(isWin) {
+function finalize(win) {
     gameOver = true;
-    updateStats(isWin, currentRow + 1);
+    
+    let stats = JSON.parse(localStorage.getItem('thaiWordleStats')) || { wins: 0, total: 0, guessHistory: [] };
+    stats.total++;
+    if (win) { 
+        stats.wins++; 
+        stats.guessHistory.push(currentRow + 1); 
+    }
+    localStorage.setItem('thaiWordleStats', JSON.stringify(stats));
+
+    const winPct = Math.round((stats.wins / stats.total) * 100);
+    const avgGuesses = stats.guessHistory.length > 0 ? (stats.guessHistory.reduce((a, b) => a + b, 0) / stats.guessHistory.length).toFixed(1) : 0;
+
     const overlay = document.getElementById('overlay');
-    document.getElementById('result-title').innerText = isWin ? "YOU WIN" : "YOU LOST";
-    document.getElementById('result-title').style.color = isWin ? "var(--neon-green)" : "var(--neon-pink)";
+    document.getElementById('result-title').innerText = win ? "YOU WIN" : "YOU LOSE";
+    document.getElementById('result-title').style.color = win ? "var(--neon-green)" : "var(--neon-pink)";
     document.getElementById('result-word').innerText = targetFull;
+    
+    document.getElementById('stats-display').innerHTML = `
+        <div class="stat-box">WIN RATE <span class="stat-num">${winPct}%</span></div>
+        <div class="stat-box">AVG GUESSES <span class="stat-num">${avgGuesses}</span></div>
+    `;
+    
     overlay.style.display = 'flex';
 }
 
-function updateStats(isWin, guesses) {
-    let stats = JSON.parse(localStorage.getItem('thaiWordleStats')) || { wins: 0, total: 0, guessHistory: [] };
-    stats.total++; if (isWin) { stats.wins++; stats.guessHistory.push(guesses); }
-    localStorage.setItem('thaiWordleStats', JSON.stringify(stats));
-    document.getElementById('stat-win-pct').innerText = Math.round((stats.wins / stats.total) * 100) + "%";
-    document.getElementById('stat-avg-guesses').innerText = stats.guessHistory.length ? (stats.guessHistory.reduce((a,b)=>a+b,0)/stats.guessHistory.length).toFixed(1) : 0;
-}
-
-function closeOverlay() { document.getElementById('overlay').style.display = 'none'; }
 window.onload = initGame;
 </script>
 </body>
