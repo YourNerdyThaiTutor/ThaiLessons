@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-     <!-- Google tag (gtag.js) -->
-     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
-     <script>
-         window.dataLayer = window.dataLayer || [];
-         function gtag(){dataLayer.push(arguments);}
-         gtag('js', new Date());
-         gtag('config', 'G-BQ56JZ1LM4');
-     </script>
-     
-     <script 
-         async 
-         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
-         crossorigin="anonymous">
-     </script>
-     
-     <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
-     <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
-     <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
-     <meta property="og:type" content="article">
-
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BQ56JZ1LM4');
+    </script>
+    
+    <script 
+        async 
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+        crossorigin="anonymous">
+    </script>
+    
+    <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
+    <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
+    <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
+    <meta property="og:type" content="article">
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thai Hangman Vocab</title>
@@ -33,25 +33,20 @@
             --lavender: #e2afff;
             --matcha: #b7e4c7;
             --charcoal: #2d2d2d;
-            --thai-font: "Leelawadee UI", sans-serif;
+            --thai-font: "Leelawadee UI", "Tahoma", sans-serif;
         }
 
         body {
             background: var(--soft-cream);
             color: var(--charcoal);
             font-family: 'Montserrat', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0; padding: 20px;
-            box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
         }
 
         #top-nav {
             width: 100%; max-width: 850px;
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
         }
 
         .nav-btn {
@@ -60,47 +55,53 @@
             font-family: 'Syncopate'; font-size: 0.6rem; color: var(--lavender);
         }
 
-        /* UPDATED: Flexible character container to prevent collisions */
         #hangman-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 25px; /* Added breathing room */
-            min-height: 200px; 
+            display: flex; flex-direction: column; align-items: center;
+            margin-bottom: 25px; min-height: 200px; 
         }
 
         #body-grid {
-            display: grid; 
-            grid-template-columns: repeat(3, 50px);
-            grid-template-rows: repeat(3, 60px);
-            gap: 5px; 
-            font-size: 2.8rem;
-            align-items: center; 
-            justify-items: center;
+            display: grid; grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 60px); gap: 5px; font-size: 2.8rem;
+            align-items: center; justify-items: center;
         }
 
+        .part { opacity: 0; transition: opacity 0.3s ease; }
+        .part.visible { opacity: 1; }
         .grid-hat { grid-column: 2; grid-row: 1; }
-        .grid-arm-l { grid-column: 1; grid-row: 2; }
         .grid-torso { grid-column: 2; grid-row: 2; }
+        .grid-arm-l { grid-column: 1; grid-row: 2; }
         .grid-arm-r { grid-column: 3; grid-row: 2; }
         .grid-leg-l { grid-column: 1; grid-row: 3; }
         .grid-leg-r { grid-column: 3; grid-row: 3; }
-        
-        .part { opacity: 0; transition: opacity 0.3s ease; }
-        .part.visible { opacity: 1; }
+
+        #word-display {
+            display: flex; justify-content: center; flex-wrap: wrap;
+            gap: 15px; margin: 20px 0; font-family: var(--thai-font); font-size: 3.5rem;
+        }
+
+        .cluster-box {
+            position: relative; 
+            min-width: 55px; 
+            height: 100px;
+            border-bottom: 3px solid #ccc; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .thai-cluster-content {
+            position: absolute;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         #definition-box {
             background: white; padding: 15px 25px; border-radius: 20px;
             border: 2px solid var(--petal-pink); font-size: 0.8rem;
-            width: 100%; max-width: 320px; text-align: center; 
-            margin-bottom: 20px;
-            z-index: 10; /* Ensures it stays clean if things shift */
-        }
-
-        #word-display {
-            font-family: var(--thai-font); font-size: 3rem; letter-spacing: 12px;
-            margin: 10px 0; font-weight: 600;
-            text-align: center;
+            width: 100%; max-width: 320px; text-align: center; margin-bottom: 20px;
         }
 
         .kb-section { width: 100%; max-width: 850px; margin-bottom: 15px; }
@@ -109,8 +110,7 @@
         
         .key {
             background: white; border: 1px solid #eee; padding: 12px 0;
-            font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer;
-            border-radius: 8px;
+            font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
         }
         .key.used { opacity: 0.3; pointer-events: none; }
@@ -122,17 +122,14 @@
             display: none; flex-direction: column; align-items: center; justify-content: center;
             z-index: 10000 !important; text-align: center; padding: 20px;
         }
-        .overlay h2 { font-family: 'Syncopate'; font-size: 2.5rem; margin-bottom: 15px; }
+
         .stats-list { text-align: left; max-width: 400px; width: 100%; overflow-y: auto; max-height: 50vh; margin: 10px 0; }
         .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
 
-        .study-btn { border-color: var(--matcha); color: var(--matcha); transition: 0.3s; }
-        .study-btn:hover { background: var(--matcha); color: white; }
-        
         @media (max-width: 600px) {
             .keyboard { grid-template-columns: repeat(6, 1fr); }
-            #word-display { font-size: 1.8rem; letter-spacing: 4px; }
-            #body-grid { font-size: 2.2rem; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 50px); }
+            #word-display { font-size: 2.5rem; }
+            .cluster-box { min-width: 40px; height: 80px; }
         }
     </style>
 </head>
@@ -141,7 +138,7 @@
     <div id="top-nav">
         <div style="display: flex; gap: 10px;">
             <button class="nav-btn" onclick="toggleStats(true)">📊 STATS</button>
-            <button class="nav-btn study-btn" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 STUDY</button>
+            <button class="nav-btn" style="border-color:var(--matcha); color:var(--matcha);" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 STUDY</button>
         </div>
         <div style="font-family:'Syncopate'; font-size: 0.6rem; color: var(--lavender);">
             WIN RATE: <span id="global-win-rate">0%</span>
@@ -178,13 +175,13 @@
     <div id="game-overlay" class="overlay">
         <h2 id="result-title">YOU WIN</h2>
         <div id="result-info" style="margin-bottom:25px; line-height:1.6; font-size: 1rem;"></div>
-        <button onclick="initGame()" class="nav-btn" style="padding:15px 40px; font-size:0.8rem; background:var(--charcoal); color:white; border:none;">NEXT WORD</button>
+        <button onclick="initGame()" class="nav-btn" style="padding:15px 40px; background:var(--charcoal); color:white; border:none;">NEXT WORD</button>
     </div>
 
     <div id="stats-overlay" class="overlay">
-        <h2 style="font-size:1.5rem">STATS VAULT</h2>
+        <h2 style="font-size:1.5rem; font-family:'Syncopate'">STATS VAULT</h2>
         <div class="stats-list" id="stats-container"></div>
-        <button onclick="toggleStats(false)" class="nav-btn" style="margin-top:20px; border-color: var(--charcoal); color: var(--charcoal);">CLOSE</button>
+        <button onclick="toggleStats(false)" class="nav-btn" style="margin-top:20px;">CLOSE</button>
     </div>
 
 <script>
@@ -192,12 +189,7 @@
     let splitWord = [], guessedChars = [], mistakes = 0;
     let isGameOver = false;
 
-    const closet = {
-        hats: ["👒", "👑", "🎀", "🧢", "🎩"],
-        torsos: ["👚", "👗", "🥋", "👕", "🧥"],
-        arms: ["💅", "🛍️", "🤳", "🧤", "✨"],
-        legs: ["🩰", "👟", "🩴", "👠", "👖"]
-    };
+    const consonantsList = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ";
 
     function getThaiClusters(w) {
         return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
@@ -210,6 +202,8 @@
         targetWord = pair[0].trim();
         definition = pair[1] ? pair[1].trim() : "???";
         
+        console.log("Cheat Sheet:", targetWord);
+
         splitWord = getThaiClusters(targetWord);
         guessedChars = []; mistakes = 0;
         
@@ -217,49 +211,81 @@
         document.getElementById('game-overlay').style.display = 'none';
         document.getElementById('stats-overlay').style.display = 'none';
         
-        randomizeOutfit();
+        resetHangman();
         updateGlobalWinRate();
         renderWord();
         renderKeyboards();
     }
 
-    function randomizeOutfit() {
-        const slots = [closet.hats, closet.torsos, closet.arms, closet.arms, closet.legs, closet.legs];
-        slots.forEach((list, i) => {
+    function resetHangman() {
+        const parts = ["👒","👚","💅","💅","🩰","🩰"];
+        for(let i=0; i<6; i++) {
             const el = document.getElementById(`p-${i}`);
-            if(el) {
-                el.innerText = list[Math.floor(Math.random() * list.length)];
-                el.classList.remove('visible');
-            }
-        });
+            el.innerText = parts[i];
+            el.classList.remove('visible');
+        }
     }
 
     function renderWord() {
-        const display = splitWord.map(cluster => {
-            let revealed = false;
-            guessedChars.forEach(guess => {
-                if (cluster.includes(guess)) revealed = true;
-            });
-            return revealed ? cluster : "_";
-        }).join("");
+        const display = document.getElementById('word-display');
+        display.innerHTML = "";
+        let allWon = true;
 
-        document.getElementById('word-display').innerHTML = display;
-        if (!display.includes("_") && !isGameOver && targetWord !== "") {
-            end(true);
-        }
+        splitWord.forEach(cluster => {
+            const box = document.createElement('div');
+            box.className = 'cluster-box';
+
+            const chars = cluster.split("");
+            const base = chars.find(c => consonantsList.includes(c));
+            const baseGuessed = base && guessedChars.includes(base);
+            
+            // Build the visible string for this specific cluster
+            let visibleClusterString = "";
+            let anyPartGuessed = false;
+
+            chars.forEach(char => {
+                if (guessedChars.includes(char)) {
+                    anyPartGuessed = true;
+                } else {
+                    allWon = false;
+                }
+            });
+
+            if (anyPartGuessed) {
+                const content = document.createElement('span');
+                content.className = 'thai-cluster-content';
+                
+                // Construct logic: 
+                // 1. Start with base (consonant) or dotted circle
+                let clusterBuild = baseGuessed ? base : "\u25CC";
+                
+                // 2. Add only the guessed marks/vowels to that base
+                chars.forEach(char => {
+                    if (char !== base && guessedChars.includes(char)) {
+                        clusterBuild += char;
+                    }
+                });
+
+                content.innerText = clusterBuild;
+                box.appendChild(content);
+            }
+
+            display.appendChild(box);
+        });
+
+        if (allWon && !isGameOver && targetWord !== "") end(true);
     }
 
     function handleGuess(char, btn) {
         if (isGameOver || guessedChars.includes(char)) return;
-        
         guessedChars.push(char);
         btn.classList.add('used');
 
         if (targetWord.includes(char)) {
             renderWord();
         } else {
-            const part = document.getElementById(`p-${mistakes}`);
-            if(part) part.classList.add('visible');
+            const el = document.getElementById(`p-${mistakes}`);
+            if(el) el.classList.add('visible');
             mistakes++;
             btn.classList.add('wrong');
             if (mistakes >= 6) end(false);
@@ -272,45 +298,24 @@
         const title = document.getElementById('result-title');
         const info = document.getElementById('result-info');
 
-        let stats;
-        try {
-            const saved = localStorage.getItem('thaiStats');
-            stats = saved ? JSON.parse(saved) : { wins: 0, total: 0, words: {} };
-        } catch(e) {
-            stats = { wins: 0, total: 0, words: {} };
-        }
-
+        let stats = JSON.parse(localStorage.getItem('thaiStats')) || { wins: 0, total: 0, words: {} };
         if (!stats.words) stats.words = {};
         if (!stats.words[targetWord]) stats.words[targetWord] = { got: 0, seen: 0 };
 
         stats.total++;
         stats.words[targetWord].seen++;
-        if (win) {
-            stats.wins++;
-            stats.words[targetWord].got++;
-        }
-        
+        if (win) { stats.wins++; stats.words[targetWord].got++; }
         localStorage.setItem('thaiStats', JSON.stringify(stats));
-
-        const wordAccuracy = Math.round((stats.words[targetWord].got / stats.words[targetWord].seen) * 100);
-        const totalWinRate = Math.round((stats.wins / stats.total) * 100);
 
         title.innerText = win ? "YOU WIN" : "YOU LOSE";
         title.style.color = win ? "var(--matcha)" : "var(--petal-pink)";
-        
-        info.innerHTML = `
-            Word: <b style="font-family:var(--thai-font); font-size:1.5rem;">${targetWord}</b><br>
-            <i>"${definition}"</i><br><br>
-            Total Win Ratio: <b>${totalWinRate}%</b><br>
-            Word Accuracy: <b>${wordAccuracy}%</b>
-        `;
-        
+        info.innerHTML = `Word: <b style="font-family:var(--thai-font); font-size:1.5rem;">${targetWord}</b><br><i>"${definition}"</i>`;
         overlay.style.display = 'flex';
+        updateGlobalWinRate();
     }
 
     function updateGlobalWinRate() {
-        const saved = localStorage.getItem('thaiStats');
-        const stats = saved ? JSON.parse(saved) : { wins: 0, total: 0 };
+        const stats = JSON.parse(localStorage.getItem('thaiStats')) || { wins: 0, total: 0 };
         const rateEl = document.getElementById('global-win-rate');
         if (stats.total > 0) {
             rateEl.innerText = Math.round((stats.wins / stats.total) * 100) + "%";
@@ -320,50 +325,38 @@
     function toggleStats(show) {
         const overlay = document.getElementById('stats-overlay');
         if (!show) { overlay.style.display = 'none'; return; }
-        
         overlay.style.display = 'flex';
-        const saved = localStorage.getItem('thaiStats');
-        const stats = saved ? JSON.parse(saved) : { words: {} };
+        
+        const stats = JSON.parse(localStorage.getItem('thaiStats')) || { words: {} };
         const container = document.getElementById('stats-container');
         container.innerHTML = "";
+        
+        const sorted = Object.entries(stats.words || {}).map(([word, data]) => {
+            return { word, ...data, acc: Math.round((data.got / data.seen) * 100) };
+        }).sort((a, b) => a.acc - b.acc);
 
-        const entries = Object.entries(stats.words || {}).map(([word, data]) => {
-            const percentage = Math.round((data.got / data.seen) * 100);
-            return { word, ...data, percentage };
+        sorted.forEach(item => {
+            const el = document.createElement('div');
+            el.className = 'stat-item';
+            el.innerHTML = `<span style="font-family:var(--thai-font)">${item.word}</span> <span>${item.acc}% Accuracy</span>`;
+            container.appendChild(el);
         });
-
-        entries.sort((a, b) => a.percentage - b.percentage);
-
-        if (entries.length === 0) {
-            container.innerHTML = "<p style='text-align:center'>Keep playing to track stats!</p>";
-        } else {
-            entries.forEach((item) => {
-                const fails = item.seen - item.got;
-                const itemEl = document.createElement('div');
-                itemEl.className = 'stat-item';
-                const colorStyle = item.percentage < 50 ? 'color: #ff8fa3; font-weight:bold;' : '';
-                itemEl.innerHTML = `
-                    <span style="font-family:var(--thai-font); font-size:1.1rem;">${item.word}</span> 
-                    <span style="${colorStyle}">${item.percentage}% Accuracy <small style="color:#aaa; font-size:0.6rem; margin-left:5px;">(${fails} Fails)</small></span>
-                `;
-                container.appendChild(itemEl);
-            });
-        }
     }
 
     function renderKeyboards() {
         const setup = (id, list) => {
             const el = document.getElementById(id);
             el.innerHTML = "";
-            list.forEach(c => {
+            list.split("").forEach(c => {
                 const b = document.createElement('button');
                 b.className = 'key'; b.innerText = c;
                 b.onclick = () => handleGuess(c, b);
                 el.appendChild(b);
             });
         };
-        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split(""));
-        setup('kb-details', "ะาำิีึืุูเแโใไ็่้๊๋์ํ".split(""));
+        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ");
+        // Fixed duplicates in the vowel/tone string
+        setup('kb-details', "ะาำิีึืเแโใไ็่้๊๋์ํัุู");
     }
 
     window.onload = initGame;
