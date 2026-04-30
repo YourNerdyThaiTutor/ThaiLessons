@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-BQ56JZ1LM4');
-    </script>
-    
-    <script 
-        async 
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
-        crossorigin="anonymous">
-    </script>
-    
-    <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
-    <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
-    <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
-    <meta property="og:type" content="article">
+     <!-- Google tag (gtag.js) -->
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+     <script>
+         window.dataLayer = window.dataLayer || [];
+         function gtag(){dataLayer.push(arguments);}
+         gtag('js', new Date());
+         gtag('config', 'G-BQ56JZ1LM4');
+     </script>
+     
+     <script 
+         async 
+         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+         crossorigin="anonymous">
+     </script>
+     
+     <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
+     <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
+     <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
+     <meta property="og:type" content="article">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,6 +45,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0; padding: 20px;
+            box-sizing: border-box;
         }
 
         #top-nav {
@@ -59,38 +60,58 @@
             font-family: 'Syncopate'; font-size: 0.6rem; color: var(--lavender);
         }
 
-        #body-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            gap: 10px; width: 150px; height: 180px; margin-bottom: 15px; font-size: 2.8rem;
-            align-items: center; justify-items: center;
+        /* UPDATED: Flexible character container to prevent collisions */
+        #hangman-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 25px; /* Added breathing room */
+            min-height: 200px; 
         }
-        .grid-hat { grid-column: 2; }
-        .grid-arm-l { grid-column: 1; }
-        .grid-torso { grid-column: 2; }
-        .grid-arm-r { grid-column: 3; }
-        .grid-leg-l { grid-column: 1; }
-        .grid-leg-r { grid-column: 3; }
+
+        #body-grid {
+            display: grid; 
+            grid-template-columns: repeat(3, 50px);
+            grid-template-rows: repeat(3, 60px);
+            gap: 5px; 
+            font-size: 2.8rem;
+            align-items: center; 
+            justify-items: center;
+        }
+
+        .grid-hat { grid-column: 2; grid-row: 1; }
+        .grid-arm-l { grid-column: 1; grid-row: 2; }
+        .grid-torso { grid-column: 2; grid-row: 2; }
+        .grid-arm-r { grid-column: 3; grid-row: 2; }
+        .grid-leg-l { grid-column: 1; grid-row: 3; }
+        .grid-leg-r { grid-column: 3; grid-row: 3; }
+        
         .part { opacity: 0; transition: opacity 0.3s ease; }
         .part.visible { opacity: 1; }
 
         #definition-box {
             background: white; padding: 15px 25px; border-radius: 20px;
             border: 2px solid var(--petal-pink); font-size: 0.8rem;
-            max-width: 320px; text-align: center; margin-bottom: 10px;
+            width: 100%; max-width: 320px; text-align: center; 
+            margin-bottom: 20px;
+            z-index: 10; /* Ensures it stays clean if things shift */
         }
 
         #word-display {
             font-family: var(--thai-font); font-size: 3rem; letter-spacing: 12px;
             margin: 10px 0; font-weight: 600;
+            text-align: center;
         }
 
         .kb-section { width: 100%; max-width: 850px; margin-bottom: 15px; }
         .kb-label { font-family: 'Syncopate'; font-size: 0.55rem; color: var(--lavender); margin-bottom: 5px; display: block; }
         .keyboard { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; }
+        
         .key {
             background: white; border: 1px solid #eee; padding: 12px 0;
             font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer;
             border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
         }
         .key.used { opacity: 0.3; pointer-events: none; }
         .key.wrong { background: var(--lavender); color: white; }
@@ -111,6 +132,7 @@
         @media (max-width: 600px) {
             .keyboard { grid-template-columns: repeat(6, 1fr); }
             #word-display { font-size: 1.8rem; letter-spacing: 4px; }
+            #body-grid { font-size: 2.2rem; grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 50px); }
         }
     </style>
 </head>
@@ -126,13 +148,15 @@
         </div>
     </div>
 
-    <div id="body-grid">
-        <span class="part grid-hat" id="p-0"></span>
-        <span class="part grid-torso" id="p-1"></span>
-        <span class="part grid-arm-l" id="p-2"></span>
-        <span class="part grid-arm-r" id="p-3"></span>
-        <span class="part grid-leg-l" id="p-4"></span>
-        <span class="part grid-leg-r" id="p-5"></span>
+    <div id="hangman-container">
+        <div id="body-grid">
+            <span class="part grid-hat" id="p-0"></span>
+            <span class="part grid-torso" id="p-1"></span>
+            <span class="part grid-arm-l" id="p-2"></span>
+            <span class="part grid-arm-r" id="p-3"></span>
+            <span class="part grid-leg-l" id="p-4"></span>
+            <span class="part grid-leg-r" id="p-5"></span>
+        </div>
     </div>
 
     <div id="definition-box">
@@ -175,7 +199,6 @@
         legs: ["🩰", "👟", "🩴", "👠", "👖"]
     };
 
-    // FIX: Updated Regex to split clusters correctly, treating ำ as a separate unit if needed
     function getThaiClusters(w) {
         return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
     }
@@ -187,7 +210,6 @@
         targetWord = pair[0].trim();
         definition = pair[1] ? pair[1].trim() : "???";
         
-        // FIX: Use cluster logic for splitting the target word
         splitWord = getThaiClusters(targetWord);
         guessedChars = []; mistakes = 0;
         
@@ -213,9 +235,7 @@
     }
 
     function renderWord() {
-        // FIX: Loop through clusters. Check if the cluster contains the guessed character.
         const display = splitWord.map(cluster => {
-            // Check if any character in this cluster has been guessed
             let revealed = false;
             guessedChars.forEach(guess => {
                 if (cluster.includes(guess)) revealed = true;
@@ -235,7 +255,6 @@
         guessedChars.push(char);
         btn.classList.add('used');
 
-        // FIX: Use includes on the targetWord string to handle single characters
         if (targetWord.includes(char)) {
             renderWord();
         } else {
@@ -344,8 +363,6 @@
             });
         };
         setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split(""));
-        
-        // FIX: Added ำ to the Vowels & Tones list
         setup('kb-details', "ะาำิีึืุูเแโใไ็่้๊๋์ํ".split(""));
     }
 
