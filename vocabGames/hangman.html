@@ -95,7 +95,6 @@
         .key.used { opacity: 0.3; pointer-events: none; }
         .key.wrong { background: var(--lavender); color: white; }
 
-        /* REINFORCED OVERLAYS */
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(252, 250, 242, 0.99) !important;
@@ -106,15 +105,8 @@
         .stats-list { text-align: left; max-width: 400px; width: 100%; overflow-y: auto; max-height: 50vh; margin: 10px 0; }
         .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
 
-        .study-btn {
-            border-color: var(--matcha);
-            color: var(--matcha);
-            transition: 0.3s;
-        }
-        .study-btn:hover {
-            background: var(--matcha);
-            color: white;
-        }
+        .study-btn { border-color: var(--matcha); color: var(--matcha); transition: 0.3s; }
+        .study-btn:hover { background: var(--matcha); color: white; }
         
         @media (max-width: 600px) {
             .keyboard { grid-template-columns: repeat(6, 1fr); }
@@ -183,6 +175,11 @@
         legs: ["🩰", "👟", "🩴", "👠", "👖"]
     };
 
+    // FIX: Updated Regex to split clusters correctly, treating ำ as a separate unit if needed
+    function getThaiClusters(w) {
+        return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+    }
+
     function initGame() {
         isGameOver = false;
         const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["ภาษา,Language"];
@@ -190,7 +187,8 @@
         targetWord = pair[0].trim();
         definition = pair[1] ? pair[1].trim() : "???";
         
-        splitWord = targetWord.split("");
+        // FIX: Use cluster logic for splitting the target word
+        splitWord = getThaiClusters(targetWord);
         guessedChars = []; mistakes = 0;
         
         document.getElementById('word-def').innerText = definition;
@@ -215,7 +213,16 @@
     }
 
     function renderWord() {
-        const display = splitWord.map(char => guessedChars.includes(char) ? char : "_").join("");
+        // FIX: Loop through clusters. Check if the cluster contains the guessed character.
+        const display = splitWord.map(cluster => {
+            // Check if any character in this cluster has been guessed
+            let revealed = false;
+            guessedChars.forEach(guess => {
+                if (cluster.includes(guess)) revealed = true;
+            });
+            return revealed ? cluster : "_";
+        }).join("");
+
         document.getElementById('word-display').innerHTML = display;
         if (!display.includes("_") && !isGameOver && targetWord !== "") {
             end(true);
@@ -228,6 +235,7 @@
         guessedChars.push(char);
         btn.classList.add('used');
 
+        // FIX: Use includes on the targetWord string to handle single characters
         if (targetWord.includes(char)) {
             renderWord();
         } else {
@@ -245,7 +253,6 @@
         const title = document.getElementById('result-title');
         const info = document.getElementById('result-info');
 
-        // Bulletproof Storage Initialization
         let stats;
         try {
             const saved = localStorage.getItem('thaiStats');
@@ -254,7 +261,6 @@
             stats = { wins: 0, total: 0, words: {} };
         }
 
-        // Sanity check for word object
         if (!stats.words) stats.words = {};
         if (!stats.words[targetWord]) stats.words[targetWord] = { got: 0, seen: 0 };
 
@@ -267,7 +273,6 @@
         
         localStorage.setItem('thaiStats', JSON.stringify(stats));
 
-        // Stats Calcs
         const wordAccuracy = Math.round((stats.words[targetWord].got / stats.words[targetWord].seen) * 100);
         const totalWinRate = Math.round((stats.wins / stats.total) * 100);
 
@@ -303,13 +308,11 @@
         const container = document.getElementById('stats-container');
         container.innerHTML = "";
 
-        // Convert object to array and calculate percentages for sorting
         const entries = Object.entries(stats.words || {}).map(([word, data]) => {
             const percentage = Math.round((data.got / data.seen) * 100);
             return { word, ...data, percentage };
         });
 
-        // SORTING: Lowest percentage first (the ones you need to study!)
         entries.sort((a, b) => a.percentage - b.percentage);
 
         if (entries.length === 0) {
@@ -319,10 +322,7 @@
                 const fails = item.seen - item.got;
                 const itemEl = document.createElement('div');
                 itemEl.className = 'stat-item';
-                
-                // Apply a soft red color if accuracy is low (< 50%)
                 const colorStyle = item.percentage < 50 ? 'color: #ff8fa3; font-weight:bold;' : '';
-                
                 itemEl.innerHTML = `
                     <span style="font-family:var(--thai-font); font-size:1.1rem;">${item.word}</span> 
                     <span style="${colorStyle}">${item.percentage}% Accuracy <small style="color:#aaa; font-size:0.6rem; margin-left:5px;">(${fails} Fails)</small></span>
@@ -344,7 +344,9 @@
             });
         };
         setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split(""));
-        setup('kb-details', "ะาิีึืุูเแโใไ็่้๊๋์ํ".split(""));
+        
+        // FIX: Added ำ to the Vowels & Tones list
+        setup('kb-details', "ะาำิีึืุูเแโใไ็่้๊๋์ํ".split(""));
     }
 
     window.onload = initGame;
