@@ -112,7 +112,9 @@
             background: white; border: 1px solid #eee; padding: 12px 0;
             font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer; border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
+            transition: 0.1s;
         }
+        .key:active { transform: scale(0.95); }
         .key.used { opacity: 0.3; pointer-events: none; }
         .key.wrong { background: var(--lavender); color: white; }
 
@@ -190,6 +192,17 @@
     let isGameOver = false;
 
     const consonantsList = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ";
+    // Standalone vowels that don't need a dotted circle base
+    const standaloneVowels = "ะาำเแโใไ";
+
+    const emojiOutfits = [
+        ["👒","👚","💅","💅","🩰","🩰"],
+        ["🎓","🧥","🧤","🧤","👞","👞"],
+        ["🧢","👕","💪","💪","👟","👟"],
+        ["👑","👘","💍","💍","👠","👠"],
+        ["🤠","🧥","🔫","🔫","👢","👢"],
+        ["🪖","👕","🎖️","🎖️","🥾","🥾"]
+    ];
 
     function getThaiClusters(w) {
         return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
@@ -211,17 +224,17 @@
         document.getElementById('game-overlay').style.display = 'none';
         document.getElementById('stats-overlay').style.display = 'none';
         
-        resetHangman();
+        randomizeOutfit();
         updateGlobalWinRate();
         renderWord();
         renderKeyboards();
     }
 
-    function resetHangman() {
-        const parts = ["👒","👚","💅","💅","🩰","🩰"];
+    function randomizeOutfit() {
+        const set = emojiOutfits[Math.floor(Math.random() * emojiOutfits.length)];
         for(let i=0; i<6; i++) {
             const el = document.getElementById(`p-${i}`);
-            el.innerText = parts[i];
+            el.innerText = set[i];
             el.classList.remove('visible');
         }
     }
@@ -239,32 +252,43 @@
             const base = chars.find(c => consonantsList.includes(c));
             const baseGuessed = base && guessedChars.includes(base);
             
-            // Build the visible string for this specific cluster
-            let visibleClusterString = "";
             let anyPartGuessed = false;
-
             chars.forEach(char => {
-                if (guessedChars.includes(char)) {
-                    anyPartGuessed = true;
-                } else {
-                    allWon = false;
-                }
+                if (guessedChars.includes(char)) anyPartGuessed = true;
+                else allWon = false;
             });
 
             if (anyPartGuessed) {
                 const content = document.createElement('span');
                 content.className = 'thai-cluster-content';
                 
-                // Construct logic: 
-                // 1. Start with base (consonant) or dotted circle
-                let clusterBuild = baseGuessed ? base : "\u25CC";
-                
-                // 2. Add only the guessed marks/vowels to that base
-                chars.forEach(char => {
-                    if (char !== base && guessedChars.includes(char)) {
-                        clusterBuild += char;
-                    }
-                });
+                let clusterBuild = "";
+
+                // Logic for rendering the cluster
+                if (baseGuessed) {
+                    // Start with base
+                    clusterBuild = base;
+                    // Add only guessed marks
+                    chars.forEach(char => {
+                        if (char !== base && guessedChars.includes(char)) {
+                            clusterBuild += char;
+                        }
+                    });
+                } else {
+                    // Consonant not guessed yet, but some vowels are
+                    chars.forEach(char => {
+                        if (guessedChars.includes(char)) {
+                            if (standaloneVowels.includes(char)) {
+                                // Just show the vowel normally
+                                clusterBuild += char;
+                            } else {
+                                // Combining mark needs a circle base if no consonant exists
+                                if (!clusterBuild.includes("\u25CC")) clusterBuild += "\u25CC";
+                                clusterBuild += char;
+                            }
+                        }
+                    });
+                }
 
                 content.innerText = clusterBuild;
                 box.appendChild(content);
@@ -355,7 +379,6 @@
             });
         };
         setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ");
-        // Fixed duplicates in the vowel/tone string
         setup('kb-details', "ะาำิีึืเแโใไ็่้๊๋์ํัุู");
     }
 
