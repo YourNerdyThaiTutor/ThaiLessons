@@ -18,7 +18,7 @@
     
     <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
     <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
-    <meta property="og:image" content="">
+    <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
     <meta property="og:type" content="article">
 
     <meta charset="UTF-8">
@@ -106,6 +106,16 @@
         .stats-list { text-align: left; max-width: 400px; width: 100%; overflow-y: auto; max-height: 50vh; margin: 10px 0; }
         .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
 
+        .study-btn {
+            border-color: var(--matcha);
+            color: var(--matcha);
+            transition: 0.3s;
+        }
+        .study-btn:hover {
+            background: var(--matcha);
+            color: white;
+        }
+        
         @media (max-width: 600px) {
             .keyboard { grid-template-columns: repeat(6, 1fr); }
             #word-display { font-size: 1.8rem; letter-spacing: 4px; }
@@ -115,8 +125,13 @@
 <body>
 
     <div id="top-nav">
-        <button class="nav-btn" onclick="toggleStats(true)">📊 VIEW STATS</button>
-        <div style="font-family:'Syncopate'; font-size: 0.6rem; color: var(--lavender);">WIN RATE: <span id="global-win-rate">0%</span></div>
+        <div style="display: flex; gap: 10px;">
+            <button class="nav-btn" onclick="toggleStats(true)">📊 STATS</button>
+            <button class="nav-btn study-btn" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 STUDY</button>
+        </div>
+        <div style="font-family:'Syncopate'; font-size: 0.6rem; color: var(--lavender);">
+            WIN RATE: <span id="global-win-rate">0%</span>
+        </div>
     </div>
 
     <div id="body-grid">
@@ -140,7 +155,7 @@
         <div class="keyboard" id="kb-consonants"></div>
     </div>
     <div class="kb-section">
-        <span class="kb-label">Details</span>
+        <span class="kb-label">Vowels & Tones</span>
         <div class="keyboard" id="kb-details"></div>
     </div>
 
