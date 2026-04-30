@@ -9,357 +9,349 @@
         gtag('js', new Date());
         gtag('config', 'G-BQ56JZ1LM4');
     </script>
-    
+
     <script 
         async 
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
         crossorigin="anonymous">
     </script>
-    
-    <meta property="og:title" content="Thai Hangman Vocab | Thai Learning Game">
-    <meta property="og:description" content="A Hangman Game For Learning Thai Vocab">
-    <meta property="og:image" content="https://i.imgur.com/aMHsbtG.png">
+
+    <meta property="og:title" content="Thai Wordle Puzzle | Thai Learning Game">
+    <meta property="og:description" content="A Thai Worlde Puzzle For Learning Thai Vocab">
+    <meta property="og:image" content="https://i.imgur.com/AK3LREP.png">
     <meta property="og:type" content="article">
-    
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thai Hangman Vocab</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Thai Word Match Puzzle | Thai Learning Game</title>
     <script src="assets/vocabWords.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@200;400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --soft-cream: #fcfaf2;
-            --petal-pink: #ffc2d1;
-            --lavender: #e2afff;
-            --matcha: #b7e4c7;
-            --charcoal: #2d2d2d;
-            --thai-font: "Leelawadee UI", "Tahoma", sans-serif;
+            --bg-noir: #030305;
+            --cell-bg: #1c2025;
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #39ff14;
+            --neon-orange: #ff9900;
+            --text-main: #fff;
+            --kbd-key: #3a3a3c;
+            --thai-font: "Leelawadee UI", "Tahoma", "Thonburi", sans-serif;
         }
 
-        body {
-            background: var(--soft-cream);
-            color: var(--charcoal);
-            font-family: 'Montserrat', sans-serif;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box;
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: var(--bg-noir);
+            color: var(--text-main);
+            display: flex; flex-direction: column; align-items: center; 
+            padding: 10px; min-height: 100vh; margin: 0;
+            box-sizing: border-box;
+            overflow-x: hidden;
         }
 
-        #top-nav {
-            width: 100%; max-width: 850px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+        header { text-align: center; margin-bottom: 5px; }
+        h1 { 
+            font-family: 'Syncopate', sans-serif; font-size: 1.2rem;
+            background: linear-gradient(to bottom, #fff 60%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin: 5px 0;
         }
 
-        .nav-btn {
-            background: white; border: 1px solid var(--lavender);
-            padding: 8px 15px; border-radius: 50px; cursor: pointer;
-            font-family: 'Syncopate'; font-size: 0.6rem; color: var(--lavender);
+        #board { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; margin-bottom: 15px; }
+        .row { display: grid; grid-template-columns: repeat(5, 50px); gap: 5px; }
+        .tile {
+            width: 50px; height: 50px; border: 2px solid #333; background: var(--cell-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--thai-font); font-size: 1.4rem; font-weight: bold; transition: all 0.2s;
         }
+        .tile.focused { border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
 
-        #hangman-container {
-            display: flex; flex-direction: column; align-items: center;
-            margin-bottom: 25px; min-height: 200px; 
+        .controls { display: flex; gap: 15px; margin-bottom: 20px; justify-content: center; }
+        .btn {
+            background: transparent; border: 1px solid var(--neon-pink); color: var(--neon-pink);
+            padding: 10px 20px; font-family: 'Syncopate'; font-size: 0.6rem; cursor: pointer;
+            transition: 0.2s; text-decoration: none; text-transform: uppercase;
         }
+        .btn:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 10px var(--neon-pink); }
 
-        #body-grid {
-            display: grid; grid-template-columns: repeat(3, 50px);
-            grid-template-rows: repeat(3, 60px); gap: 5px; font-size: 2.8rem;
-            align-items: center; justify-items: center;
-        }
-
-        .part { opacity: 0; transition: opacity 0.3s ease; }
-        .part.visible { opacity: 1; }
-        .grid-hat { grid-column: 2; grid-row: 1; }
-        .grid-torso { grid-column: 2; grid-row: 2; }
-        .grid-arm-l { grid-column: 1; grid-row: 2; }
-        .grid-arm-r { grid-column: 3; grid-row: 2; }
-        .grid-leg-l { grid-column: 1; grid-row: 3; }
-        .grid-leg-r { grid-column: 3; grid-row: 3; }
-
-        #word-display {
-            display: flex; justify-content: center; flex-wrap: wrap;
-            gap: 15px; margin: 20px 0; font-family: var(--thai-font); font-size: 3.5rem;
-        }
-
-        .cluster-box {
-            position: relative; 
-            min-width: 55px; 
-            height: 100px;
-            border-bottom: 3px solid #ccc; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
-        }
-
-        .thai-cluster-content {
-            position: absolute;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #definition-box {
-            background: white; padding: 15px 25px; border-radius: 20px;
-            border: 2px solid var(--petal-pink); font-size: 0.8rem;
-            width: 100%; max-width: 320px; text-align: center; margin-bottom: 20px;
-        }
-
-        .kb-section { width: 100%; max-width: 850px; margin-bottom: 15px; }
-        .kb-label { font-family: 'Syncopate'; font-size: 0.55rem; color: var(--lavender); margin-bottom: 5px; display: block; }
-        .keyboard { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; }
+        #keyboard-area { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 12px; }
+        .kb-label { font-family: 'Syncopate'; font-size: 0.55rem; color: var(--neon-cyan); margin-bottom: 5px; display: block; letter-spacing: 1px; }
+        .keyboard { display: grid; grid-template-columns: repeat(11, 1fr); gap: 4px; }
         
         .key {
-            background: white; border: 1px solid #eee; padding: 12px 0;
-            font-family: var(--thai-font); font-size: 1.1rem; cursor: pointer; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
+            background: var(--kbd-key); color: #fff; height: 42px; border-radius: 4px; cursor: pointer;
+            font-family: var(--thai-font); font-size: 1rem; display: flex; align-items: center; justify-content: center;
+            transition: 0.1s; user-select: none;
         }
-        .key.used { opacity: 0.3; pointer-events: none; }
-        .key.wrong { background: var(--lavender); color: white; }
+        .key.special { background: #555; font-family: 'Montserrat'; font-size: 0.65rem; font-weight: bold; }
 
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(252, 250, 242, 0.99) !important;
-            display: none; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10000 !important; text-align: center; padding: 20px;
+        .correct { background: var(--neon-green) !important; color: #000 !important; border-color: var(--neon-green) !important; }
+        .partial { background: var(--neon-orange) !important; color: #000 !important; border-color: var(--neon-orange) !important; }
+        .present { background: var(--neon-cyan) !important; color: #000 !important; border-color: var(--neon-cyan) !important; }
+        .absent { background: #111 !important; opacity: 0.5; border-color: #222 !important; }
+
+        .action-row { width: 100%; max-width: 550px; margin-bottom: 15px; } /* Changed margin-top to margin-bottom */
+        .enter-btn-large {
+            width: 100%; height: 60px; background: transparent; border: 2px solid var(--neon-green);
+            color: var(--neon-green); font-family: 'Syncopate'; font-size: 1rem; border-radius: 10px; cursor: pointer;
+            transition: 0.2s;
         }
+        .enter-btn-large:hover { background: var(--neon-green); color: #000; box-shadow: 0 0 15px var(--neon-green); }
 
-        .stats-list { text-align: left; max-width: 400px; width: 100%; overflow-y: auto; max-height: 50vh; margin: 10px 0; }
-        .stat-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        #overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 100; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(10px); padding: 20px; text-align: center;
+        }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; width: 100%; max-width: 300px; }
+        .stat-box { font-family: 'Syncopate'; font-size: 0.7rem; color: var(--neon-cyan); }
+        .stat-num { display: block; font-size: 1.5rem; color: white; margin-top: 5px; }
 
-        @media (max-width: 600px) {
-            .keyboard { grid-template-columns: repeat(6, 1fr); }
-            #word-display { font-size: 2.5rem; }
-            .cluster-box { min-width: 40px; height: 80px; }
+        @media (max-width: 480px) {
+            .row { grid-template-columns: repeat(5, 17vw); }
+            .tile { width: 17vw; height: 17vw; }
+            .keyboard { grid-template-columns: repeat(7, 1fr); }
+            .key { height: 38px; font-size: 0.85rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="top-nav">
-        <div style="display: flex; gap: 10px;">
-            <button class="nav-btn" onclick="toggleStats(true)">📊 STATS</button>
-            <button class="nav-btn" style="border-color:var(--matcha); color:var(--matcha);" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 STUDY</button>
-        </div>
-        <div style="font-family:'Syncopate'; font-size: 0.6rem; color: var(--lavender);">
-            WIN RATE: <span id="global-win-rate">0%</span>
-        </div>
-    </div>
+    <div id="overlay">
+        <h2 id="result-title" style="font-family:'Syncopate'; font-size: 2rem;">RESULT</h2>
+        <p style="margin-top:10px; font-family:'Montserrat';">The word was:<br>
+           <span id="result-word" style="color:var(--neon-pink); font-family:var(--thai-font); font-size: 2.2rem;"></span>
+        </p>
+        
+        <div id="stats-display" class="stats-grid"></div>
 
-    <div id="hangman-container">
-        <div id="body-grid">
-            <span class="part grid-hat" id="p-0"></span>
-            <span class="part grid-torso" id="p-1"></span>
-            <span class="part grid-arm-l" id="p-2"></span>
-            <span class="part grid-arm-r" id="p-3"></span>
-            <span class="part grid-leg-l" id="p-4"></span>
-            <span class="part grid-leg-r" id="p-5"></span>
+        <div style="display:flex; gap:10px;">
+            <button class="btn" onclick="initGame()">PLAY AGAIN</button>
+            <button class="btn" style="border-color:#777; color:#ccc;" onclick="document.getElementById('overlay').style.display='none'">CLOSE</button>
         </div>
     </div>
 
-    <div id="definition-box">
-        <span style="font-weight:800; color:var(--petal-pink)">DEFINITION:</span><br>
-        <span id="word-def">...</span>
+    <header><h1>THAI WORD MATCH</h1></header>
+
+    <div id="board"></div>
+
+    <div class="controls">
+        <button class="btn" onclick="initGame()">NEW GAME</button>
+        <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn">STUDY</a>
     </div>
 
-    <div id="word-display"></div>
-    
-    <div class="kb-section">
-        <span class="kb-label">Consonants</span>
-        <div class="keyboard" id="kb-consonants"></div>
-    </div>
-    <div class="kb-section">
-        <span class="kb-label">Vowels & Tones</span>
-        <div class="keyboard" id="kb-details"></div>
+    <div class="action-row">
+        <button class="enter-btn-large" onclick="handleKey('Enter')">SUBMIT GUESS</button>
     </div>
 
-    <div id="game-overlay" class="overlay">
-        <h2 id="result-title">YOU WIN</h2>
-        <div id="result-info" style="margin-bottom:25px; line-height:1.6; font-size: 1rem;"></div>
-        <button onclick="initGame()" class="nav-btn" style="padding:15px 40px; background:var(--charcoal); color:white; border:none;">NEXT WORD</button>
-    </div>
-
-    <div id="stats-overlay" class="overlay">
-        <h2 style="font-size:1.5rem; font-family:'Syncopate'">STATS VAULT</h2>
-        <div class="stats-list" id="stats-container"></div>
-        <button onclick="toggleStats(false)" class="nav-btn" style="margin-top:20px;">CLOSE</button>
+    <div id="keyboard-area">
+        <div class="kb-section">
+            <span class="kb-label">Consonants</span>
+            <div class="keyboard" id="kb-consonants"></div>
+        </div>
+        <div class="kb-section">
+            <span class="kb-label">Vowels & Tones</span>
+            <div class="keyboard" id="kb-details"></div>
+        </div>
     </div>
 
 <script>
-    let targetWord = "", definition = "";
-    let splitWord = [], guessedChars = [], mistakes = 0;
-    let isGameOver = false;
+let targetWord = [], targetFull = "", currentGuessParts = ["", "", "", "", ""], keyStates = {};
+let focusIndex = 0, currentRow = 0, gameOver = false;
 
-    const consonantsList = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ";
+const WORD_LENGTH = 5, MAX_GUESSES = 6;
+const consonants = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split("");
+// UPDATED: Included Mai Han-Akat (ั)
+const details = "ะาำิีึืเแโใไ็่้๊๋์ํัุู".split("");
 
-    function getThaiClusters(w) {
-        return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+function splitThaiStrict(w) {
+    return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+}
+
+function isCombining(char) {
+    const code = char.charCodeAt(0);
+    if (char === 'ำ') return false; 
+    // UPDATED: Explicitly check for Mai Han-Akat (0x0E31) so it combines in the tile
+    return (code === 0x0E31) || (code >= 0x0E34 && code <= 0x0E3A) || (code >= 0x0E47 && code <= 0x0E4E);
+}
+
+function initGame() {
+    const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["ภาษา,Language"];
+    const validWords = list.map(line => line.split(',')[0].trim()).filter(w => splitThaiStrict(w).length === WORD_LENGTH);
+    
+    if (validWords.length === 0) {
+        targetFull = "ภาษา"; 
+    } else {
+        targetFull = validWords[Math.floor(Math.random() * validWords.length)];
     }
+    
+    targetWord = splitThaiStrict(targetFull);
 
-    function initGame() {
-        isGameOver = false;
-        const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["ภาษา,Language"];
-        const pair = list[Math.floor(Math.random() * list.length)].split(',');
-        targetWord = pair[0].trim();
-        definition = pair[1] ? pair[1].trim() : "???";
-        
-        console.log("Cheat Sheet:", targetWord);
+    console.log("DEBUG: Target Word -> ", targetFull);
 
-        splitWord = getThaiClusters(targetWord);
-        guessedChars = []; mistakes = 0;
-        
-        document.getElementById('word-def').innerText = definition;
-        document.getElementById('game-overlay').style.display = 'none';
-        document.getElementById('stats-overlay').style.display = 'none';
-        
-        resetHangman();
-        updateGlobalWinRate();
-        renderWord();
-        renderKeyboards();
-    }
+    currentRow = 0; currentGuessParts = ["", "", "", "", ""]; keyStates = {}; focusIndex = 0; gameOver = false;
+    document.getElementById('overlay').style.display = 'none';
+    buildBoard();
+    renderKeyboards();
+    updateFocus();
+}
 
-    function resetHangman() {
-        const parts = ["👒","👚","💅","💅","🩰","🩰"];
-        for(let i=0; i<6; i++) {
-            const el = document.getElementById(`p-${i}`);
-            el.innerText = parts[i];
-            el.classList.remove('visible');
+function buildBoard() {
+    const board = document.getElementById('board'); board.innerHTML = '';
+    for (let i = 0; i < MAX_GUESSES; i++) {
+        const row = document.createElement('div'); row.className = 'row';
+        for (let j = 0; j < WORD_LENGTH; j++) {
+            const tile = document.createElement('div'); tile.className = 'tile';
+            tile.id = `tile-${i}-${j}`;
+            tile.onclick = () => { if (i === currentRow && !gameOver) { focusIndex = j; updateFocus(); } };
+            row.appendChild(tile);
         }
+        board.appendChild(row);
     }
+}
 
-    function renderWord() {
-        const display = document.getElementById('word-display');
-        display.innerHTML = "";
-        let allWon = true;
-
-        splitWord.forEach(cluster => {
-            const box = document.createElement('div');
-            box.className = 'cluster-box';
-
-            const chars = cluster.split("");
-            const base = chars.find(c => consonantsList.includes(c));
-            const baseGuessed = base && guessedChars.includes(base);
-            
-            // Build the visible string for this specific cluster
-            let visibleClusterString = "";
-            let anyPartGuessed = false;
-
-            chars.forEach(char => {
-                if (guessedChars.includes(char)) {
-                    anyPartGuessed = true;
-                } else {
-                    allWon = false;
-                }
-            });
-
-            if (anyPartGuessed) {
-                const content = document.createElement('span');
-                content.className = 'thai-cluster-content';
-                
-                // Construct logic: 
-                // 1. Start with base (consonant) or dotted circle
-                let clusterBuild = baseGuessed ? base : "\u25CC";
-                
-                // 2. Add only the guessed marks/vowels to that base
-                chars.forEach(char => {
-                    if (char !== base && guessedChars.includes(char)) {
-                        clusterBuild += char;
-                    }
-                });
-
-                content.innerText = clusterBuild;
-                box.appendChild(content);
-            }
-
-            display.appendChild(box);
+function renderKeyboards() {
+    const fill = (id, list, addDel) => {
+        const el = document.getElementById(id); el.innerHTML = '';
+        list.forEach(char => {
+            const k = document.createElement('div');
+            k.className = `key ${keyStates[char] || ''}`;
+            k.innerText = char;
+            k.onclick = () => handleKey(char);
+            el.appendChild(k);
         });
+        if(addDel) {
+            const del = document.createElement('div');
+            del.className = 'key special'; del.innerText = 'DEL';
+            del.onclick = () => handleKey('Backspace');
+            el.appendChild(del);
+        }
+    };
+    fill('kb-consonants', consonants, false);
+    fill('kb-details', details, true);
+}
 
-        if (allWon && !isGameOver && targetWord !== "") end(true);
-    }
-
-    function handleGuess(char, btn) {
-        if (isGameOver || guessedChars.includes(char)) return;
-        guessedChars.push(char);
-        btn.classList.add('used');
-
-        if (targetWord.includes(char)) {
-            renderWord();
+function handleKey(key) {
+    if (gameOver) return;
+    if (key === 'Enter') {
+        if (currentGuessParts.every(p => p !== "")) submitGuess();
+    } else if (key === 'Backspace') {
+        let cur = currentGuessParts[focusIndex];
+        if (cur.length > 1) currentGuessParts[focusIndex] = cur.slice(0, -1);
+        else { currentGuessParts[focusIndex] = ""; if (focusIndex > 0) focusIndex--; }
+        updateBoardVisuals();
+    } else {
+        if (isCombining(key)) {
+            if (currentGuessParts[focusIndex] !== "") currentGuessParts[focusIndex] += key;
         } else {
-            const el = document.getElementById(`p-${mistakes}`);
-            if(el) el.classList.add('visible');
-            mistakes++;
-            btn.classList.add('wrong');
-            if (mistakes >= 6) end(false);
+            currentGuessParts[focusIndex] = key;
+            if (focusIndex < WORD_LENGTH - 1) focusIndex++;
         }
+        updateBoardVisuals();
     }
+}
 
-    function end(win) {
-        isGameOver = true;
-        const overlay = document.getElementById('game-overlay');
-        const title = document.getElementById('result-title');
-        const info = document.getElementById('result-info');
-
-        let stats = JSON.parse(localStorage.getItem('thaiStats')) || { wins: 0, total: 0, words: {} };
-        if (!stats.words) stats.words = {};
-        if (!stats.words[targetWord]) stats.words[targetWord] = { got: 0, seen: 0 };
-
-        stats.total++;
-        stats.words[targetWord].seen++;
-        if (win) { stats.wins++; stats.words[targetWord].got++; }
-        localStorage.setItem('thaiStats', JSON.stringify(stats));
-
-        title.innerText = win ? "YOU WIN" : "YOU LOSE";
-        title.style.color = win ? "var(--matcha)" : "var(--petal-pink)";
-        info.innerHTML = `Word: <b style="font-family:var(--thai-font); font-size:1.5rem;">${targetWord}</b><br><i>"${definition}"</i>`;
-        overlay.style.display = 'flex';
-        updateGlobalWinRate();
+function updateBoardVisuals() {
+    for (let j = 0; j < WORD_LENGTH; j++) {
+        document.getElementById(`tile-${currentRow}-${j}`).innerText = currentGuessParts[j];
     }
+    updateFocus();
+}
 
-    function updateGlobalWinRate() {
-        const stats = JSON.parse(localStorage.getItem('thaiStats')) || { wins: 0, total: 0 };
-        const rateEl = document.getElementById('global-win-rate');
-        if (stats.total > 0) {
-            rateEl.innerText = Math.round((stats.wins / stats.total) * 100) + "%";
+function updateFocus() {
+    document.querySelectorAll('.tile').forEach(t => t.classList.remove('focused'));
+    const current = document.getElementById(`tile-${currentRow}-${focusIndex}`);
+    if (current) current.classList.add('focused');
+}
+
+function submitGuess() {
+    const tiles = [];
+    for (let j = 0; j < WORD_LENGTH; j++) tiles.push(document.getElementById(`tile-${currentRow}-${j}`));
+    
+    let remainingTarget = [...targetWord];
+    let guess = [...currentGuessParts];
+
+    const setKeyState = (char, state) => {
+        const priority = { 'correct': 4, 'partial': 3, 'present': 2, 'absent': 1 };
+        if (!keyStates[char] || priority[state] > priority[keyStates[char]]) {
+            keyStates[char] = state;
         }
-    }
+    };
 
-    function toggleStats(show) {
-        const overlay = document.getElementById('stats-overlay');
-        if (!show) { overlay.style.display = 'none'; return; }
-        overlay.style.display = 'flex';
+    guess.forEach((char, i) => {
+        if (char === targetWord[i]) {
+            tiles[i].classList.add('correct');
+            char.split('').forEach(c => setKeyState(c, 'correct'));
+            remainingTarget[i] = null;
+        }
+    });
+
+    guess.forEach((char, i) => {
+        if (tiles[i].classList.contains('correct')) return;
         
-        const stats = JSON.parse(localStorage.getItem('thaiStats')) || { words: {} };
-        const container = document.getElementById('stats-container');
-        container.innerHTML = "";
-        
-        const sorted = Object.entries(stats.words || {}).map(([word, data]) => {
-            return { word, ...data, acc: Math.round((data.got / data.seen) * 100) };
-        }).sort((a, b) => a.acc - b.acc);
+        const baseGuess = char[0];
+        const baseTargetAtPos = targetWord[i] ? targetWord[i][0] : null;
 
-        sorted.forEach(item => {
-            const el = document.createElement('div');
-            el.className = 'stat-item';
-            el.innerHTML = `<span style="font-family:var(--thai-font)">${item.word}</span> <span>${item.acc}% Accuracy</span>`;
-            container.appendChild(el);
-        });
-    }
-
-    function renderKeyboards() {
-        const setup = (id, list) => {
-            const el = document.getElementById(id);
-            el.innerHTML = "";
-            list.split("").forEach(c => {
-                const b = document.createElement('button');
-                b.className = 'key'; b.innerText = c;
-                b.onclick = () => handleGuess(c, b);
-                el.appendChild(b);
+        if (baseGuess === baseTargetAtPos && baseGuess !== undefined) {
+            tiles[i].classList.add('partial');
+            setKeyState(baseGuess, 'correct');
+            char.split('').slice(1).forEach(mark => {
+                if (targetWord[i].includes(mark)) setKeyState(mark, 'correct');
+                else if (targetFull.includes(mark)) setKeyState(mark, 'present');
+                else setKeyState(mark, 'absent');
             });
-        };
-        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ");
-        // Fixed duplicates in the vowel/tone string
-        setup('kb-details', "ะาำิีึืเแโใไ็่้๊๋์ํัุู");
-    }
+            remainingTarget[i] = null; 
+        } 
+        else {
+            let foundIdx = remainingTarget.indexOf(char);
+            if (foundIdx !== -1) {
+                tiles[i].classList.add('present');
+                char.split('').forEach(c => setKeyState(c, 'present'));
+                remainingTarget[foundIdx] = null;
+            } else {
+                tiles[i].classList.add('absent');
+                char.split('').forEach(c => {
+                    if (targetFull.includes(c)) setKeyState(c, 'present');
+                    else setKeyState(c, 'absent');
+                });
+            }
+        }
+    });
 
-    window.onload = initGame;
+    renderKeyboards();
+    if (guess.join('') === targetFull) finalize(true);
+    else if (currentRow === MAX_GUESSES - 1) finalize(false);
+    else { currentRow++; currentGuessParts = ["", "", "", "", ""]; focusIndex = 0; updateFocus(); }
+}
+
+function finalize(win) {
+    gameOver = true;
+    
+    let stats = JSON.parse(localStorage.getItem('thaiWordleStats')) || { wins: 0, total: 0, guessHistory: [] };
+    stats.total++;
+    if (win) { 
+        stats.wins++; 
+        stats.guessHistory.push(currentRow + 1); 
+    }
+    localStorage.setItem('thaiWordleStats', JSON.stringify(stats));
+
+    const winPct = Math.round((stats.wins / stats.total) * 100);
+    const avgGuesses = stats.guessHistory.length > 0 ? (stats.guessHistory.reduce((a, b) => a + b, 0) / stats.guessHistory.length).toFixed(1) : 0;
+
+    const overlay = document.getElementById('overlay');
+    document.getElementById('result-title').innerText = win ? "YOU WIN" : "YOU LOSE";
+    document.getElementById('result-title').style.color = win ? "var(--neon-green)" : "var(--neon-pink)";
+    document.getElementById('result-word').innerText = targetFull;
+    
+    document.getElementById('stats-display').innerHTML = `
+        <div class="stat-box">WIN RATE <span class="stat-num">${winPct}%</span></div>
+        <div class="stat-box">AVG GUESSES <span class="stat-num">${avgGuesses}</span></div>
+    `;
+    
+    overlay.style.display = 'flex';
+}
+
+window.onload = initGame;
 </script>
 </body>
 </html>
