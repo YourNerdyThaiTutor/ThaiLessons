@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BQ56JZ1LM4');
+    </script>
+    
+    <script 
+        async 
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+        crossorigin="anonymous">
+    </script>
+    
+    <meta property="og:title" content="Where Do The Thai Tones Go? | Thai Learning Game">
+    <meta property="og:description" content="A Thai Learning Game For Tone Placement">
+    <meta property="og:image" content="https://i.imgur.com/higZddP.png">
+    <meta property="og:type" content="article">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Tone & Silent Recovery</title>
+    <script src="assets/vocabWords.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --wrong: #ef4444;
+            --correct: #22c55e;
+            --text: #f8fafc;
+            --thai-font: "Leelawadee UI", "Tahoma", sans-serif;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
+
+        #definition {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin: 20px 0;
+            font-weight: 400;
+        }
+
+        #word-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 40px 0;
+            font-family: var(--thai-font);
+            font-size: 3.5rem;
+        }
+
+        .char-box {
+            border-bottom: 4px solid #334155;
+            min-width: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding-bottom: 5px;
+        }
+
+        .char-box.selected {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .tone-keyboard {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .tone-key {
+            background: #334155;
+            border: none;
+            color: white;
+            padding: 15px 5px;
+            font-size: 1.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--thai-font);
+            transition: 0.2s;
+        }
+
+        .tone-key:hover { background: #475569; }
+        .tone-key:active { transform: scale(0.95); }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syncopate';
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .btn-submit { background: var(--accent); color: #0f172a; }
+        .btn-next { background: var(--correct); color: #0f172a; }
+        .btn-stats { background: transparent; color: #94a3b8; border: 1px solid #334155; margin-top: 25px; }
+
+        .remove-tone-btn {
+            grid-column: span 5;
+            font-size: 0.7rem;
+            padding: 10px;
+            font-family: 'Syncopate';
+            background: #1e293b;
+            border: 1px dashed #475569;
+            color: #94a3b8;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stats-content {
+            background: var(--card);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            border-radius: 24px;
+            padding: 30px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            min-height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>ADD THE CORRECT TONES</h1>
+        <div id="definition">...</div>
+        
+        <div id="word-display"></div>
+
+        <div class="tone-keyboard">
+            <button class="tone-key" onclick="applyTone('่')">◌่</button>
+            <button class="tone-key" onclick="applyTone('้')">◌้</button>
+            <button class="tone-key" onclick="applyTone('๊')">◌๊</button>
+            <button class="tone-key" onclick="applyTone('๋')">◌๋</button>
+            <button class="tone-key" onclick="applyTone('์')" title="Silent Mark">◌์</button>
+            <button class="tone-key remove-tone-btn" onclick="applyTone('')">Remove Mark</button>
+        </div>
+
+        <button id="action-btn" class="btn btn-submit" onclick="checkAnswer()">Submit Guess</button>
+        <div id="feedback" class="feedback"></div>
+        
+        <button class="btn btn-stats" onclick="showStats()">📊 Mastery Stats</button>
+    </div>
+
+    <div id="stats-overlay" class="overlay">
+        <div class="stats-content">
+            <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--accent); margin-bottom: 20px;">Mastery Rankings</h2>
+            <div id="stats-list"></div>
+            <button class="btn btn-submit" style="margin-top:20px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
+        </div>
+    </div>
+
+<script>
+    let originalWord = "";
+    let cleanWordParts = [];
+    let userWordParts = [];
+    let selectedIndex = 0;
+    let isReviewMode = false;
+    
+    // Pattern includes Tone marks (่้๊๋) and the Silent mark (์)
+    const marksRegex = /[่้๊๋์]/g;
+
+    function splitThai(w) {
+        // Updated regex to catch consonants and their associated vowels, 
+        // ensuring we handle independent vowels too.
+        return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+    }
+
+    function initGame() {
+        isReviewMode = false;
+        const actionBtn = document.getElementById('action-btn');
+        actionBtn.innerText = "Submit Guess";
+        actionBtn.className = "btn btn-submit";
+        actionBtn.onclick = checkAnswer;
+
+        const list = (typeof vocabWords !== 'undefined') ? vocabWords.trim().split('\n') : ["สัปดาห์,Week"];
+        const pair = list[Math.floor(Math.random() * list.length)].split(',');
+        
+        originalWord = pair[0].trim();
+        
+        // DEBUGGING LOGS
+        console.log("--- DEBUGGER ---");
+        console.log("Answer:", originalWord);
+
+        document.getElementById('definition').innerText = pair[1] ? "Definition: " + pair[1].trim() : "???";
+        document.getElementById('feedback').innerText = "";
+
+        // Strip tone and silent marks
+        const stripped = originalWord.replace(marksRegex, '');
+        cleanWordParts = splitThai(stripped);
+        userWordParts = [...cleanWordParts];
+        
+        selectedIndex = 0;
+        renderWord();
+    }
+
+    function renderWord() {
+        const display = document.getElementById('word-display');
+        display.innerHTML = "";
+        
+        userWordParts.forEach((part, i) => {
+            const span = document.createElement('div');
+            span.className = `char-box ${i === selectedIndex ? 'selected' : ''}`;
+            span.innerText = part;
+            span.onclick = () => {
+                if(!isReviewMode) {
+                    selectedIndex = i;
+                    renderWord();
+                }
+            };
+            display.appendChild(span);
+        });
+    }
+
+    function applyTone(mark) {
+        if(isReviewMode) return;
+        // Strip any existing mark from the selected cluster before applying the new one
+        let base = userWordParts[selectedIndex].replace(marksRegex, '');
+        userWordParts[selectedIndex] = base + mark;
+        renderWord();
+    }
+
+    function checkAnswer() {
+        isReviewMode = true;
+        const userAttempt = userWordParts.join('');
+        const isCorrect = userAttempt === originalWord;
+        
+        updateStats(originalWord, isCorrect);
+
+        const fb = document.getElementById('feedback');
+        const actionBtn = document.getElementById('action-btn');
+
+        if (isCorrect) {
+            fb.innerText = "EXCELLENT! Correct markers.";
+            fb.style.color = "var(--correct)";
+        } else {
+            fb.innerHTML = `INCORRECT. The answer was <span style="font-family:var(--thai-font); color:var(--accent);">${originalWord}</span>`;
+            fb.style.color = "var(--wrong)";
+        }
+
+        actionBtn.innerText = "Next Word";
+        actionBtn.className = "btn btn-next";
+        actionBtn.onclick = initGame;
+    }
+
+    function updateStats(word, correct) {
+        let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        if (!stats[word]) stats[word] = { correct: 0, total: 0 };
+        
+        stats[word].total++;
+        if (correct) stats[word].correct++;
+        
+        localStorage.setItem('thaiToneStats', JSON.stringify(stats));
+    }
+
+    function showStats() {
+        const stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        const listDiv = document.getElementById('stats-list');
+        listDiv.innerHTML = "";
+
+        const sortedStats = Object.entries(stats).map(([word, data]) => ({
+            word,
+            percent: Math.round((data.correct / data.total) * 100)
+        })).sort((a, b) => a.percent - b.percent);
+
+        if (sortedStats.length === 0) {
+            listDiv.innerHTML = "<p style='color:#64748b'>No data yet. Keep playing!</p>";
+        }
+
+        sortedStats.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+            row.innerHTML = `
+                <span style="font-family: var(--thai-font);">${item.word}</span>
+                <span style="font-weight:bold; color: ${item.percent < 60 ? 'var(--wrong)' : 'var(--correct)'}">${item.percent}%</span>
+            `;
+            listDiv.appendChild(row);
+        });
+
+        document.getElementById('stats-overlay').style.display = 'flex';
+    }
+
+    window.onload = initGame;
+</script>
+</body>
+</html>
