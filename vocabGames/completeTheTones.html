@@ -176,6 +176,13 @@
             font-size: 1rem;
             min-height: 24px;
         }
+
+        .btn-study { 
+            background: #818cf8; 
+            color: #0f172a; 
+            margin-top: 10px; 
+        }
+        .btn-study:hover { background: #6366f1; }
     </style>
 </head>
 <body>
@@ -199,6 +206,7 @@
         <div id="feedback" class="feedback"></div>
         
         <button class="btn btn-stats" onclick="showStats()">📊 Mastery Stats</button>
+        <button class="btn btn-study" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 Study Lessons</button>
     </div>
 
     <div id="stats-overlay" class="overlay">
