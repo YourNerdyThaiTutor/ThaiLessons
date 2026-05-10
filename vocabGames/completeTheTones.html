@@ -55,6 +55,7 @@
             background: var(--card);
             padding: 30px;
             border-radius: 24px;
+            box-sizing: border-box; /* Add this if it's missing */
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             text-align: center;
             margin-top: 20px;
@@ -72,10 +73,12 @@
         #word-display {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap; /* Allows letters to wrap to the next line */
             gap: 12px;
             margin: 40px 0;
             font-family: var(--thai-font);
             font-size: 3.5rem;
+            max-width: 100%; /* Ensures it doesn't push the container's width */
         }
 
         .char-box {
@@ -183,6 +186,17 @@
             margin-top: 10px; 
         }
         .btn-study:hover { background: #6366f1; }
+
+        /* Adjust letter size for smaller screens so more fit on one line */
+        @media (max-width: 480px) {
+            #word-display {
+                font-size: 2.2rem; 
+                gap: 8px;
+            }
+            .char-box {
+                min-width: 40px;
+            }
+        }
     </style>
 </head>
 <body>
