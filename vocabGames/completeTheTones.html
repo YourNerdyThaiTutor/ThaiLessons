@@ -174,10 +174,19 @@
         }
 
         .feedback {
-            margin-top: 20px;
+            margin-top: 25px;
             font-weight: 600;
-            font-size: 1rem;
-            min-height: 24px;
+            font-size: 1.6rem; /* Cleaned up the typo and bumped up the size */
+            line-height: 1.4;  /* Adds space between lines if the text wraps */
+            min-height: 40px;
+        }
+
+        /* This forces the Thai word inside the feedback to also scale up perfectly */
+        .feedback span {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 5px;
         }
 
         .btn-study { 
@@ -312,7 +321,7 @@
         const actionBtn = document.getElementById('action-btn');
 
         if (isCorrect) {
-            fb.innerText = "EXCELLENT! Correct markers.";
+            fb.innerText = "EXCELLENT! Correct tones.";
             fb.style.color = "var(--correct)";
         } else {
             fb.innerHTML = `INCORRECT. The answer was <span style="font-family:var(--thai-font); color:var(--accent);">${originalWord}</span>`;
