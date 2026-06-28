@@ -242,4 +242,147 @@ const vocabWords = `ศูนย์,0
 ข้าวซอย,Kao Soi
 ไส้อั่ว,Sai Uo
 ก๋วยเตี๋ยวเรือ,Boat Noodles
-ผัดซีอิ๊ว,Pad See Ew`
+ผัดซีอิ๊ว,Pad See Ew
+เส้นใหญ่,Wide noodles
+เส้นเล็ก,Thin noodles
+เส้นหมี่,Vermicelli
+วุ้นเส้น,Glass noodles
+บะหมี่,Egg noodle
+เกาเหลา,No noodle just soup
+น้ำ,With soup
+แห้ง,Dry
+ลูกชิ้น,Meatball
+ลูกชิ้นปลา,Fish ball
+เลือด,Blood
+เครื่องใน,Internal organs
+ตับ,Liver
+เกี๊ยว,Dumpling
+ผัก,Vegetable
+ถั่วงอก,Bean sprout
+ชาม,Bowl
+เล็ก,Small
+กลาง,Medium
+ใหญ่,Large
+พิเศษ,Special
+ด้วย,Also/too
+เอาเส้นใหญ่น้ำไม่ใส่เครื่องในครับ,I'll take wide noodles with soup no internal organs.
+เอาบะหมี่ลูกชิ้นปลาชามเล็กค่ะ,I'll take a small egg noodles with fish balls.
+เอาเส้นเล็กแห้งพิเศษ2ชามครับ,I'll take 2 bowls of special thin noodles.
+เอาเกาเหลาใส่ตับด้วยค่ะ,I'll take just the soup and add liver too
+วุ้นเส้นแห้งไม่ใส่ผัก,Dry glass noodles no vegetables.
+ห้าง,Mall (casual)
+ห้างสรรพสินค้า,Mall (formal)
+โรงหนัง,Movie theater (casual)
+โรงภาพยนตร์,Movie theater (formal)
+โรงพยาบาล,Hospital
+โรงเรียน,School
+โรงแรม,Hotel
+ร้านค้า,Retail store
+ร้านอาหาร,Food store
+ภัตตาคาร,Restaurant
+บ้าน,Home
+ห้องสมุด,Library
+โรงพัก,Police station (casual)
+สถานีตำรวจ,Police station (formal)
+สถานีดับเพลิง,Fire station
+ร้าน,Store
+ร้านซักรีด,Laundromat
+สะพาน,Bridge
+วัง,Palace
+สวนสัตว์,Zoo
+สวนสาธารณะ,Park
+ฟิตเนส,"Fitness center, gym"
+ที่จอดรถ,Parking
+สวนสนุก,Amusement park
+ทะเล,Sea
+วัด,Temple
+ตลาด,Market
+สถานีรถไฟ,Train station
+ป้ายรถเมล์,Bus stop
+ร้านกาแฟ,"Coffee shop, cafe"
+หอศิลป์,Gallery
+หอ,Dorm
+สนามบิน,Airport
+ท่าเรือ,Pier
+อุทยาน,National Park
+พิพิธภัณฑ์,Museum
+โบสถ์,Church
+ธนาคาร,Bank
+ร้านตัดผม,Barber
+สปา,Spa
+ร้านนวด,Massage parlor
+ร้านทำผม,Salon
+ร้านทำเล็บ,Nail salon
+ร้านขนม,Bakery
+ตลาดน้ำ,Floating market
+รถไฟใต้ดิน,"Subway, underground train"
+โรงพยาบาลอยู่ไหนคะ,Where is the hospital?
+ธนาคารไปทางไหนคะ,Which way is the bank?
+แถวนี้มีป้ายรถเมล์ไหมคะ,Is there a bus stop around here?
+หนัก,Heavy
+ปานกลาง,Medium
+เบา,Light
+แค่ไหน,How much
+มาก,Very
+น้อย,Little
+ปวด,Ache/pain
+เจ็บ,Hurt
+เมื่อย,Muscle tiredness
+โอ้ย,Ouch
+ไหว,Ability to handle things
+ดี,Good
+ชอบ,Like
+เอาเลย,Go ahead (do it now)
+น้ำมัน,Oil
+นวด,Massages
+นวดน้ำมัน,Oil massage
+นวดอโรม่า,Aroma massage
+นวดแผนไทย,Thai massage
+นวดเท้า,Foot massage
+อาบอบนวด,Massage ;)
+พลิกตัว,Flip your body
+กลับตัว,Turn Over
+พลิก,Flip
+ถอดรองเท้า,Take shoes off
+ใส่รองเท้า,Put shoes on
+เชิญ,Go ahead(after you)
+ตรงไหน,Where
+คอบ่าไหล่,Neck and Shoulder
+เปลี่ยน,Change
+นานเท่าไร,How long
+ชั่วโมง,Hour
+นาที,Minute
+ครึ่ง,Half
+ล้าง,Wash
+อาบน้ำ,Take a shower
+ผ้าเช็ดตัว,Body towel
+สวัสดีค่ะเชิญค่ะ,"Hello, welcome in."
+เปลี่ยนเสื้อผ้า,Change clothes.
+เปลี่ยนกางเกง,Change pants.
+นวดเท้าหนึ่งชั่วโมง,1 hour of massage
+ปวดตรงไหนคะ,Where is your pain?
+เจ็บมั้ย,Does it hurt?
+ไม่เจ็บ,It doesn't hurt.
+เจ็บนิดหน่อย,It hurts a little.
+โอ้ยเจ็บมาก,Ouch! That hurts a lot.
+นวดคอบ่าไหล่มั้ย,Do you want neck and shoulders massage?
+เอาหนักแค่ไหน,How much pressure do you want?
+เอาหนักปานกลาง,I'll take medium pressure.
+เอานวดแผนไทยชั่วโมงครึ่งค่ะ,I'll take an hour and a half Thai massage.
+เชิญพลิกตัวค่ะ,Go ahead and flip over.
+กรรไกร,scissors
+ภรรยา,wife
+บรรทัด,line (of writing)
+บรรณารักษ์,librarian
+บรรจุ,"contain, hold, pack"
+บรรยาย,narrate
+อัศจรรย์,"miraculous, marvel"
+สวรรค์,"heaven, paradise"
+มหัศจรรย์,"amazing, astonishing"
+กรรม,karma
+ธรรมชาติ,nature
+พรรคพวก,"friends, partisans"
+รัฐธรรมนูญ,constitution
+สรรพคุณ,"properties, qualities, effects"
+อุปสรรค,obstacle
+นิทรรศการ,exhibition`
