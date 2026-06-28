@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-BQ56JZ1LM4");
+        </script>
+        <meta charset="utf-8" />
+        <title>Days of the week Thai Vocab test</title>
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+            crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div class="topOfPageDiv">
+            <div class="leftSlot">
+                <a href="https://yournerdythaitutor.github.io/">Home</a>
+            </div>
+
+            <div class="centerSlot">
+                <button
+                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=Lesson33')"
+                    class="myStats">
+                    My Stats 📊
+                </button>
+            </div>
+
+            <div class="rightSlot">
+                <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html">Other Games</a>
+            </div>
+        </div>
+
+        <div id="score" class="score">Score:</div>
+        <div id="streak" class="streak">Streak:</div>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson33.html" style="float: right">Lesson</a>
+        <div id="question" class="question">
+            <!--button class="selectedOption">mid</!--button><button class = "options">single</button><button class="options">paired</button><br><br---><br />
+            <img src="images/audio%20still.png" />
+            <audio controls id="audio">
+                <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3" />
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+        <div class="helper">
+            <button id="helper" class="options">click here to hear all choices</button>
+            <audio id="helper_audio">
+                <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3" />
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+
+        <div id="answers" class="answers"></div>
+
+        <div
+            id="popupContainer"
+            style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            ">
+            <div
+                id="popupContent"
+                style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 5px;
+                ">
+                <!-- Iframe will be inserted here -->
+                <button
+                    onclick="closePopup()"
+                    style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right">
+                    &times;
+                </button>
+            </div>
+        </div>
+
+        <script src="pickTheRightOne.js"></script>
+        <script>
+            var map = {
+                "On June 5th, do you want to go to the zoo together?":	"วันที่ห้ามิถุนาไปสวนสัตว์กันมั้ย",
+                "The mall opens on September 12th.":	"ห้างเปิดวันที่สิบสองกันยาค่ะ",
+                "We have July 22nd available.":	"มีวันที่ยี่สิบสองกรกฎาว่างค่ะ",
+                "Monday, April 4th, I have to go to the hospital.":	"วันจันทร์ที่สี่เมษาต้องไปโรงพยาบาล",
+                "Have to go to the bank before March 7th.":	"ต้องไปธนาคารก่อนวันที่เจ็ดมีนา",
+                "On December 6th, he went to the police station.":	"เมื่อวันที่สิบหกธันวาเขาไปโรงพักมา",
+                "I booked a restaurant for the 19th of November.":	"จองร้านอาหารไว้วันที่สิบเก้าพฤศจิกา",
+            };
+            var l = Object.keys(map);
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/Time/", l, "word", map, 2);
+        </script>
+    </body>
+</html>
