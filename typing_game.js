@@ -11,6 +11,7 @@ var score = 0;
 var alreadyWrong = false;
 var streak = 0;
 var miss =0;
+var label = "click here to see where the letters are";
 var folder = "";
 var current_tone=0;
 var type_of_choices = "words";
@@ -150,24 +151,39 @@ function setupGame(_folder, _list_of_choices, _type_of_choices = "words"){
     folder = _folder;
     choices = _list_of_choices;
     type_of_choices = _type_of_choices;
+    label = document.getElementById("helper").innerHTML;
     startGame();
 }
 
 function toggleHelp(){
     
     //TODO show ending consonant table
-      var x = document.getElementById("etable");
-    var letters = "";
-    for(let i = 0; i< correct.length;i++){
-        letters+=correct[i]+",";
+    var x = document.getElementById("etable");
+    
+    try{
+        if(x.tagName == "iframe"){
+            var letters = "";
+            for(let i = 0; i< correct.length;i++){
+                letters+=correct[i]+",";
+            }
+            x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+        }
+        else{
+            x.innerHTML = correct;
+        }
+         
     }
-    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+    catch{
+        console.log("no keyboard help");
+        
+    }
+   
       if (x.style.display === "none") {
         x.style.display = "block";
-        document.getElementById("helper").innerHTML = "close table";
+        document.getElementById("helper").innerHTML = "close help";
       } else {
         x.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letters are";
+        document.getElementById("helper").innerHTML = label;
       }
 
     
