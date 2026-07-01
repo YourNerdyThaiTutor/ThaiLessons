@@ -54,11 +54,7 @@
         </div>
         <div class="helper">
             <button id="helper" class="options" onclick="toggleHelp()">click here for help</button>
-            <iframe
-                style="display: none; margin: auto"
-                id="etable"
-                title="keyboard"
-                src="https://yournerdythaitutor.github.io/ThaiKeyboard.html?product=ำ,ไ,เ,า,ื';"></iframe>
+            <h3 id="etable"></h3>
         </div>
 
         <div id="answers" class="answers">
@@ -124,8 +120,9 @@
                 "เอานวดแผนไทยชั่วโมงครึ่งค่ะ",
                 "เชิญพลิกตัวค่ะ"
             ];
-            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/Time/", choices);
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/massage/", choices);
             addToggle();
+            document.getElementById("etable").innerHTML = correct;
         </script>
     </body>
 </html>
