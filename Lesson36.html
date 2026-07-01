@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag("js", new Date());
+
+            gtag("config", "G-BQ56JZ1LM4");
+        </script>
+        <meta charset="utf-8" />
+        <title>Time Thai Vocab test</title>
+        <link rel="stylesheet" href="styles.css" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+            async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+            crossorigin="anonymous"></script>
+    </head>
+
+    <body>
+        <div class="topOfPageDiv">
+            <div class="leftSlot">
+                <a href="https://yournerdythaitutor.github.io/">Home</a>
+            </div>
+
+            <div class="centerSlot">
+                <button
+                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=Lesson36')"
+                    class="myStats">
+                    My Stats 📊
+                </button>
+            </div>
+
+            <div class="rightSlot">
+                <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html">Other Games</a>
+            </div>
+        </div>
+
+        <div id="score" class="score">Score:</div>
+        <div id="streak" class="streak">Streak:</div>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson36.html" style="float: right">Lesson</a>
+        <div id="question" class="question">
+            <!--button class="selectedOption">mid</!--button><button class = "options">single</button><button class="options">paired</button><br><br---><br />
+            <img src="images/audio%20still.png" />
+            <audio controls id="audio">
+                <source id="audioSource" src="mid/กอ.mp3" type="audio/mp3" />
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+        <div class="helper">
+            <button id="helper" class="options">click here to hear all choices</button>
+            <audio id="helper_audio">
+                <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3" />
+                Your browser does not support the audio tag.
+            </audio>
+        </div>
+
+        <div id="answers" class="answers"></div>
+
+        <div
+            id="popupContainer"
+            style="
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.5);
+                z-index: 9999;
+            ">
+            <div
+                id="popupContent"
+                style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background-color: white;
+                    padding: 20px;
+                    border-radius: 5px;
+                ">
+                <!-- Iframe will be inserted here -->
+                <button
+                    onclick="closePopup()"
+                    style="font-size: medium; font-weight: bolder; padding: 4px 6px; float: right">
+                    &times;
+                </button>
+            </div>
+        </div>
+
+        <script src="pickTheRightOne.js"></script>
+        <script>
+            var map = {
+                "noon":	"เที่ยง",
+                "midnight":	"เที่ยงคืน",
+                "1:00 AM":	"ตีหนึ่ง",
+                "2:00 AM":	"ตีสอง",
+                "3:00 AM":	"ตีสาม",
+                "4:00 AM":	"ตีสี่",
+                "5:00 AM":	"ตีห้า",
+                "6:00 AM":	"หกโมงเช้า",
+                "7:00 AM":	"เจ็ดโมงเช้า",
+                "8:00 AM":	"แปดโมงเช้า",
+                "9:00 AM":	"เก้าโมงเช้า",
+                "10:00 AM":	"สิบโมง",
+                "11:00 AM":	"สิบเอ็ดโมง",
+                "1:00 PM":	"บ่ายโมง",
+                "2:00 PM":	"บ่ายสองโมง",
+                "3:00 PM":	"บ่ายสามโมง",
+                "4:00 PM":	"สี่โมงเย็น",
+                "5:00 PM":	"ห้าโมงเย็น",
+                "6:00 PM":	"หกโมงเย็น",
+                "7:00 PM":	"หนึ่งทุ่ม",
+                "8:00 PM":	"สองทุ่ม",
+                "9:00 PM":	"สามทุ่ม",
+                "10:00 PM":	"สี่ทุ่ม",
+                "11:00 PM":	"ห้าทุ่ม"
+            };
+            var l = Object.keys(map);
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/Time/", l, "word", map, 4);
+        </script>
+    </body>
+</html>
