@@ -9,11 +9,10 @@
                 dataLayer.push(arguments);
             }
             gtag("js", new Date());
-
             gtag("config", "G-BQ56JZ1LM4");
         </script>
         <meta charset="utf-8" />
-        <title>Massages in Thai sentences test</title>
+        <title> Days of the week in Thai Typing</title>
         <link rel="stylesheet" href="styles.css" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <script
@@ -30,7 +29,7 @@
 
             <div class="centerSlot">
                 <button
-                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=Lesson30-3')"
+                    onclick="openIframePopup('https://yournerdythaitutor.github.io/ThaiLessons/dashboard.html?game=Lesson33-2')"
                     class="myStats">
                     My Stats 📊
                 </button>
@@ -43,7 +42,8 @@
 
         <div id="score" class="score">Score:</div>
         <div id="streak" class="streak">Streak:</div>
-        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson30.html" style="float: right">Lesson</a>
+        <a href="https://yournerdythaitutor.github.io/Lessons/Lesson33.html" style="float: right">Lesson</a>
+        <span style="position: fixed; bottom: 0; right: 20pt" id="sass"></span>
         <div id="question" class="question">
             <!--button class="selectedOption">mid</!--button><button class = "options">single</button><button class="options">paired</button><br><br---><br />
             <img src="images/audio%20still.png" />
@@ -53,14 +53,20 @@
             </audio>
         </div>
         <div class="helper">
-            <button id="helper" class="options">click here to hear all choices</button>
-            <audio id="helper_audio">
-                <source id="helper_audioSource" src="mid/กอ.mp3" type="audio/mp3" />
-                Your browser does not support the audio tag.
-            </audio>
+            <button id="helper" class="options" onclick="toggleHelp()">click here for help</button>
+            
+            <h3
+                style="display: none; margin: auto"
+                id="etable"
+            >
+            </h3>
         </div>
 
-        <div id="answers" class="answers"></div>
+        <div id="answers" class="answers">
+            <p>Spell the word correctly</p>
+            <input id="numb" />
+            <button id="myBtn" onclick="SubmitAnswer()" type="button">Submit</button>
+        </div>
 
         <div
             id="popupContainer"
@@ -94,27 +100,26 @@
             </div>
         </div>
 
-        <script src="pickTheRightOne.js"></script>
+        <img
+            src="./sassy_mode/img/Eyebrows.gif"
+            style="width: 100%; display: none; position: absolute; bottom: 50pt; left: 10pt"
+            id="buffalo" />
+
+        <script src="./typing_game.js"></script>
+        <script src="fun_js/effects.js"></script>
         <script>
-            var map = {
-                "Hello, welcome in.":	"สวัสดีค่ะเชิญค่ะ",
-                "Change clothes.":	"เปลี่ยนเสื้อผ้า",
-                "Change pants.":	"เปลี่ยนกางเกง",
-                "1 hour of massage":	"นวดเท้าหนึ่งชั่วโมง",
-                "Where is your pain?":	"ปวดตรงไหนคะ",
-                "Does it hurt?":	"เจ็บมั้ย",
-                "It doesn't hurt.":	"ไม่เจ็บ",
-                "It hurts a little.":	"เจ็บนิดหน่อย",
-                "Ouch! That hurts a lot.":	"โอ้ยเจ็บมาก",
-                "Do you want neck and shoulders massage?":	"นวดคอบ่าไหล่มั้ย",
-                "How much pressure do you want?":	"เอาหนักแค่ไหน",
-                "I'll take light pressure, not too heavy.":	"เอาเบาๆไม่หนักมาก",
-                "I'll take medium pressure.":	"เอาหนักปานกลาง",
-                "I'll take an hour and a half Thai massage.":	"เอานวดแผนไทยชั่วโมงครึ่งค่ะ",
-                "Go ahead and flip over.":	"เชิญพลิกตัวค่ะ"
-            };
-            var l = Object.keys(map);
-            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/massage/", l, "word", map, 2);
+            var choices = [
+                "วันที่ห้ามิถุนาไปสวนสัตว์กันมั้ย",
+                "ห้างเปิดวันที่สิบสองกันยาค่ะ",
+                "มีวันที่ยี่สิบสองกรกฎาว่างค่ะ",
+                "วันจันทร์ที่สี่เมษาต้องไปโรงพยาบาล",
+                "ต้องไปธนาคารก่อนวันที่เจ็ดมีนา",
+                "เมื่อวันที่สิบหกธันวาเขาไปโรงพักมา",
+                "จองร้านอาหารไว้วันที่สิบเก้าพฤศจิกา",
+            ];
+            setupGame("https://yournerdythaitutor.github.io/Lessons/audios/Time/", choices);
+            addToggle();
+            
         </script>
     </body>
 </html>

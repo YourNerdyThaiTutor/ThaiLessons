@@ -161,7 +161,7 @@ function toggleHelp(){
     var x = document.getElementById("etable");
     
     try{
-        if(x.tagName == "iframe"){
+        if(x.tagName === "IFRAME"){
             var letters = "";
             for(let i = 0; i< correct.length;i++){
                 letters+=correct[i]+",";
