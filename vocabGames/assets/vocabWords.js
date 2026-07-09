@@ -367,6 +367,7 @@ const vocabWords = `ศูนย์,0
 โอ้ยเจ็บมาก,Ouch! That hurts a lot.
 นวดคอบ่าไหล่มั้ย,Do you want neck and shoulders massage?
 เอาหนักแค่ไหน,How much pressure do you want?
+เอาเบาๆไม่หนักมาก,I'll take light pressure, not too heavy.
 เอาหนักปานกลาง,I'll take medium pressure.
 เอานวดแผนไทยชั่วโมงครึ่งค่ะ,I'll take an hour and a half Thai massage.
 เชิญพลิกตัวค่ะ,Go ahead and flip over.

@@ -191,9 +191,9 @@
     let splitWord = [], guessedChars = [], mistakes = 0;
     let isGameOver = false;
 
-    const consonantsList = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ";
+    const consonantsList = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮฤ";
     // Standalone vowels that don't need a dotted circle base
-    const standaloneVowels = "ะาำเแโใไ";
+    const standaloneVowels = "ะาำเแโใไๆ";
 
     const emojiOutfits = [
         ["👒","👚","💅","💅","🩰","🩰"],
@@ -378,8 +378,8 @@
                 el.appendChild(b);
             });
         };
-        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ");
-        setup('kb-details', "ะาำิีึืเแโใไ็่้๊๋์ํัุู");
+        setup('kb-consonants', "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮฤ");
+        setup('kb-details', "ะาำิีึืเแโใไ็่้๊๋์ํัุูๆ");
     }
 
     window.onload = initGame;

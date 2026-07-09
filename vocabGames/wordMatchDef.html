@@ -174,11 +174,11 @@
 let targetWord = [], targetFull = "", currentGuessParts = ["", "", "", "", ""], keyStates = {};
 let focusIndex = 0, currentRow = 0, gameOver = false;
 
-const consonants = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮ".split("");
-const details = "ะาำิีึืเแโใไ็่้๊๋์ํัุู".split("");
+const consonants = "กขฃคฅฆงจฉชซฌญฎฏฐฑฒณดตถทธนบปผฝพฟภมยรลวศษสหฬอฮฤ".split("");
+const details = "ะาำิีึืเแโใไ็่้๊๋์ํัุูๆ".split("");
 
 function splitThaiStrict(w) {
-    return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+    return w.match(/[\u0E00-\u0E7Fฤๆ][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
 }
 
 function isCombining(char) {
