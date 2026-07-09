@@ -132,6 +132,16 @@
             display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000;
         }
 
+        /* Add inside your style tag */
+        .cell input.autocheck-correct {
+            color: var(--neon-green, #39ff14) !important;
+            text-shadow: 0 0 5px rgba(57, 255, 20, 0.5);
+        }
+        .cell input.autocheck-wrong {
+            color: #ff3333 !important;
+            text-shadow: 0 0 5px rgba(255, 51, 51, 0.5);
+        }
+
         @media (min-width: 768px) {
             #crossword-grid { grid-template-columns: repeat(15, 42px); grid-template-rows: repeat(15, 42px); }
             #game-container { flex-direction: row; align-items: flex-start; }
@@ -145,6 +155,7 @@
         <h1>THAI VOCAB</h1>
         <div class="controls">
             <button class="btn" onclick="resetGame()">NEW GAME</button>
+            <button class="btn" id="autocheck-btn" onclick="toggleAutocheck()" style="border-color:#444; color:#444;">AUTOCHECK</button>
             <button class="btn" id="manifest-btn" onclick="toggleManifest()" style="border-color:#444; color:#444;">CHEAT</button>
             <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="btn btn-study">STUDY THAI</a>
         </div>
@@ -176,6 +187,7 @@ const MAX_WORDS = 15;
 const MIN_WORDS = 5;
 let currentPlaced = [];
 let manifestActive = false;
+let autocheckActive = false;
 
 function splitThaiStrict(w) {
     return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
@@ -339,6 +351,23 @@ function checkWin() {
         document.getElementById(`clue-${p.num}-${p.dir}`).classList.toggle('correct', isMatch);
         if (!isMatch) allOk = false;
     });
+
+    // REPLACE IT WITH THIS:
+    document.querySelectorAll('.cell input').forEach(input => {
+        input.classList.remove('autocheck-correct', 'autocheck-wrong');
+        
+        // Determine what text to check: the user's typed value, or the cheat placeholder
+        const textToCheck = input.value || input.placeholder;
+        
+        if (autocheckActive && textToCheck) {
+            if (textToCheck === input.dataset.ans) {
+                input.classList.add('autocheck-correct');
+            } else {
+                input.classList.add('autocheck-wrong');
+            }
+        }
+    });
+
     if (allOk) document.getElementById('success-overlay').style.display = 'flex';
 }
 
@@ -347,7 +376,38 @@ function toggleManifest() {
     const btn = document.getElementById('manifest-btn');
     btn.style.color = manifestActive ? 'var(--neon-cyan)' : '#444';
     btn.style.borderColor = manifestActive ? 'var(--neon-cyan)' : '#444';
+
+    // 1. Force Autocheck ON if Cheat is turned on
+    if (manifestActive) {
+        autocheckActive = true;
+        const autoBtn = document.getElementById('autocheck-btn');
+        autoBtn.innerText = "AUTOCHECK";
+        autoBtn.style.color = 'var(--neon-cyan)';
+        autoBtn.style.borderColor = 'var(--neon-cyan)';
+    }
+    
     document.querySelectorAll('input').forEach(i => i.placeholder = manifestActive ? i.dataset.ans : "");
+
+    // 2. Force the game to recalculate the visual colors immediately
+    checkWin();
+}
+
+function toggleAutocheck() {
+    autocheckActive = !autocheckActive;
+    const btn = document.getElementById('autocheck-btn');
+    
+    if (autocheckActive) {
+        btn.innerText = "AUTOCHECK";
+        btn.style.color = 'var(--neon-cyan)';
+        btn.style.borderColor = 'var(--neon-cyan)';
+    } else {
+        btn.innerText = "AUTOCHECK";
+        btn.style.color = '#444';
+        btn.style.borderColor = '#444';
+    }
+    
+    // Force immediate visual update calculation when flipped
+    checkWin();
 }
 
 window.onload = generate;
