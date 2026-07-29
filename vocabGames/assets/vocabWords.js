@@ -399,4 +399,11 @@ const vocabWords = `ศูนย์,0
 พฤติกรรม,behavior
 ฤกษ์,auspicious occasion
 ฤทธิ์,supernatural power, strength, effect
-ฤดู,season (summer, fall, winter, spring, rainy season, etc.)`
+ฤดู,season (summer, fall, winter, spring, rainy season, etc.)
+วันจันทร์,Monday
+วันอังคาร,Tuesday
+วันพุธ,Wednesday
+วันพฤหัส,Thursday
+วันศุกร์,Friday
+วันเสาร์,Saturday
+วันอาทิตย์,Sunday`
