@@ -315,7 +315,7 @@ const vocabWords = `ศูนย์,0
 ร้านทำเล็บ,Nail salon
 ร้านขนม,Bakery
 ตลาดน้ำ,Floating market
-รถไฟใต้ดิน,"Subway, underground train"
+รถไฟใต้ดิน,"Subway or underground train (formal)"
 โรงพยาบาลอยู่ไหนคะ,Where is the hospital?
 ธนาคารไปทางไหนคะ,Which way is the bank?
 แถวนี้มีป้ายรถเมล์ไหมคะ,Is there a bus stop around here?
@@ -530,4 +530,46 @@ const vocabWords = `ศูนย์,0
 สามี,husband(formal)
 ผัว,husband(very casual lol)
 ภรรยา,wife(formal)
-เมีย,wife(very casual lol)`
+เมีย,wife(very casual lol)
+หวานตัดขา,so sweet I will have to cut off my legs
+ผลไม้,fruit
+องุ่น,grape
+มะเฟือง,star fruit
+มะละกอ,papaya
+ทุเรียน,durian
+แตงโม,watermelon
+เงาะ,rambutan
+ทับทิม,pomegranate
+มังคุด,mangosteen
+มะนาว,lime
+มะม่วง,mango
+ขนุน,jackfruit
+มะเขือเทศ,tomato
+กล้วย,banana
+มะพร้าว,coconut
+สาลี่,chinese pear
+ฝรั่ง,guava
+ลิ้นจี่,lychee
+กระท้อน,santol
+พลับ,persimmon
+แก้วมังกร,dragon fruit
+ชมพู่,rose apple
+ท้อ,peach
+น้อยหน่า,sugar apple
+บ๊วย,plum
+มะกอก,olive
+มะขาม,tamarind
+มะยม,star gooseberry
+มะยงชิด,marian plum
+ลำไย,longan
+ส้ม,orange
+สัปปะรด,pineapple
+ส้มโอ,pomelo
+เสาวรส,passion fruit
+สละ,salak
+หม่อน,mulberry
+อินทผลัม,date
+มะม่วงหาวมะนาวโห่,bengal currant
+มะกรูด,Makrut Lime
+พุทรา,jujube
+ตะลิงปลิง,bilimbi`
