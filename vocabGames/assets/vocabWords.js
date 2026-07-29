@@ -466,4 +466,39 @@ const vocabWords = `ศูนย์,0
 สองทุ่ม,8:00 PM
 สามทุ่ม,9:00 PM
 สี่ทุ่ม,10:00 PM
-ห้าทุ่ม,11:00 PM`
+ห้าทุ่ม,11:00 PM
+วันนี้,today
+พรุ่งนี้,tomorrow
+เมื่อวาน,yesterday
+เมื่อวานซืน,2 days ago
+มะรืน,day after tomorrow
+วัน,day
+สัปดาห์,week(formal)
+อาทิตย์,week(casual)
+เดือน,month
+ปี,year
+สัปดาห์ที่แล้ว,last week(formal)
+อาทิตย์ที่แล้ว,last week(casual)
+เดือนที่แล้ว,last month
+ปีที่แล้ว,last year
+สัปดาห์หน้า,next week(formal)
+อาทิตย์หน้า,next week(casual)
+เดือนหน้า,next month
+ปีหน้า,next year
+วันที่,date (d/m/y)
+วันก่อน,the other day
+เดือนก่อน,the other month
+ปีก่อน,the other year
+เมื่อก่อน,back in the days
+ก่อน,before
+หลัง,after
+วันนี้ทำอะไรดี,What should we do today?
+พรุ่งนี้ไปเที่ยวไหนดี,Where should we go tomorrow?
+วันก่อนเจอแฟนเก่ามา,I saw my ex the other day.
+วันมะรืนไปกินหมูกระทะมั้ย,Do you want to go eat Moo-Kra-ta the day after tomorrow?
+วันที่แปดมกราปีหน้าไปสมุยกันมั้ย,Next year on January 8th do you want to go to Samui together?
+มาถึงเมืองไทยเดือนที่แล้ว,I arrived in Thailand last month.
+อาทิตย์หน้าไปเที่ยวทะเลมั้ย,Next week do you want to go to the beach?
+ก่อนวันปีใหม่ต้องไปหาหมอนะ,You have to go to the doctor before New Year's Day.
+เมื่อก่อนที่ร้านนี้ไม่มีเค้กขายนะ,Back in the days this store didn't have cake.
+เมื่อวานซืนไปเรียนทำอาหารมา,I took a cooking class 2 days ago.`
