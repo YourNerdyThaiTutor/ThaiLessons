@@ -425,4 +425,21 @@ const vocabWords = `ศูนย์,0
 วันจันทร์ที่สี่เมษาต้องไปโรงพยาบาล,Monday April 4th I have to go to the hospital.
 ต้องไปธนาคารก่อนวันที่เจ็ดมีนา,Have to go to the bank before March 7th.
 เมื่อวันที่สิบหกธันวาเขาไปโรงพักมา,On December 16th he went to the police station.
-จองร้านอาหารไว้วันที่สิบเก้าพฤศจิกา,I booked a restaurant for the 19th of November.`
+จองร้านอาหารไว้วันที่สิบเก้าพฤศจิกา,I booked a restaurant for the 19th of November.
+ราศีมังกร,Capricorn
+ราศีกุมภ์,Aquarius
+ราศีมีน,Pisces
+ราศีเมษ,Aries
+ราศีพฤษภ,Taurus
+ราศีเมถุน,Gemini
+ราศีกรกฎ,Cancer
+ราศีสิงห์,Leo
+ราศีกันย์,Virgo
+ราศีตุล,Libra
+ราศีพิจิก,Scorpio
+ราศีธนู,Sagittarius
+คุณราศีอะไรคะ,What is your sign?
+ราศีตุลค่ะ,I'm a Libra.
+ฉันราศีเมษค่ะ,I'm an Aries.
+แฟนเก่าฉันราศีเมถุน,My ex is a Gemini.
+อยากได้แฟนใหม่ราศีเมษ,I want a new girlfriend/boyfriend who's an Aries`
