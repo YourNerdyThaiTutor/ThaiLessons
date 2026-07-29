@@ -501,4 +501,33 @@ const vocabWords = `ศูนย์,0
 อาทิตย์หน้าไปเที่ยวทะเลมั้ย,Next week do you want to go to the beach?
 ก่อนวันปีใหม่ต้องไปหาหมอนะ,You have to go to the doctor before New Year's Day.
 เมื่อก่อนที่ร้านนี้ไม่มีเค้กขายนะ,Back in the days this store didn't have cake.
-เมื่อวานซืนไปเรียนทำอาหารมา,I took a cooking class 2 days ago.`
+เมื่อวานซืนไปเรียนทำอาหารมา,I took a cooking class 2 days ago.
+ครอบครัว,family
+พ่อ,dad
+แม่,mom
+พี่,older sibling
+น้อง,younger sibling
+ลูก,child
+หลาน,niece/nephew/grandchild
+ปู่,paternal grandpa
+ย่า,paternal grandma
+ตา,maternal grandpa
+ยาย,maternal grandma
+ลูกพี่ลูกน้อง,cousin
+น้า,aunt/uncle(mom's younger sibling)
+อา,aunt/uncle(dad's younger sibling)
+ป้า,aunt(parent's older sister)
+ลุง,uncle(parent's older brother)
+ญาติ,relative
+พี่เขย,brother-in-law(married to your older sibling)
+น้องเขย,brother-in-law(married to your younger sibling)
+พี่สะใภ้,sister-in-law(married to your older sibling)
+น้องสะใภ้,sister-in-law(married to your younger sibling)
+พ่อตา,father-in-law(your wife's dad)
+แม่ยาย,mother-in-law(your wife's mom)
+พ่อปู่,father-in-law(your husband's dad)
+แม่ย่า,mother-in-law(your husband's mom)
+สามี,husband(formal)
+ผัว,husband(very casual lol)
+ภรรยา,wife(formal)
+เมีย,wife(very casual lol)`
