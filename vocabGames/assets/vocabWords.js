@@ -291,7 +291,7 @@ const vocabWords = `ศูนย์,0
 วัง,Palace
 สวนสัตว์,Zoo
 สวนสาธารณะ,Park
-ฟิตเนส,"Fitness center, gym"
+ฟิตเนส,"Fitness center/gym"
 ที่จอดรถ,Parking
 สวนสนุก,Amusement park
 ทะเล,Sea
@@ -299,7 +299,7 @@ const vocabWords = `ศูนย์,0
 ตลาด,Market
 สถานีรถไฟ,Train station
 ป้ายรถเมล์,Bus stop
-ร้านกาแฟ,"Coffee shop, cafe"
+ร้านกาแฟ,"Coffee shop/cafe"
 หอศิลป์,Gallery
 หอ,Dorm
 สนามบิน,Airport
@@ -356,7 +356,7 @@ const vocabWords = `ศูนย์,0
 ล้าง,Wash
 อาบน้ำ,Take a shower
 ผ้าเช็ดตัว,Body towel
-สวัสดีค่ะเชิญค่ะ,"Hello, welcome in."
+สวัสดีค่ะเชิญค่ะ,"Hello welcome in."
 เปลี่ยนเสื้อผ้า,Change clothes.
 เปลี่ยนกางเกง,Change pants.
 นวดเท้าหนึ่งชั่วโมง,1 hour of massage
@@ -367,7 +367,7 @@ const vocabWords = `ศูนย์,0
 โอ้ยเจ็บมาก,Ouch! That hurts a lot.
 นวดคอบ่าไหล่มั้ย,Do you want neck and shoulders massage?
 เอาหนักแค่ไหน,How much pressure do you want?
-เอาเบาๆไม่หนักมาก,I'll take light pressure, not too heavy.
+เอาเบาๆไม่หนักมาก,I'll take light pressure. not too heavy.
 เอาหนักปานกลาง,I'll take medium pressure.
 เอานวดแผนไทยชั่วโมงครึ่งค่ะ,I'll take an hour and a half Thai massage.
 เชิญพลิกตัวค่ะ,Go ahead and flip over.
@@ -375,16 +375,16 @@ const vocabWords = `ศูนย์,0
 ภรรยา,wife
 บรรทัด,line (of writing)
 บรรณารักษ์,librarian
-บรรจุ,"contain, hold, pack"
+บรรจุ,"contain/ hold/ pack"
 บรรยาย,narrate
-อัศจรรย์,"miraculous, marvel"
-สวรรค์,"heaven, paradise"
-มหัศจรรย์,"amazing, astonishing"
+อัศจรรย์,"miraculous/ marvel"
+สวรรค์,"heaven/ paradise"
+มหัศจรรย์,"amazing/ astonishing"
 กรรม,karma
 ธรรมชาติ,nature
-พรรคพวก,"friends, partisans"
+พรรคพวก,"friends/ partisans"
 รัฐธรรมนูญ,constitution
-สรรพคุณ,"properties, qualities, effects"
+สรรพคุณ,"properties/ qualities/ effects"
 อุปสรรค,obstacle
 นิทรรศการ,exhibition
 อังกฤษ,England
@@ -398,12 +398,31 @@ const vocabWords = `ศูนย์,0
 พฤษภาคม,May
 พฤติกรรม,behavior
 ฤกษ์,auspicious occasion
-ฤทธิ์,supernatural power, strength, effect
-ฤดู,season (summer, fall, winter, spring, rainy season, etc.)
+ฤทธิ์,supernatural power/ strength/ effect
+ฤดู,season (summer fall winter spring rainy season etc.)
 วันจันทร์,Monday
 วันอังคาร,Tuesday
 วันพุธ,Wednesday
 วันพฤหัส,Thursday
 วันศุกร์,Friday
 วันเสาร์,Saturday
-วันอาทิตย์,Sunday`
+วันอาทิตย์,Sunday
+มกราคม,January
+กุมภาพันธ์,February
+มีนาคม,March
+เมษายน,April
+พฤษภาคม,May
+มิถุนายน,June
+กรกฎาคม,July
+สิงหาคม,August
+กันยายน,September
+ตุลาคม,October
+พฤศจิกายน,November
+ธันวาคม,December
+วันที่ห้ามิถุนาไปสวนสัตว์กันมั้ย,On June 5th do you want to go to the zoo together?
+ห้างเปิดวันที่สิบสองกันยาค่ะ,The mall opens on September 12th.
+มีวันที่ยี่สิบสองกรกฎาว่างค่ะ,We have July 22nd available.
+วันจันทร์ที่สี่เมษาต้องไปโรงพยาบาล,Monday April 4th I have to go to the hospital.
+ต้องไปธนาคารก่อนวันที่เจ็ดมีนา,Have to go to the bank before March 7th.
+เมื่อวันที่สิบหกธันวาเขาไปโรงพักมา,On December 16th he went to the police station.
+จองร้านอาหารไว้วันที่สิบเก้าพฤศจิกา,I booked a restaurant for the 19th of November.`
