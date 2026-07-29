@@ -386,4 +386,17 @@ const vocabWords = `ศูนย์,0
 รัฐธรรมนูญ,constitution
 สรรพคุณ,"properties, qualities, effects"
 อุปสรรค,obstacle
-นิทรรศการ,exhibition`
+นิทรรศการ,exhibition
+อังกฤษ,England
+ทฤษฎี,theory
+คฤหาสน์,Mansion
+หฤโหด,mercilessly
+หฤหรรษ์,delight
+พฤศจิก,Scorpio (The constellation)
+พฤศจิกายน,November
+พฤษภ,Taurus
+พฤษภาคม,May
+พฤติกรรม,behavior
+ฤกษ์,auspicious occasion
+ฤทธิ์,supernatural power, strength, effect
+ฤดู,season (summer, fall, winter, spring, rainy season, etc.)`
