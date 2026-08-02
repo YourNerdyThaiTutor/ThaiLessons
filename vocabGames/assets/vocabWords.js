@@ -572,4 +572,11 @@ const vocabWords = `ศูนย์,0
 มะม่วงหาวมะนาวโห่,bengal currant
 มะกรูด,Makrut Lime
 พุทรา,jujube
-ตะลิงปลิง,bilimbi`
+ตะลิงปลิง,bilimbi
+พระจันทร์,The moon
+ดาวอังคาร,Mars
+ดาวพุธ,Mercury
+ดาวพฤหัส,Jupiter
+ดาวศุกร์,Venus
+ดาวเสาร์,Saturn
+พระอาทิตย์,The sun`
