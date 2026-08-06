@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock Quiz Game</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        /* SVG Clock Styling */
+        #clock {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+        }
+
+        .clock-face {
+            fill: #fff;
+            stroke: #333;
+            stroke-width: 4px;
+        }
+
+        .hand {
+            stroke: #333;
+            stroke-linecap: round;
+        }
+
+        .hour-hand {
+            stroke-width: 6px;
+        }
+
+        .minute-hand {
+            stroke-width: 4px;
+        }
+
+        .center-dot {
+            fill: #333;
+        }
+
+        .ampm-box {
+            fill: #e9ecef;
+            stroke: #ced4da;
+            stroke-width: 1px;
+            rx: 4px;
+        }
+
+        .ampm-text {
+            font-size: 12px;
+            font-weight: bold;
+            fill: #495057;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .clock-number {
+            font-size: 14px;
+            font-weight: bold;
+            fill: #333;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 18px;
+            width: 220px;
+            text-align: center;
+            border: 2px solid #ced4da;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: #4dabf7;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #228be6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background-color: #1c7ed6;
+        }
+
+        #feedback {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            height: 27px;
+        }
+
+        .correct { color: #40c057; }
+        .incorrect { color: #fa5252; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>What Time Is It?</h1>
+    
+    <svg id="clock" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="95" class="clock-face"/>
+        
+        <rect x="80" y="135" width="40" height="20" class="ampm-box"/>
+        <text id="ampm-display" x="100" y="146" class="ampm-text">AM</text>
+        
+        <g id="numbers"></g>
+
+        <line id="hour" x1="100" y1="100" x2="100" y2="55" class="hand hour-hand" />
+        <line id="minute" x1="100" y1="100" x2="100" y2="40" class="hand minute-hand" />
+        <circle cx="100" cy="100" r="5" class="center-dot"/>
+    </svg>
+
+    <div class="input-group">
+        <input type="text" id="user-answer" placeholder="สี่โมงยี่สิบ" autocomplete="off">
+    </div>
+
+    <button id="action-btn" onclick="checkAnswer()">Submit Answer</button>
+    
+    <div id="feedback"></div>
+</div>
+
+<script>
+    let currentHour = 12;
+    let currentMinute = 0;
+    let currentPeriod = 'AM';
+    let isAnswered = false;
+    let hourMapAM = {
+                12:	"เที่ยงคืน",
+                1:	"ตีหนึ่ง",
+                2:	"ตีสอง",
+                3:	"ตีสาม",
+                4:	"ตีสี่",
+                5:	"ตีห้า",
+                6:	"หกโมงเช้า",
+                7:	"เจ็ดโมง",
+                8:	"แปดโมง",
+                9:	"เก้าโมง",
+                10:	"สิบโมง",
+                11:	"สิบเอ็ดโมง"
+    }
+    let hourMapPM ={
+                12:	"เที่ยง",
+                1:	"บ่ายโมง",
+                2:	"บ่ายสอง",
+                3:	"บ่ายสาม",
+                4:	"สี่โมง",
+                5:	"ห้าโมง",
+                6:	"หกโมงเย็น",
+                7:	"หนึ่งทุ่ม",
+                8:	"สองทุ่ม",
+                9:	"สามทุ่ม",
+                10:	"สี่ทุ่ม",
+                11:	"ห้าทุ่ม"
+    }
+    let n_map = {
+        0:"",
+        1:"",
+        2:"ยี่",
+        3:"สาม",
+        4:"สี่",
+        5:"ห้า",
+        6:"หก",
+        7:"เจ็ด",
+        8:"แปด",
+        9:"เก้า",
+        20:"ยี่สิบ",
+        10:"สิบ"
+    };
+                
+
+    // Generate Clock Numbers dynamically via SVG
+    const numbersGroup = document.getElementById('numbers');
+    for (let i = 1; i <= 12; i++) {
+        const angle = (i * 30) * Math.PI / 180;
+        const x = 100 + 75 * Math.sin(angle);
+        const y = 100 - 75 * Math.cos(angle);
+        
+        const textNode = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textNode.setAttribute("x", x);
+        textNode.setAttribute("y", y);
+        textNode.setAttribute("class", "clock-number");
+        textNode.textContent = i;
+        numbersGroup.appendChild(textNode);
+    }
+
+    // Function to generate a random time
+    function generateNewQuestion() {
+        // Random hour (1-12)
+        currentHour = Math.floor(Math.random() * 12) + 1;
+        // Random minute (multiples of 5 for quiz friendliness, e.g., 0, 5, 10... 55)
+        currentMinute = Math.floor(Math.random() * 12) * 5;
+        // Random AM or PM
+        currentPeriod = Math.random() < 0.5 ? 'AM' : 'PM';
+
+        updateClockHands(currentHour, currentMinute, currentPeriod);
+        
+        // Reset UI
+        document.getElementById('user-answer').value = '';
+        document.getElementById('user-answer').disabled = false;
+        document.getElementById('feedback').textContent = '';
+        document.getElementById('feedback').className = '';
+        document.getElementById('action-btn').textContent = 'Submit Answer';
+        document.getElementById('action-btn').setAttribute('onclick', 'checkAnswer()');
+        isAnswered = false;
+    }
+
+    // Function to position the clock hands
+    function updateClockHands(hour, minute, period) {
+        // Minute hand angle: 360 degrees / 60 minutes = 6 degrees per minute
+        const minuteAngle = minute * 6;
+        // Hour hand angle: 360 degrees / 12 hours = 30 degrees per hour + slight extra based on minutes
+        const hourAngle = (hour % 12) * 30 + (minute * 0.5);
+
+        // Update SVG line rotations
+        document.getElementById('hour').setAttribute('transform', `rotate(${hourAngle} 100 100)`);
+        document.getElementById('minute').setAttribute('transform', `rotate(${minuteAngle} 100 100)`);
+        
+        // Update AM/PM Text
+        document.getElementById('ampm-display').textContent = period;
+    }
+    
+    function mapAnaswer(){
+        var result = "";
+        if (currentPeriod === 'AM'){
+            result+=hourMapAM[currentHour];
+        }
+        else{
+            result+=hourMapPM[currentHour];
+        }
+        
+        //add minutes
+        if(currentMinute===30){
+            result+="ครึ่ง";
+        }
+        else if(currentMinute===0){
+            return result;
+        }
+        else if(currentMinute<=10){
+            result+=n_map[currentMinute]+"นาที";
+        }
+        else{
+            result+=n_map[Math.floor(currentMinute/10)]+"สิบ"+n_map[Math.floor(currentMinute%10)];
+            
+        }
+        return result;
+    }
+
+    // Function to check user answer
+    function checkAnswer() {
+        const userInput = document.getElementById('user-answer').value.trim();
+        const feedback = document.getElementById('feedback');
+
+        // Format expected answer string (e.g., "08:05" or "12:30")
+        const formattedHour = currentHour.toString().padStart(2, '0');
+        const formattedMinute = currentMinute.toString().padStart(2, '0');
+        const correctAnswer = `${formattedHour}:${formattedMinute} ${currentPeriod}`;
+        const correctThai = mapAnaswer();
+        // Simple Regex validation for HH:MM format
+        const formatCheck = /^([0-1][0-9]):([0-5][0-9])$/;
+        /*if (!formatCheck.test(userInput)) {
+            feedback.textContent = "Please use HH:MM format (e.g., 05:15)";
+            feedback.className = "incorrect";
+            return;
+        }*/
+
+        if (userInput === correctThai) {
+            feedback.textContent = `Correct! It is ${correctAnswer} .`;
+            feedback.className = "correct";
+        } else {
+            feedback.textContent = `Incorrect. The correct time is ${correctThai} .`;
+            feedback.className = "incorrect";
+        }
+
+        // Change button to "Next Question"
+        document.getElementById('user-answer').disabled = true;
+        const btn = document.getElementById('action-btn');
+        btn.textContent = 'Next Question';
+        btn.setAttribute('onclick', 'generateNewQuestion()');
+        isAnswered = true;
+    }
+
+    // Allow pressing "Enter" key to submit or advance
+    document.getElementById('user-answer').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (isAnswered) {
+                generateNewQuestion();
+            } else {
+                checkAnswer();
+            }
+        }
+    });
+
+    // Start the game with the first question on load
+    window.onload = generateNewQuestion;
+</script>
+
+</body>
+</html>
