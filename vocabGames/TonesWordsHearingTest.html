@@ -334,14 +334,14 @@
     <!-- Top Navigation Bar -->
     <header>
         <a href="https://yournerdythaitutor.github.io/Lessons/" class="nav-btn">
-            ← Study Thai
+            Study Thai
         </a>
         <div class="nav-group">
             <button onclick="showFilters()" class="nav-btn">
                 ⚙️ Filters
             </button>
             <button onclick="showStats()" class="nav-btn">
-                📊 Stats (<span id="total-played-count">0</span>)
+                📊 Stats 
             </button>
         </div>
     </header>
@@ -423,7 +423,7 @@
     let isReviewMode = false;
     let currentAudio = null;
     let focusMode = localStorage.getItem('thaiToneFocusMode') === 'true';
-    let lengthFilter = localStorage.getItem('thaiToneLengthFilter') || '';
+    let lengthFilter = localStorage.getItem('thaiToneLengthFilter') || '10';
     
     document.addEventListener("DOMContentLoaded", () => {
         const toggleEl = document.getElementById('focus-mode-toggle');
