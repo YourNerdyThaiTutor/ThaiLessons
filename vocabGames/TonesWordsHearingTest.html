@@ -91,14 +91,69 @@
             margin: 40px auto;
         }
 
-        h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
+        h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; }
 
-        #definition {
-            font-size: 0.95rem;
-            color: #94a3b8;
-            margin: 10px 0;
-            font-weight: 400;
+        /* Filter Controls Styling on Main Page */
+        .controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
         }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 8px 14px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+        }
+
+        select.filter-select {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(18px); }
 
         /* Audio Player Button */
         .audio-btn {
@@ -232,51 +287,6 @@
             box-sizing: border-box;
         }
 
-        /* Toggle Switch Styling */
-        .toggle-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0f172a;
-            padding: 10px 14px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            border: 1px solid #334155;
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 44px;
-            height: 24px;
-        }
-
-        .switch input { opacity: 0; width: 0; height: 0; }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #334155;
-            transition: .3s;
-            border-radius: 24px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(20px); }
-
         .stat-row {
             display: flex;
             justify-content: space-between;
@@ -287,15 +297,15 @@
         }
 
         .feedback {
-            margin-top: 25px;
             font-weight: 600;
-            font-size: 1.4rem; 
+            font-size: 1.1rem; 
             line-height: 1.4;  
-            min-height: 40px;
+            min-height: 30px;
+            margin-bottom: 5px;
         }
 
         .feedback span {
-            font-size: 1.6rem;
+            font-size: 1.3rem;
             font-weight: bold;
             display: inline-block;
             margin-left: 5px;
@@ -326,7 +336,38 @@
 
     <div class="container">
         <h1>COMPLETE THE TONES</h1>
-        <div id="definition">Category: ...</div>
+        
+        <!-- Main Page Filter Controls -->
+        <div class="controls-wrapper">
+            <!-- Focus Mode Toggle Switch -->
+            <div class="filter-container">
+                <span style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1;">Focus Mode (&lt;90% & Unseen)</span>
+                <label class="switch">
+                    <input type="checkbox" id="focus-mode-toggle" onchange="toggleFocusMode(this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Word Length Filter Dropdown -->
+            <div class="filter-container">
+                <span style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1;">Word Length Filter</span>
+                <select id="length-filter-select" class="filter-select" onchange="changeLengthFilter(this)">
+                    <option value="all">Any Length</option>
+                    <option value="1">1 Letter</option>
+                    <option value="2">2 Letters</option>
+                    <option value="3">3 Letters</option>
+                    <option value="4">4 Letters</option>
+                    <option value="5">5 Letters</option>
+                    <option value="6">6 Letters</option>
+                    <option value="7">7 Letters</option>
+                    <option value="8">8 Letters</option>
+                    <option value="9">9 Letters</option>
+                    <option value="10">10 Letters</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="feedback" class="feedback"></div>
         
         <!-- Audio Player Button -->
         <button class="audio-btn" onclick="playAudio()" title="Listen to Audio">
@@ -347,7 +388,6 @@
         </div>
 
         <button id="action-btn" class="btn btn-submit" onclick="checkAnswer()">Submit Guess</button>
-        <div id="feedback" class="feedback"></div>
     </div>
 
     <!-- Stats Modal Overlay -->
@@ -358,16 +398,7 @@
                 <button onclick="document.getElementById('stats-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size: 1.2rem; cursor: pointer;">✕</button>
             </div>
             
-            <!-- Focus Mode Toggle Switch -->
-            <div class="toggle-container">
-                <span style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1;">Focus Mode (&lt;90% & Unseen)</span>
-                <label class="switch">
-                    <input type="checkbox" id="focus-mode-toggle" onchange="toggleFocusMode(this)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <div id="stats-list" style="overflow-y: auto; flex: 1; max-height: 40vh;"></div>
+            <div id="stats-list" style="overflow-y: auto; flex: 1; max-height: 45vh; margin-top: 5px;"></div>
             <button class="btn btn-submit" style="margin-top:15px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
         </div>
     </div>
@@ -381,11 +412,14 @@
     let isReviewMode = false;
     let currentAudio = null;
     let focusMode = localStorage.getItem('thaiToneFocusMode') === 'true';
+    let lengthFilter = localStorage.getItem('thaiToneLengthFilter') || 'all';
     
-    // Sync toggle element state
     document.addEventListener("DOMContentLoaded", () => {
         const toggleEl = document.getElementById('focus-mode-toggle');
         if (toggleEl) toggleEl.checked = focusMode;
+
+        const selectEl = document.getElementById('length-filter-select');
+        if (selectEl) selectEl.value = lengthFilter;
     });
 
     const tonesRegex = /[่้๊๋]/g;
@@ -403,18 +437,9 @@
             const parts = url.split('/');
             const filenameWithExt = parts[parts.length - 1] || '';
             const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
-            
-            // Extract cleaner category from parent folder if available, otherwise default to "Lessons"
-            let category = parts.length >= 2 ? parts[parts.length - 2] : 'General';
-            if (category.toLowerCase() === 'audios' || category.includes('http')) {
-                category = 'Vocabulary';
-            }
-            // Capitalize category nicely
-            category = category.charAt(0).toUpperCase() + category.slice(1);
-
             const stripped = word.replace(tonesRegex, '');
-            return { url, word, stripped, category };
-        }).filter(item => item.word.length > 0 && item.word.length <= 10); // Filters out words longer than 10 chars
+            return { url, word, stripped };
+        }).filter(item => item.word.length > 0 && item.word.length <= 10);
     }
 
     function splitThai(w) {
@@ -424,7 +449,7 @@
     function initGame() {
         parseVocabUrls();
         if (vocabulary.length === 0) {
-            document.getElementById('definition').innerText = "Error: No valid audio URLs found (check max length filter or vocabAudioUrls.js)";
+            console.error("No valid audio URLs found.");
             return;
         }
 
@@ -436,21 +461,28 @@
 
         let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
         
-        // Filter pool based on Focus Mode if enabled
+        // Apply Length Filter first
         let availablePool = vocabulary;
-        if (focusMode) {
-            availablePool = vocabulary.filter(item => {
-                let stat = stats[item.word];
-                if (!stat || stat.total === 0) return true; // Unseen words included
-                let accuracy = stat.correct / stat.total;
-                return accuracy < 0.9; // Less than 90% correct
-            });
-            if (availablePool.length === 0) {
-                availablePool = vocabulary; // Fallback if all words are >=90%
-            }
+        if (lengthFilter !== 'all') {
+            const targetLen = parseInt(lengthFilter, 10);
+            availablePool = availablePool.filter(item => item.word.length === targetLen);
         }
 
-        // Weighted random selection based on past stats
+        // Apply Focus Mode Filter next
+        if (focusMode) {
+            availablePool = availablePool.filter(item => {
+                let stat = stats[item.word];
+                if (!stat || stat.total === 0) return true;
+                let accuracy = stat.correct / stat.total;
+                return accuracy < 0.9;
+            });
+        }
+
+        // Fallback if filters return empty pool
+        if (availablePool.length === 0) {
+            availablePool = vocabulary;
+        }
+
         let weightedPool = [];
         availablePool.forEach(item => {
             let stat = stats[item.word];
@@ -467,8 +499,6 @@
         });
 
         currentWordObj = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-        
-        document.getElementById('definition').innerText = `Category: ${currentWordObj.category}${focusMode ? ' (Focus Mode Active)' : ''}`;
         document.getElementById('feedback').innerText = "";
 
         cleanWordParts = splitThai(currentWordObj.stripped);
@@ -541,7 +571,7 @@
 
     function updateStats(word, correct) {
         let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
-        if (!stats[word]) stats[word] = { correct: 0, total: 0, category: currentWordObj.category };
+        if (!stats[word]) stats[word] = { correct: 0, total: 0 };
         
         stats[word].total++;
         if (correct) stats[word].correct++;
@@ -558,7 +588,13 @@
     function toggleFocusMode(checkbox) {
         focusMode = checkbox.checked;
         localStorage.setItem('thaiToneFocusMode', focusMode);
-        initGame(); // Reset current round with new filter
+        initGame();
+    }
+
+    function changeLengthFilter(select) {
+        lengthFilter = select.value;
+        localStorage.setItem('thaiToneLengthFilter', lengthFilter);
+        initGame();
     }
 
     function showStats() {
@@ -570,7 +606,6 @@
             word,
             correct: data.correct,
             total: data.total,
-            category: data.category || 'Vocabulary',
             percent: Math.round((data.correct / data.total) * 100)
         })).sort((a, b) => a.percent - b.percent);
 
@@ -583,8 +618,7 @@
             row.className = 'stat-row';
             row.innerHTML = `
                 <div>
-                    <span style="font-family: var(--thai-font); font-size: 1.1rem; color: white; display: block;">${item.word}</span>
-                    <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">${item.category}</span>
+                    <span style="font-family: var(--thai-font); font-size: 1.25rem; color: white; display: block;">${item.word}</span>
                 </div>
                 <div style="text-align: right;">
                     <span style="font-weight:bold; font-size: 0.95rem; color: ${item.percent < 60 ? 'var(--wrong)' : item.percent < 80 ? '#fbbf24' : 'var(--correct)'}">${item.percent}%</span>
