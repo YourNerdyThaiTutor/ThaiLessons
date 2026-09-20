@@ -221,15 +221,61 @@
             background: var(--card);
             width: 90%;
             max-width: 450px;
-            max-height: 80vh;
+            max-height: 85vh;
             border-radius: 24px;
-            padding: 30px;
+            padding: 25px;
             overflow-y: auto;
             border: 1px solid #334155;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
         }
+
+        /* Toggle Switch Styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0f172a;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #334155;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #334155;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         .stat-row {
             display: flex;
@@ -307,13 +353,22 @@
     <!-- Stats Modal Overlay -->
     <div id="stats-overlay" class="overlay">
         <div class="stats-content">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 12px;">
-                <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--accent); margin: 0;">Mastery Rankings</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                <h2 style="font-family: 'Syncopate'; font-size: 0.9rem; color: var(--accent); margin: 0;">Mastery Rankings</h2>
                 <button onclick="document.getElementById('stats-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size: 1.2rem; cursor: pointer;">✕</button>
             </div>
-            <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 15px; text-align: left;">Words are sorted with your worst-performing items at the top so you can focus your practice.</p>
-            <div id="stats-list" style="overflow-y: auto; flex: 1;"></div>
-            <button class="btn btn-submit" style="margin-top:20px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
+            
+            <!-- Focus Mode Toggle Switch -->
+            <div class="toggle-container">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1;">Focus Mode (&lt;90% & Unseen)</span>
+                <label class="switch">
+                    <input type="checkbox" id="focus-mode-toggle" onchange="toggleFocusMode(this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div id="stats-list" style="overflow-y: auto; flex: 1; max-height: 40vh;"></div>
+            <button class="btn btn-submit" style="margin-top:15px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
         </div>
     </div>
 
@@ -325,8 +380,14 @@
     let selectedIndex = 0;
     let isReviewMode = false;
     let currentAudio = null;
+    let focusMode = localStorage.getItem('thaiToneFocusMode') === 'true';
     
-    // Tone marks regex only (ignoring silent marks)
+    // Sync toggle element state
+    document.addEventListener("DOMContentLoaded", () => {
+        const toggleEl = document.getElementById('focus-mode-toggle');
+        if (toggleEl) toggleEl.checked = focusMode;
+    });
+
     const tonesRegex = /[่้๊๋]/g;
 
     function parseVocabUrls() {
@@ -342,10 +403,18 @@
             const parts = url.split('/');
             const filenameWithExt = parts[parts.length - 1] || '';
             const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
-            const category = parts[parts.length - 2] || 'general';
+            
+            // Extract cleaner category from parent folder if available, otherwise default to "Lessons"
+            let category = parts.length >= 2 ? parts[parts.length - 2] : 'General';
+            if (category.toLowerCase() === 'audios' || category.includes('http')) {
+                category = 'Vocabulary';
+            }
+            // Capitalize category nicely
+            category = category.charAt(0).toUpperCase() + category.slice(1);
+
             const stripped = word.replace(tonesRegex, '');
             return { url, word, stripped, category };
-        }).filter(item => item.word.length > 0);
+        }).filter(item => item.word.length > 0 && item.word.length <= 10); // Filters out words longer than 10 chars
     }
 
     function splitThai(w) {
@@ -355,7 +424,7 @@
     function initGame() {
         parseVocabUrls();
         if (vocabulary.length === 0) {
-            document.getElementById('definition').innerText = "Error: No audio URLs found in vocabAudioUrls.js";
+            document.getElementById('definition').innerText = "Error: No valid audio URLs found (check max length filter or vocabAudioUrls.js)";
             return;
         }
 
@@ -365,10 +434,25 @@
         actionBtn.className = "btn btn-submit";
         actionBtn.onclick = checkAnswer;
 
-        // Weighted random selection based on past stats
         let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        
+        // Filter pool based on Focus Mode if enabled
+        let availablePool = vocabulary;
+        if (focusMode) {
+            availablePool = vocabulary.filter(item => {
+                let stat = stats[item.word];
+                if (!stat || stat.total === 0) return true; // Unseen words included
+                let accuracy = stat.correct / stat.total;
+                return accuracy < 0.9; // Less than 90% correct
+            });
+            if (availablePool.length === 0) {
+                availablePool = vocabulary; // Fallback if all words are >=90%
+            }
+        }
+
+        // Weighted random selection based on past stats
         let weightedPool = [];
-        vocabulary.forEach(item => {
+        availablePool.forEach(item => {
             let stat = stats[item.word];
             let weight = 3;
             if (stat && stat.total > 0) {
@@ -384,7 +468,7 @@
 
         currentWordObj = weightedPool[Math.floor(Math.random() * weightedPool.length)];
         
-        document.getElementById('definition').innerText = `Category: ${currentWordObj.category}`;
+        document.getElementById('definition').innerText = `Category: ${currentWordObj.category}${focusMode ? ' (Focus Mode Active)' : ''}`;
         document.getElementById('feedback').innerText = "";
 
         cleanWordParts = splitThai(currentWordObj.stripped);
@@ -471,6 +555,12 @@
         document.getElementById('total-played-count').innerText = totalAnswers;
     }
 
+    function toggleFocusMode(checkbox) {
+        focusMode = checkbox.checked;
+        localStorage.setItem('thaiToneFocusMode', focusMode);
+        initGame(); // Reset current round with new filter
+    }
+
     function showStats() {
         const stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
         const listDiv = document.getElementById('stats-list');
@@ -480,12 +570,12 @@
             word,
             correct: data.correct,
             total: data.total,
-            category: data.category || 'general',
+            category: data.category || 'Vocabulary',
             percent: Math.round((data.correct / data.total) * 100)
         })).sort((a, b) => a.percent - b.percent);
 
         if (sortedStats.length === 0) {
-            listDiv.innerHTML = "<p style='color:#64748b; text-align:center; padding: 20px;'>No data yet. Keep playing!</p>";
+            listDiv.innerHTML = "<p style='color:#64748b; text-align:center; padding: 20px; font-size: 0.85rem;'>No data yet. Keep playing!</p>";
         }
 
         sortedStats.forEach(item => {
@@ -493,12 +583,12 @@
             row.className = 'stat-row';
             row.innerHTML = `
                 <div>
-                    <span style="font-family: var(--thai-font); font-size: 1.2rem; color: white; display: block;">${item.word}</span>
-                    <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;">${item.category}</span>
+                    <span style="font-family: var(--thai-font); font-size: 1.1rem; color: white; display: block;">${item.word}</span>
+                    <span style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;">${item.category}</span>
                 </div>
                 <div style="text-align: right;">
-                    <span style="font-weight:bold; font-size: 1rem; color: ${item.percent < 60 ? 'var(--wrong)' : item.percent < 80 ? '#fbbf24' : 'var(--correct)'}">${item.percent}%</span>
-                    <span style="font-size: 0.7rem; color: #64748b; display: block;">${item.correct}/${item.total} correct</span>
+                    <span style="font-weight:bold; font-size: 0.95rem; color: ${item.percent < 60 ? 'var(--wrong)' : item.percent < 80 ? '#fbbf24' : 'var(--correct)'}">${item.percent}%</span>
+                    <span style="font-size: 0.65rem; color: #64748b; display: block;">${item.correct}/${item.total} correct</span>
                 </div>
             `;
             listDiv.appendChild(row);
