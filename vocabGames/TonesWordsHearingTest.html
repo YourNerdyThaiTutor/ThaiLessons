@@ -60,6 +60,14 @@
             align-items: center;
             box-sizing: border-box;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .nav-btn {
@@ -93,40 +101,39 @@
 
         h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 15px; }
 
-        /* Filter Controls Styling on Main Page */
-        .controls-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
+        /* Filter Controls Styling inside Modal */
         .filter-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
             background: #0f172a;
-            padding: 8px 14px;
+            padding: 12px 14px;
             border-radius: 12px;
+            margin-bottom: 12px;
             border: 1px solid #334155;
         }
 
-        select.filter-select {
+        input.filter-input {
             background: #334155;
             color: white;
-            border: none;
+            border: 1px solid #475569;
             padding: 6px 10px;
             border-radius: 8px;
             font-family: 'Montserrat', sans-serif;
-            font-size: 0.8rem;
-            cursor: pointer;
+            font-size: 0.9rem;
+            width: 70px;
+            text-align: center;
+        }
+        input.filter-input::-webkit-inner-spin-button, 
+        input.filter-input::-webkit-outer-spin-button { 
+            opacity: 1; 
         }
 
         .switch {
             position: relative;
             display: inline-block;
-            width: 40px;
-            height: 22px;
+            width: 44px;
+            height: 24px;
         }
 
         .switch input { opacity: 0; width: 0; height: 0; }
@@ -137,14 +144,14 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background-color: #334155;
             transition: .3s;
-            border-radius: 22px;
+            border-radius: 24px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px;
-            width: 16px;
+            height: 18px;
+            width: 18px;
             left: 3px;
             bottom: 3px;
             background-color: white;
@@ -153,7 +160,7 @@
         }
 
         input:checked + .slider { background-color: var(--accent); }
-        input:checked + .slider:before { transform: translateX(18px); }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         /* Audio Player Button */
         .audio-btn {
@@ -329,44 +336,18 @@
         <a href="https://yournerdythaitutor.github.io/Lessons/" class="nav-btn">
             ← Study Thai
         </a>
-        <button onclick="showStats()" class="nav-btn">
-            📊 Stats (<span id="total-played-count">0</span>)
-        </button>
+        <div class="nav-group">
+            <button onclick="showFilters()" class="nav-btn">
+                ⚙️ Filters
+            </button>
+            <button onclick="showStats()" class="nav-btn">
+                📊 Stats (<span id="total-played-count">0</span>)
+            </button>
+        </div>
     </header>
 
     <div class="container">
         <h1>COMPLETE THE TONES</h1>
-        
-        <!-- Main Page Filter Controls -->
-        <div class="controls-wrapper">
-            <!-- Focus Mode Toggle Switch -->
-            <div class="filter-container">
-                <span style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1;">Focus Mode (&lt;90% & Unseen)</span>
-                <label class="switch">
-                    <input type="checkbox" id="focus-mode-toggle" onchange="toggleFocusMode(this)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-
-            <!-- Word Length Filter Dropdown -->
-            <div class="filter-container">
-                <span style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1;">Word Length Filter</span>
-                <select id="length-filter-select" class="filter-select" onchange="changeLengthFilter(this)">
-                    <option value="all">Any Length</option>
-                    <option value="1">1 Letter</option>
-                    <option value="2">2 Letters</option>
-                    <option value="3">3 Letters</option>
-                    <option value="4">4 Letters</option>
-                    <option value="5">5 Letters</option>
-                    <option value="6">6 Letters</option>
-                    <option value="7">7 Letters</option>
-                    <option value="8">8 Letters</option>
-                    <option value="9">9 Letters</option>
-                    <option value="10">10 Letters</option>
-                </select>
-            </div>
-        </div>
-
         <div id="feedback" class="feedback"></div>
         
         <!-- Audio Player Button -->
@@ -388,6 +369,36 @@
         </div>
 
         <button id="action-btn" class="btn btn-submit" onclick="checkAnswer()">Submit Guess</button>
+    </div>
+
+    <!-- Filters Modal Overlay -->
+    <div id="filters-overlay" class="overlay">
+        <div class="stats-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 10px;">
+                <h2 style="font-family: 'Syncopate'; font-size: 0.9rem; color: var(--accent); margin: 0;">Game Filters</h2>
+                <button onclick="document.getElementById('filters-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size: 1.2rem; cursor: pointer;">✕</button>
+            </div>
+            
+            <!-- Focus Mode Toggle Switch -->
+            <div class="filter-container">
+                <span style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1;">Focus Mode (&lt;90% & Unseen)</span>
+                <label class="switch">
+                    <input type="checkbox" id="focus-mode-toggle" onchange="toggleFocusMode(this)">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <!-- Word Length Input Field -->
+            <div class="filter-container">
+                <div style="text-align: left;">
+                    <span style="font-size: 0.8rem; font-weight: 600; color: #cbd5e1; display: block;">Exact Word Length</span>
+                    <span style="font-size: 0.65rem; color: #64748b;">Leave blank for any length</span>
+                </div>
+                <input type="number" id="length-filter-input" class="filter-input" min="1" placeholder="Any" oninput="changeLengthFilter(this)">
+            </div>
+
+            <button class="btn btn-submit" style="margin-top:15px;" onclick="document.getElementById('filters-overlay').style.display='none'">Apply & Play</button>
+        </div>
     </div>
 
     <!-- Stats Modal Overlay -->
@@ -412,14 +423,14 @@
     let isReviewMode = false;
     let currentAudio = null;
     let focusMode = localStorage.getItem('thaiToneFocusMode') === 'true';
-    let lengthFilter = localStorage.getItem('thaiToneLengthFilter') || 'all';
+    let lengthFilter = localStorage.getItem('thaiToneLengthFilter') || '';
     
     document.addEventListener("DOMContentLoaded", () => {
         const toggleEl = document.getElementById('focus-mode-toggle');
         if (toggleEl) toggleEl.checked = focusMode;
 
-        const selectEl = document.getElementById('length-filter-select');
-        if (selectEl) selectEl.value = lengthFilter;
+        const inputEl = document.getElementById('length-filter-input');
+        if (inputEl) inputEl.value = lengthFilter;
     });
 
     const tonesRegex = /[่้๊๋]/g;
@@ -439,7 +450,7 @@
             const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
             const stripped = word.replace(tonesRegex, '');
             return { url, word, stripped };
-        }).filter(item => item.word.length > 0 && item.word.length <= 10);
+        }).filter(item => item.word.length > 0);
     }
 
     function splitThai(w) {
@@ -463,7 +474,7 @@
         
         // Apply Length Filter first
         let availablePool = vocabulary;
-        if (lengthFilter !== 'all') {
+        if (lengthFilter !== '' && !isNaN(lengthFilter)) {
             const targetLen = parseInt(lengthFilter, 10);
             availablePool = availablePool.filter(item => item.word.length === targetLen);
         }
@@ -591,10 +602,14 @@
         initGame();
     }
 
-    function changeLengthFilter(select) {
-        lengthFilter = select.value;
+    function changeLengthFilter(input) {
+        lengthFilter = input.value.trim();
         localStorage.setItem('thaiToneLengthFilter', lengthFilter);
         initGame();
+    }
+
+    function showFilters() {
+        document.getElementById('filters-overlay').style.display = 'flex';
     }
 
     function showStats() {
