@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thai Tone Master | Practice Thai Tones</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Sarabun for Thai support -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', 'Sarabun', sans-serif;
+        }
+        .thai-font {
+            font-family: 'Sarabun', sans-serif;
+        }
+        /* Custom smooth modal transitions */
+        .modal {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 min-h-full flex flex-col text-slate-800">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-30 px-4 py-3 border-b border-indigo-100">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-indigo-200">
+                    🇹🇭
+                </div>
+                <div>
+                    <h1 class="font-bold text-base text-slate-900 leading-tight">Thai Tone Master</h1>
+                    <p class="text-xs text-slate-500">Train your ear & spelling</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="https://yournerdythaitutor.github.io/Lessons/" target="_blank" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition flex items-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-book-open text-indigo-600"></i>
+                    <span>Study Thai</span>
+                </a>
+                <button id="stats-btn" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-lg transition flex items-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-chart-bar"></i>
+                    <span>Stats</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 flex flex-col justify-between">
+        
+        <!-- Top Info & Streak / Score Bar -->
+        <div class="flex justify-between items-center mb-4 bg-white/60 backdrop-blur px-4 py-2.5 rounded-2xl border border-indigo-50 shadow-sm">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs uppercase tracking-wider text-slate-400 font-semibold">Category:</span>
+                <span id="category-badge" class="px-2.5 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-bold thai-font">Loading...</span>
+            </div>
+            <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-1 text-amber-500 font-bold text-sm">
+                    <i class="fa-solid fa-fire text-amber-500 animate-pulse"></i>
+                    <span id="streak-count">0</span>
+                </div>
+                <div class="text-xs text-slate-500 font-medium">
+                    Word <span id="current-word-num">1</span>/<span id="total-words-num">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Audio Player & Question Card -->
+        <div class="bg-white rounded-3xl p-6 shadow-xl shadow-indigo-100/50 border border-indigo-50 flex flex-col items-center relative overflow-hidden mb-4">
+            <!-- Decorative background blob -->
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-100 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div class="text-center mb-6">
+                <p class="text-xs font-semibold uppercase tracking-wider text-indigo-500 mb-1">Listen & Add Tones</p>
+                <h2 class="text-sm text-slate-500">Tap the speaker to listen, then add correct tone marks to the base word.</h2>
+            </div>
+
+            <!-- Big Audio Play Button -->
+            <button id="play-audio-btn" class="w-20 h-20 bg-gradient-to-tr from-indigo-600 to-violet-500 text-white rounded-full flex items-center justify-center text-3xl shadow-lg shadow-indigo-300 hover:scale-105 active:scale-95 transition transform mb-6 group relative">
+                <i class="fa-solid fa-volume-high group-hover:scale-110 transition"></i>
+                <div class="absolute inset-0 rounded-full border-4 border-indigo-300 animate-ping opacity-20 pointer-events-none"></div>
+            </button>
+            <span id="audio-status" class="text-xs text-slate-400 font-medium -mt-4 mb-4">Tap to play audio</span>
+
+            <!-- Skeleton / Base Word Display Area -->
+            <div class="w-full bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-center mb-4">
+                <p class="text-xs text-slate-400 font-medium mb-1">Word Skeleton (Tones Stripped):</p>
+                <div id="word-skeleton" class="text-4xl font-bold thai-font text-slate-800 tracking-wide min-h-[50px] flex items-center justify-center flex-wrap gap-1">
+                    <!-- Dynamic letters injected here -->
+                </div>
+                <p class="text-[11px] text-indigo-500 mt-2">Tap a Thai character above to select it, then tap a tone mark below.</p>
+            </div>
+
+            <!-- Tone Mark Keyboard / Palette -->
+            <div class="w-full grid grid-cols-5 gap-2">
+                <button data-tone="" class="tone-btn bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-sm border border-slate-200 flex flex-col items-center justify-center transition active:scale-95">
+                    <span class="text-base thai-font">Ø</span>
+                    <span class="text-[10px] text-slate-500 font-normal">None</span>
+                </button>
+                <button data-tone="่" class="tone-btn bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 rounded-xl font-bold text-sm border border-indigo-200 flex flex-col items-center justify-center transition active:scale-95">
+                    <span class="text-lg thai-font text-indigo-600">่</span>
+                    <span class="text-[10px] text-indigo-500 font-normal">Mai Ek</span>
+                </button>
+                <button data-tone="้" class="tone-btn bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 rounded-xl font-bold text-sm border border-indigo-200 flex flex-col items-center justify-center transition active:scale-95">
+                    <span class="text-lg thai-font text-indigo-600">้</span>
+                    <span class="text-[10px] text-indigo-500 font-normal">Mai Tho</span>
+                </button>
+                <button data-tone="๊" class="tone-btn bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 rounded-xl font-bold text-sm border border-indigo-200 flex flex-col items-center justify-center transition active:scale-95">
+                    <span class="text-lg thai-font text-indigo-600">๊</span>
+                    <span class="text-[10px] text-indigo-500 font-normal">Mai Tri</span>
+                </button>
+                <button data-tone="๋" class="tone-btn bg-indigo-50 hover:bg-indigo-100 text-indigo-700 py-3 rounded-xl font-bold text-sm border border-indigo-200 flex flex-col items-center justify-center transition active:scale-95">
+                    <span class="text-lg thai-font text-indigo-600">๋</span>
+                    <span class="text-[10px] text-indigo-500 font-normal">Chtawa</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="space-y-2 mb-4">
+            <button id="submit-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-semibold py-3.5 px-6 rounded-2xl shadow-lg shadow-indigo-200 transition flex items-center justify-center space-x-2 text-base">
+                <i class="fa-solid fa-check"></i>
+                <span>Check Answer</span>
+            </button>
+            <button id="skip-btn" class="w-full bg-white hover:bg-slate-50 text-slate-600 font-medium py-2.5 px-6 rounded-2xl border border-slate-200 transition text-sm">
+                Skip for Now
+            </button>
+        </div>
+
+        <!-- Feedback Banner (Hidden by default) -->
+        <div id="feedback-banner" class="hidden rounded-2xl p-4 mb-4 text-center transform transition-all duration-300">
+            <div id="feedback-icon" class="text-2xl mb-1"></div>
+            <h3 id="feedback-title" class="font-bold text-base mb-0.5"></h3>
+            <p id="feedback-desc" class="text-xs text-slate-600 mb-2"></p>
+            <div id="feedback-correct-word" class="text-xl font-bold thai-font text-slate-800"></div>
+            <button id="next-btn" class="mt-3 bg-slate-900 text-white font-semibold px-6 py-2 rounded-xl text-xs shadow hover:bg-slate-800 transition">
+                Next Word <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+
+        <!-- Footer Note -->
+        <footer class="text-center text-xs text-slate-400 py-2">
+            Thai Tone Master &bull; Powered by Your Nerdy Thai Tutor
+        </footer>
+    </main>
+
+    <!-- Stats Modal -->
+    <div id="stats-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none modal">
+        <div class="bg-white rounded-3xl max-w-md w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-100">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="font-bold text-slate-800 text-base">Your Vocabulary Stats</h3>
+                </div>
+                <button id="close-stats-btn" class="w-8 h-8 rounded-full bg-slate-200/70 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body (Stats List sorted by worst performing) -->
+            <div class="p-6 overflow-y-auto flex-1 space-y-4">
+                <div class="bg-indigo-50/70 rounded-2xl p-4 flex justify-around text-center">
+                    <div>
+                        <span id="stat-total-practiced" class="block text-xl font-bold text-indigo-600">0</span>
+                        <span class="text-[11px] text-slate-500 font-medium">Words Practiced</span>
+                    </div>
+                    <div class="border-r border-indigo-200/60"></div>
+                    <div>
+                        <span id="stat-overall-accuracy" class="block text-xl font-bold text-indigo-600">0%</span>
+                        <span class="text-[11px] text-slate-500 font-medium">Overall Accuracy</span>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Words Needing Practice (Worst First)</h4>
+                    <div id="stats-word-list" class="space-y-2">
+                        <!-- Injected dynamically -->
+                        <div class="text-center py-8 text-slate-400 text-xs">
+                            No practice stats recorded yet. Start playing to see your stats!
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-3 border-t border-slate-100 bg-slate-50 flex justify-between items-center">
+                <button id="reset-stats-btn" class="text-xs text-rose-600 hover:text-rose-700 font-medium flex items-center space-x-1">
+                    <i class="fa-solid fa-trash-can"></i>
+                    <span>Reset Stats</span>
+                </button>
+                <button id="close-stats-footer-btn" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold transition">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load External vocabAudioUrls.js script directly or fallback to embedded demo data -->
+    <script src="./assets/vocabAudioUrls.js" onerror="loadFallbackVocabData()"></script>
+    <script>
+        // Fallback loader if external asset file is not yet in place during local preview testing
+        function loadFallbackVocabData() {
+            if (typeof vocabAudioUrls === 'undefined') {
+                window.vocabAudioUrls = `
+                    https://yournerdythaitutor.github.io/Lessons/audios/directions/สุขา.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/directions/รถไฟฟ้า.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/directions/ทาง.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/directions/ตรงไป.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/food/ส้ม.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/food/น้ำ.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/food/ข้าว.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/colors/แดง.mp3
+                    https://yournerdythaitutor.github.io/Lessons/audios/colors/เขียว.mp3
+                `;
+            }
+            initGame();
+        }
+    </script>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        let vocabList = [];
+        let currentWordData = null;
+        let streak = 0;
+        let selectedLetterIndex = 0;
+        let currentAudio = null;
+        let userStats = {};
+
+        // Thai Tone Marks Regex
+        const toneRegex = /[\u0E48\u0E49\u0E4A\u0E4B]/g;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof vocabAudioUrls !== 'undefined') {
+                initGame();
+            }
+        });
+
+        function initGame() {
+            vocabList = parseVocabDataFromVariable(window.vocabAudioUrls);
+            loadStats();
+
+            document.getElementById('total-words-num').textContent = vocabList.length;
+
+            if (vocabList.length === 0) {
+                alert("No audio URLs found in vocabAudioUrls.js!");
+                return;
+            }
+
+            loadRandomWord();
+
+            // Event Listeners
+            document.getElementById('play-audio-btn').addEventListener('click', playCurrentAudio);
+            document.getElementById('submit-btn').addEventListener('click', checkAnswer);
+            document.getElementById('skip-btn').addEventListener('click', loadRandomWord);
+            document.getElementById('next-btn').addEventListener('click', loadRandomWord);
+            
+            // Stats modal buttons
+            document.getElementById('stats-btn').addEventListener('click', openStatsModal);
+            document.getElementById('close-stats-btn').addEventListener('click', closeStatsModal);
+            document.getElementById('close-stats-footer-btn').addEventListener('click', closeStatsModal);
+            document.getElementById('reset-stats-btn').addEventListener('click', resetStats);
+
+            // Tone keyboard buttons
+            const toneBtns = document.querySelectorAll('.tone-btn');
+            toneBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tone = btn.getAttribute('data-tone');
+                    applyToneToSelectedChar(tone);
+                });
+            });
+        }
+
+        function parseVocabDataFromVariable(rawString) {
+            if (!rawString) return [];
+            const lines = rawString.trim().split('\n');
+            const list = [];
+            
+            lines.forEach(line => {
+                const url = line.trim();
+                if (!url || !url.endsWith('.mp3')) return;
+
+                // Extract word between last slash and .mp3
+                const parts = url.split('/');
+                const filenameWithExt = parts[parts.length - 1];
+                const encodedWord = filenameWithExt.replace('.mp3', '');
+                
+                try {
+                    const word = decodeURIComponent(encodedWord);
+                    const category = parts.length >= 3 ? parts[parts.length - 2] : 'general';
+                    const skeleton = word.replace(toneRegex, '');
+
+                    list.push({
+                        url: url,
+                        word: word,
+                        skeleton: skeleton,
+                        category: category,
+                        editableChars: Array.from(skeleton).map(char => ({ char: char, tone: '' }))
+                    });
+                } catch (e) {
+                    console.error("Error parsing URL:", url, e);
+                }
+            });
+
+            return list;
+        }
+
+        function loadStats() {
+            try {
+                const saved = localStorage.getItem('thai_tone_master_stats');
+                if (saved) {
+                    userStats = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.error("Failed to load stats from localStorage", e);
+                userStats = {};
+            }
+        }
+
+        function saveStats() {
+            try {
+                localStorage.setItem('thai_tone_master_stats', JSON.stringify(userStats));
+            } catch (e) {
+                console.error("Failed to save stats to localStorage", e);
+            }
+        }
+
+        function loadRandomWord() {
+            const feedbackBanner = document.getElementById('feedback-banner');
+            feedbackBanner.classList.add('hidden');
+            feedbackBanner.className = "hidden rounded-2xl p-4 mb-4 text-center transform transition-all duration-300";
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            currentWordData = pickSmartRandomWord();
+            currentWordData.editableChars = Array.from(currentWordData.skeleton).map(char => ({ char: char, tone: '' }));
+            selectedLetterIndex = 0;
+
+            document.getElementById('category-badge').textContent = currentWordData.category.toUpperCase();
+            document.getElementById('streak-count').textContent = streak;
+
+            renderSkeleton();
+            playCurrentAudio();
+        }
+
+        function pickSmartRandomWord() {
+            const weightedList = [];
+            vocabList.forEach((item) => {
+                const stat = userStats[item.url];
+                let weight = 3;
+                if (stat && stat.total > 0) {
+                    const accuracy = stat.correct / stat.total;
+                    weight = Math.max(1, Math.round((1 - accuracy) * 10) + 1);
+                }
+                for (let i = 0; i < weight; i++) {
+                    weightedList.push(item);
+                }
+            });
+
+            const randomIndex = Math.floor(Math.random() * weightedList.length);
+            return weightedList[randomIndex];
+        }
+
+        function playCurrentAudio() {
+            if (!currentWordData) return;
+
+            const statusEl = document.getElementById('audio-status');
+            statusEl.textContent = "Playing audio...";
+            statusEl.className = "text-xs text-indigo-600 font-semibold -mt-4 mb-4 animate-pulse";
+
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+
+            currentAudio = new Audio(currentWordData.url);
+            currentAudio.play().then(() => {
+                setTimeout(() => {
+                    statusEl.textContent = "Tap to replay audio";
+                    statusEl.className = "text-xs text-slate-400 font-medium -mt-4 mb-4";
+                }, 1000);
+            }).catch(err => {
+                console.error("Audio playback error:", err);
+                statusEl.textContent = "Audio playback failed (check connection)";
+                statusEl.className = "text-xs text-rose-500 font-medium -mt-4 mb-4";
+            });
+        }
+
+        function renderSkeleton() {
+            const container = document.getElementById('word-skeleton');
+            container.innerHTML = '';
+
+            currentWordData.editableChars.forEach((item, idx) => {
+                const charWrapper = document.createElement('div');
+                const isSelected = (idx === selectedLetterIndex);
+
+                charWrapper.className = `relative px-3 py-2 rounded-xl border-2 transition cursor-pointer flex flex-col items-center justify-center min-w-[44px] min-h-[56px] ${
+                    isSelected 
+                        ? 'border-indigo-600 bg-indigo-50/80 shadow-md shadow-indigo-100 scale-105' 
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                }`;
+
+                charWrapper.onclick = () => {
+                    selectedLetterIndex = idx;
+                    renderSkeleton();
+                };
+
+                if (item.tone) {
+                    const toneBadge = document.createElement('span');
+                    toneBadge.className = 'text-xs text-indigo-600 font-bold -mb-1';
+                    toneBadge.textContent = item.tone;
+                    charWrapper.appendChild(toneBadge);
+                } else {
+                    const spacer = document.createElement('span');
+                    spacer.className = 'text-xs text-transparent select-none -mb-1';
+                    spacer.textContent = 'Ø';
+                    charWrapper.appendChild(spacer);
+                }
+
+                const charSpan = document.createElement('span');
+                charSpan.className = 'text-2xl font-bold thai-font text-slate-800';
+                charSpan.textContent = item.char;
+                charWrapper.appendChild(charSpan);
+
+                container.appendChild(charWrapper);
+            });
+        }
+
+        function applyToneToSelectedChar(tone) {
+            if (!currentWordData || currentWordData.editableChars.length === 0) return;
+            
+            currentWordData.editableChars[selectedLetterIndex].tone = tone;
+            
+            if (selectedLetterIndex < currentWordData.editableChars.length - 1) {
+                selectedLetterIndex++;
+            }
+
+            renderSkeleton();
+        }
+
+        function checkAnswer() {
+            let constructedWord = '';
+            currentWordData.editableChars.forEach(item => {
+                constructedWord += item.char + item.tone;
+            });
+
+            const isCorrect = (constructedWord === currentWordData.word);
+
+            if (!userStats[currentWordData.url]) {
+                userStats[currentWordData.url] = { correct: 0, total: 0, word: currentWordData.word, category: currentWordData.category };
+            }
+            userStats[currentWordData.url].total += 1;
+            if (isCorrect) {
+                userStats[currentWordData.url].correct += 1;
+                streak++;
+            } else {
+                streak = 0;
+            }
+            saveStats();
+
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const banner = document.getElementById('feedback-banner');
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const desc = document.getElementById('feedback-desc');
+            const correctWordDisplay = document.getElementById('feedback-correct-word');
+
+            banner.classList.remove('hidden');
+
+            if (isCorrect) {
+                banner.className = "rounded-2xl p-4 mb-4 text-center transform transition-all duration-300 bg-emerald-50 border border-emerald-200 text-emerald-900";
+                icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+                title.textContent = "Correct! Excellent Job!";
+                desc.textContent = "You nailed the tone marks!";
+                correctWordDisplay.textContent = currentWordData.word;
+                correctWordDisplay.className = "text-xl font-bold thai-font text-emerald-700 mb-3";
+            } else {
+                banner.className = "rounded-2xl p-4 mb-4 text-center transform transition-all duration-300 bg-rose-50 border border-rose-200 text-rose-900";
+                icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+                title.textContent = "Not Quite Right";
+                desc.textContent = "The correct spelling with tones is:";
+                correctWordDisplay.textContent = currentWordData.word;
+                correctWordDisplay.className = "text-xl font-bold thai-font text-rose-700 mb-3";
+            }
+
+            playCurrentAudio();
+        }
+
+        function openStatsModal() {
+            const modal = document.getElementById('stats-modal');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            renderStatsList();
+        }
+
+        function closeStatsModal() {
+            const modal = document.getElementById('stats-modal');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+        }
+
+        function renderStatsList() {
+            const listContainer = document.getElementById('stats-word-list');
+            const totalPracticedEl = document.getElementById('stat-total-practiced');
+            const overallAccuracyEl = document.getElementById('stat-overall-accuracy');
+
+            const keys = Object.keys(userStats);
+            if (keys.length === 0) {
+                totalPracticedEl.textContent = '0';
+                overallAccuracyEl.textContent = '0%';
+                listContainer.innerHTML = `
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        No practice stats recorded yet. Start playing to see your stats!
+                    </div>
+                `;
+                return;
+            }
+
+            let totalCorrectAll = 0;
+            let totalAttemptsAll = 0;
+
+            const statsArray = keys.map(url => {
+                const stat = userStats[url];
+                totalCorrectAll += stat.correct;
+                totalAttemptsAll += stat.total;
+                const accuracy = stat.total > 0 ? (stat.correct / stat.total) * 100 : 0;
+                return {
+                    url: url,
+                    word: stat.word || 'Unknown',
+                    category: stat.category || 'general',
+                    correct: stat.correct,
+                    total: stat.total,
+                    accuracy: accuracy
+                };
+            });
+
+            // Sort: lowest accuracy first (worst performing on top), then most attempted
+            statsArray.sort((a, b) => {
+                if (a.accuracy !== b.accuracy) {
+                    return a.accuracy - b.accuracy;
+                }
+                return b.total - a.total;
+            });
+
+            totalPracticedEl.textContent = totalAttemptsAll;
+            const overallAcc = totalAttemptsAll > 0 ? Math.round((totalCorrectAll / totalAttemptsAll) * 100) : 0;
+            overallAccuracyEl.textContent = overallAcc + '%';
+
+            listContainer.innerHTML = '';
+            statsArray.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'bg-white p-3 rounded-xl border border-slate-200/80 flex items-center justify-between shadow-xs';
+
+                const accColor = item.accuracy < 50 ? 'text-rose-600 bg-rose-50' : (item.accuracy < 80 ? 'text-amber-600 bg-amber-50' : 'text-emerald-600 bg-emerald-50');
+
+                row.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xl font-bold thai-font text-slate-800">${item.word}</span>
+                        <span class="text-[10px] uppercase font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded-md">${item.category}</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="text-right">
+                            <span class="block text-xs font-bold text-slate-700">${item.correct}/${item.total} correct</span>
+                            <span class="text-[10px] text-slate-400">Attempts</span>
+                        </div>
+                        <div class="px-2.5 py-1 rounded-lg text-xs font-bold ${accColor}">
+                            ${Math.round(item.accuracy)}%
+                        </div>
+                    </div>
+                `;
+                listContainer.appendChild(row);
+            });
+        }
+
+        function resetStats() {
+            if (confirm("Are you sure you want to reset all your practice stats?")) {
+                userStats = {};
+                localStorage.removeItem('thai_tone_master_stats');
+                renderStatsList();
+            }
+        }
+    </script>
+</body>
+</html>
