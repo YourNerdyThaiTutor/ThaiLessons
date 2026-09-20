@@ -1,389 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BQ56JZ1LM4"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BQ56JZ1LM4');
+    </script>
+    
+    <script 
+        async 
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2893492306157134"
+        crossorigin="anonymous">
+    </script>
+    
+    <meta property="og:title" content="Where Do The Thai Tones Go? | Thai Learning Game">
+    <meta property="og:description" content="A Thai Learning Game For Tone Placement">
+    <meta property="og:image" content="https://nerdyguava.github.io/metatags/thai/games/vocab/completeTheTones.png">
+    <meta property="og:type" content="article">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thai Tone Master</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Complete The Thai Tone Game</title>
+    <script src="./assets/vocabAudioUrls.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --accent: #38bdf8;
+            --wrong: #ef4444;
+            --correct: #22c55e;
+            --text: #f8fafc;
+            --thai-font: "Leelawadee UI", "Tahoma", sans-serif;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 24px;
+            box-sizing: border-box;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
+
+        #definition {
+            font-size: 1rem;
+            color: #94a3b8;
+            margin: 10px 0;
+            font-weight: 400;
+        }
+
+        /* Audio Player Button */
+        .audio-btn {
+            background: #6366f1;
+            border: none;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 15px auto 5px auto;
+            transition: 0.2s;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+        .audio-btn:hover { background: #4f46e5; transform: scale(1.05); }
+        .audio-btn:active { transform: scale(0.95); }
+
+        #word-display {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0;
+            font-family: var(--thai-font);
+            font-size: 3.5rem;
+            max-width: 100%;
+        }
+
+        .char-box {
+            border-bottom: 4px solid #334155;
+            min-width: 60px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding-bottom: 5px;
+        }
+
+        .char-box.selected {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-5px);
+        }
+
+        .tone-keyboard {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .tone-key {
+            background: #334155;
+            border: none;
+            color: white;
+            padding: 15px 5px;
+            font-size: 1.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: var(--thai-font);
+            transition: 0.2s;
+        }
+
+        .tone-key:hover { background: #475569; }
+        .tone-key:active { transform: scale(0.95); }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syncopate';
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        .btn-submit { background: var(--accent); color: #0f172a; }
+        .btn-next { background: var(--correct); color: #0f172a; }
+        .btn-stats { background: transparent; color: #94a3b8; border: 1px solid #334155; margin-top: 25px; }
+
+        .remove-tone-btn {
+            grid-column: span 5;
+            font-size: 0.7rem;
+            padding: 10px;
+            font-family: 'Syncopate';
+            background: #1e293b;
+            border: 1px dashed #475569;
+            color: #94a3b8;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stats-content {
+            background: var(--card);
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            border-radius: 24px;
+            padding: 30px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            border-bottom: 1px solid #334155;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            font-weight: 600;
+            font-size: 1.4rem; 
+            line-height: 1.4;  
+            min-height: 40px;
+        }
+
+        .feedback span {
+            font-size: 1.6rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 5px;
+        }
+
+        .btn-study { 
+            background: #818cf8; 
+            color: #0f172a; 
+            margin-top: 10px; 
+        }
+        .btn-study:hover { background: #6366f1; }
+
+        @media (max-width: 480px) {
+            #word-display {
+                font-size: 2.2rem; 
+                gap: 8px;
+            }
+            .char-box {
+                min-width: 40px;
+            }
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="w-full bg-slate-800/80 backdrop-blur border-b border-slate-700 p-4 flex justify-between items-center shadow-md">
-        <a href="https://yournerdythaitutor.github.io/Lessons/" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow">
-            ← Study Thai
-        </a>
-        <h1 class="text-lg font-bold bg-gradient-to-r from-indigo-400 to-pink-400 bg-clip-text text-transparent hidden sm:block">Thai Tone Practice</h1>
-        <button onclick="openStats()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition shadow flex items-center gap-2 cursor-pointer">
-            📊 Stats (<span id="total-played-count">0</span>)
-        </button>
-    </header>
-
-    <!-- Main Game Container -->
-    <main class="max-w-md w-full mx-auto p-4 flex-1 flex flex-col justify-center items-center">
+    <div class="container">
+        <h1>COMPLETE THE TONES</h1>
+        <div id="definition">Category: ...</div>
         
-        <!-- Game Card -->
-        <div class="w-full bg-slate-800 border border-slate-700 rounded-3xl p-6 shadow-2xl flex flex-col items-center relative overflow-hidden">
-            
-            <!-- Progress / Score badge -->
-            <div class="w-full flex justify-between items-center mb-4 text-xs font-semibold text-slate-400 tracking-wider uppercase">
-                <span>Streak: <span id="current-streak" class="text-emerald-400 font-bold text-sm">0</span></span>
-                <span id="word-category" class="bg-slate-700 px-2.5 py-1 rounded-full text-slate-300">Loading...</span>
-            </div>
+        <!-- Audio Player Button -->
+        <button class="audio-btn" onclick="playAudio()" title="Listen to Audio">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+            </svg>
+        </button>
+        <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 5px;">Tap to Listen</div>
 
-            <!-- Audio Player Trigger -->
-            <button onclick="playAudio()" class="w-16 h-16 bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 group cursor-pointer">
-                <svg class="w-8 h-8 text-white group-hover:scale-110 transition" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </svg>
-            </button>
-            <p class="text-[11px] text-slate-400 mb-6 animate-pulse">Tap speaker to listen</p>
+        <div id="word-display"></div>
 
-            <!-- Target Word Character/Syllable Selector -->
-            <div class="w-full mb-6">
-                <p class="text-xs uppercase tracking-widest text-slate-400 mb-2 text-center">Tap a block to add/change tone:</p>
-                <div id="character-selector-container" class="flex flex-wrap justify-center gap-2 bg-slate-900/80 border border-slate-700/60 rounded-2xl p-4 min-h-[5.5rem] items-center">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <!-- Tone Modification Keypad -->
-            <div class="grid grid-cols-4 gap-2 w-full mb-3">
-                <button onclick="applyToneToSelected('̀')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
-                    <span>◌่</span>
-                    <span class="text-[9px] font-normal text-slate-400 mt-0.5">Low</span>
-                </button>
-                <button onclick="applyToneToSelected('́')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
-                    <span>◌́</span>
-                    <span class="text-[9px] font-normal text-slate-400 mt-0.5">High</span>
-                </button>
-                <button onclick="applyToneToSelected('̂')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
-                    <span>◌̂</span>
-                    <span class="text-[9px] font-normal text-slate-400 mt-0.5">Falling</span>
-                </button>
-                <button onclick="applyToneToSelected('̌')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
-                    <span>◌̌</span>
-                    <span class="text-[9px] font-normal text-slate-400 mt-0.5">Rising</span>
-                </button>
-            </div>
-
-            <!-- Remove Mark Button -->
-            <button onclick="applyToneToSelected('')" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-2.5 rounded-xl font-semibold text-xs tracking-wider uppercase mb-6 shadow transition cursor-pointer">
-                Remove Mark
-            </button>
-
-            <!-- Action Submit / Next Button -->
-            <button id="submit-btn" onclick="checkAnswer()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-emerald-600/20 transition cursor-pointer">
-                Check Answer
-            </button>
-
-            <!-- Feedback banner -->
-            <div id="feedback-banner" class="mt-4 text-center font-semibold text-sm hidden"></div>
-
+        <div class="tone-keyboard">
+            <button class="tone-key" onclick="applyTone('่')">◌่</button>
+            <button class="tone-key" onclick="applyTone('้')">◌้</button>
+            <button class="tone-key" onclick="applyTone('๊')">◌๊</button>
+            <button class="tone-key" onclick="applyTone('๋')">◌๋</button>
+            <button class="tone-key" onclick="applyTone('์')" title="Silent Mark">◌์</button>
+            <button class="tone-key remove-tone-btn" onclick="applyTone('')">Remove Mark</button>
         </div>
-    </main>
 
-    <!-- Stats Modal -->
-    <div id="stats-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
-            <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-700">
-                <h2 class="text-xl font-bold text-indigo-300">📊 Vocabulary Performance</h2>
-                <button onclick="closeStats()" class="text-slate-400 hover:text-white font-bold text-lg px-2 cursor-pointer">✕</button>
-            </div>
-            <p class="text-xs text-slate-400 mb-4">Words are sorted with your worst-performing items at the top so you can focus your practice.</p>
-            <div id="stats-list" class="overflow-y-auto flex-1 divide-y divide-slate-700/50 pr-1">
-                <!-- Populated via JS -->
-            </div>
-            <button onclick="closeStats()" class="mt-4 w-full bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 rounded-2xl transition cursor-pointer">Close</button>
+        <button id="action-btn" class="btn btn-submit" onclick="checkAnswer()">Submit Guess</button>
+        <div id="feedback" class="feedback"></div>
+        
+        <button class="btn btn-stats" onclick="showStats()">📊 Mastery Stats</button>
+        <button class="btn btn-study" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 Study Lessons</button>
+    </div>
+
+    <div id="stats-overlay" class="overlay">
+        <div class="stats-content">
+            <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--accent); margin-bottom: 20px;">Mastery Rankings</h2>
+            <div id="stats-list"></div>
+            <button class="btn btn-submit" style="margin-top:20px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
         </div>
     </div>
 
-    <!-- External Script Load -->
-    <script src="./assets/vocabAudioUrls.js"></script>
+<script>
+    let vocabulary = [];
+    let currentWordObj = null;
+    let cleanWordParts = [];
+    let userWordParts = [];
+    let selectedIndex = 0;
+    let isReviewMode = false;
+    let currentAudio = null;
+    
+    const marksRegex = /[่้๊๋์]/g;
 
-    <script>
-        // Fallback dataset if external script is missing
-        let rawUrls = typeof vocabAudioUrls !== 'undefined' ? vocabAudioUrls : `
-            https://yournerdythaitutor.github.io/Lessons/audios/directions/สุขา.mp3
-            https://yournerdythaitutor.github.io/Lessons/audios/directions/รถไฟฟ้า.mp3
-            https://yournerdythaitutor.github.io/Lessons/audios/directions/ทาง.mp3
-        `;
+    function parseVocabUrls() {
+        let raw = typeof vocabAudioUrls !== 'undefined' ? vocabAudioUrls : "";
+        let lines = [];
+        if (typeof raw === 'string') {
+            lines = raw.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.startsWith('http'));
+        } else if (Array.isArray(raw)) {
+            lines = raw;
+        }
 
-        let vocabulary = [];
+        vocabulary = lines.map(url => {
+            const parts = url.split('/');
+            const filenameWithExt = parts[parts.length - 1] || '';
+            const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
+            const category = parts[parts.length - 2] || 'general';
+            const stripped = word.replace(marksRegex, '');
+            return { url, word, stripped, category };
+        }).filter(item => item.word.length > 0);
+    }
+
+    function splitThai(w) {
+        return w.match(/[\u0E00-\u0E7F][\u0E31\u0E34-\u0E3A\u0E47-\u0E4E]*|[\u0E30-\u0E33\u0E40-\u0E46]/g) || [];
+    }
+
+    function initGame() {
+        parseVocabUrls();
+        if (vocabulary.length === 0) {
+            document.getElementById('definition').innerText = "Error: No audio URLs found in vocabAudioUrls.js";
+            return;
+        }
+
+        isReviewMode = false;
+        const actionBtn = document.getElementById('action-btn');
+        actionBtn.innerText = "Submit Guess";
+        actionBtn.className = "btn btn-submit";
+        actionBtn.onclick = checkAnswer;
+
+        // Weighted random selection based on past stats
+        let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        let weightedPool = [];
+        vocabulary.forEach(item => {
+            let stat = stats[item.word];
+            let weight = 3;
+            if (stat && stat.total > 0) {
+                let accuracy = stat.correct / stat.total;
+                if (accuracy < 0.4) weight = 8;
+                else if (accuracy < 0.7) weight = 5;
+                else weight = 1;
+            }
+            for (let i = 0; i < weight; i++) {
+                weightedPool.push(item);
+            }
+        });
+
+        currentWordObj = weightedPool[Math.floor(Math.random() * weightedPool.length)];
         
-        function parseUrls() {
-            let lines = [];
-            if (typeof rawUrls === 'string') {
-                lines = rawUrls.split(/[\r\n]+/).map(l => l.trim()).filter(l => l.startsWith('http'));
-            } else if (Array.isArray(rawUrls)) {
-                lines = rawUrls;
-            }
+        document.getElementById('definition').innerText = `Category: ${currentWordObj.category}`;
+        document.getElementById('feedback').innerText = "";
 
-            vocabulary = lines.map(url => {
-                const parts = url.split('/');
-                const filenameWithExt = parts[parts.length - 1] || '';
-                const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
-                const category = parts[parts.length - 2] || 'general';
-                const stripped = stripThaiTones(word);
-                return { url, word, stripped, category };
-            }).filter(item => item.word.length > 0);
+        cleanWordParts = splitThai(currentWordObj.stripped);
+        userWordParts = [...cleanWordParts];
+        
+        selectedIndex = 0;
+        renderWord();
+        playAudio();
+    }
+
+    function playAudio() {
+        if (!currentWordObj) return;
+        if (currentAudio) {
+            currentAudio.pause();
         }
+        currentAudio = new Audio(currentWordObj.url);
+        currentAudio.play().catch(e => console.log("Audio play prevented:", e));
+    }
 
-        function stripThaiTones(text) {
-            return text.replace(/[\u0E48-\u0E4B\u0E4C]/g, '');
-        }
-
-        // Smart tokenizer to group consonants with leading/trailing vowels and dependent signs correctly
-        function tokenizeThaiWord(word) {
-            let chars = Array.from(word);
-            let blocks = [];
-            let currentBlock = "";
-
-            // Thai leading vowels (เ, แ, โ, ใ, ไ) should attach to the upcoming consonant
-            let leadingVowels = new Set(['เ', 'แ', 'โ', 'ใ', 'ไ']);
-
-            for (let i = 0; i < chars.length; i++) {
-                let char = chars[i];
-                
-                // If it's a leading vowel and we have a pending block, push the old one first
-                if (leadingVowels.has(char) && currentBlock !== "") {
-                    blocks.push(currentBlock);
-                    currentBlock = char;
-                } else if (currentBlock === "" || !leadingVowels.has(currentBlock[0])) {
-                    // Normal combination building
-                    // If current character is a dependent vowel or sign (e.g. ะ, า, ิ, ี, ึ, ื, ุ, ู, ็, ์, etc.) attach to current block
-                    const isDependent = /[\u0E30-\u0E3A\u0E47-\u0E4E]/.test(char);
-                    if (isDependent && currentBlock !== "") {
-                        currentBlock += char;
-                    } else if (currentBlock !== "" && leadingVowels.has(currentBlock)) {
-                        // If current block started with a leading vowel, attach this consonant/vowel to it
-                        currentBlock += char;
-                        blocks.push(currentBlock);
-                        currentBlock = "";
-                    } else {
-                        if (currentBlock !== "") {
-                            blocks.push(currentBlock);
-                        }
-                        currentBlock = char;
-                    }
-                } else {
-                    currentBlock += char;
+    function renderWord() {
+        const display = document.getElementById('word-display');
+        display.innerHTML = "";
+        
+        userWordParts.forEach((part, i) => {
+            const span = document.createElement('div');
+            span.className = `char-box ${i === selectedIndex ? 'selected' : ''}`;
+            span.innerText = part;
+            span.onclick = () => {
+                if(!isReviewMode) {
+                    selectedIndex = i;
+                    renderWord();
                 }
-            }
-            if (currentBlock !== "") {
-                blocks.push(currentBlock);
-            }
+            };
+            display.appendChild(span);
+        });
+    }
 
-            // Fallback if empty
-            if (blocks.length === 0) blocks = chars;
+    function applyTone(mark) {
+        if(isReviewMode) return;
+        let base = userWordParts[selectedIndex].replace(marksRegex, '');
+        userWordParts[selectedIndex] = base + mark;
+        renderWord();
+    }
 
-            return blocks;
+    function checkAnswer() {
+        if (!currentWordObj) return;
+        isReviewMode = true;
+        const userAttempt = userWordParts.join('');
+        const isCorrect = userAttempt === currentWordObj.word;
+        
+        updateStats(currentWordObj.word, isCorrect);
+
+        const fb = document.getElementById('feedback');
+        const actionBtn = document.getElementById('action-btn');
+
+        if (isCorrect) {
+            fb.innerText = "EXCELLENT! Correct tones.";
+            fb.style.color = "var(--correct)";
+        } else {
+            fb.innerHTML = `INCORRECT. The answer was <span style="font-family:var(--thai-font); color:var(--accent);">${currentWordObj.word}</span>`;
+            fb.style.color = "var(--wrong)";
         }
 
-        let currentWordObj = null;
-        let userBlocks = []; // Array of { text: 'ส', tone: '' }
-        let selectedIndex = 0;
-        let currentAudio = null;
-        let currentStreak = parseInt(localStorage.getItem('thai_game_streak') || '0');
-        document.getElementById('current-streak').innerText = currentStreak;
+        actionBtn.innerText = "Next Word";
+        actionBtn.className = "btn btn-next";
+        actionBtn.onclick = initGame;
+    }
 
-        function initGame() {
-            parseUrls();
-            if (vocabulary.length === 0) {
-                document.getElementById('character-selector-container').innerHTML = `<p class="text-rose-400 text-sm">No audio URLs found in vocabAudioUrls.js!</p>`;
-                return;
-            }
-            loadRandomWord();
+    function updateStats(word, correct) {
+        let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        if (!stats[word]) stats[word] = { correct: 0, total: 0 };
+        
+        stats[word].total++;
+        if (correct) stats[word].correct++;
+        
+        localStorage.setItem('thaiToneStats', JSON.stringify(stats));
+    }
+
+    function showStats() {
+        const stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        const listDiv = document.getElementById('stats-list');
+        listDiv.innerHTML = "";
+
+        const sortedStats = Object.entries(stats).map(([word, data]) => ({
+            word,
+            percent: Math.round((data.correct / data.total) * 100)
+        })).sort((a, b) => a.percent - b.percent);
+
+        if (sortedStats.length === 0) {
+            listDiv.innerHTML = "<p style='color:#64748b'>No data yet. Keep playing!</p>";
         }
 
-        function loadRandomWord() {
-            let stats = JSON.parse(localStorage.getItem('thai_vocab_stats') || '{}');
-            
-            let weightedPool = [];
-            vocabulary.forEach(item => {
-                let stat = stats[item.word];
-                let weight = 3;
-                if (stat && stat.total > 0) {
-                    let accuracy = stat.correct / stat.total;
-                    if (accuracy < 0.4) weight = 8;
-                    else if (accuracy < 0.7) weight = 5;
-                    else weight = 1;
-                }
-                for (let i = 0; i < weight; i++) {
-                    weightedPool.push(item);
-                }
-            });
+        sortedStats.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'stat-row';
+            row.innerHTML = `
+                <span style="font-family: var(--thai-font);">${item.word}</span>
+                <span style="font-weight:bold; color: ${item.percent < 60 ? 'var(--wrong)' : 'var(--correct)'}">${item.percent}%</span>
+            `;
+            listDiv.appendChild(row);
+        });
 
-            currentWordObj = weightedPool[Math.floor(Math.random() * weightedPool.length)];
-            
-            // Tokenize stripped word into correct syllable/character blocks
-            const strippedWord = currentWordObj.stripped;
-            const tokens = tokenizeThaiWord(strippedWord);
-            
-            userBlocks = tokens.map(t => ({ text: t, tone: '' }));
-            selectedIndex = 0;
-            
-            document.getElementById('word-category').innerText = currentWordObj.category;
-            renderCharacterSelector();
+        document.getElementById('stats-overlay').style.display = 'flex';
+    }
 
-            let banner = document.getElementById('feedback-banner');
-            banner.classList.add('hidden');
-            let submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerText = "Check Answer";
-            submitBtn.setAttribute("onclick", "checkAnswer()");
-            submitBtn.className = "w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-emerald-600/20 transition cursor-pointer";
-
-            playAudio();
-            updateStatsCounter();
-        }
-
-        function renderCharacterSelector() {
-            const container = document.getElementById('character-selector-container');
-            container.innerHTML = '';
-
-            userBlocks.forEach((item, index) => {
-                const isSelected = index === selectedIndex;
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `relative px-3.5 py-2.5 rounded-xl text-3xl font-semibold transition flex flex-col items-center justify-center cursor-pointer ${
-                    isSelected ? 'bg-slate-800 text-sky-400 shadow-md ring-1 ring-sky-500/50' : 'bg-slate-900/40 text-slate-200 hover:bg-slate-800/60'
-                }`;
-                
-                // Display block text + tone mark combined
-                btn.innerHTML = `
-                    <span>${item.text}${item.tone}</span>
-                    <div class="absolute bottom-1 w-3/4 h-1 rounded-full ${isSelected ? 'bg-sky-400' : 'bg-transparent'}"></div>
-                `;
-                btn.onclick = () => {
-                    selectedIndex = index;
-                    renderCharacterSelector();
-                };
-                container.appendChild(btn);
-            });
-        }
-
-        function applyToneToSelected(toneMark) {
-            if (userBlocks.length === 0) return;
-            userBlocks[selectedIndex].tone = toneMark;
-            renderCharacterSelector();
-        }
-
-        function playAudio() {
-            if (!currentWordObj) return;
-            if (currentAudio) {
-                currentAudio.pause();
-            }
-            currentAudio = new Audio(currentWordObj.url);
-            currentAudio.play().catch(e => console.log("Audio play blocked:", e));
-        }
-
-        function recordResult(word, isCorrect) {
-            let stats = JSON.parse(localStorage.getItem('thai_vocab_stats') || '{}');
-            if (!stats[word]) {
-                stats[word] = { correct: 0, total: 0, category: currentWordObj.category };
-            }
-            stats[word].total += 1;
-            if (isCorrect) {
-                stats[word].correct += 1;
-            }
-            localStorage.setItem('thai_vocab_stats', JSON.stringify(stats));
-        }
-
-        function checkAnswer() {
-            if (!currentWordObj) return;
-            
-            // Build full user attempt string
-            const fullAttempt = userBlocks.map(item => item.text + item.tone).join('');
-            const isCorrect = fullAttempt === currentWordObj.word;
-            
-            recordResult(currentWordObj.word, isCorrect);
-
-            let banner = document.getElementById('feedback-banner');
-            banner.classList.remove('hidden');
-
-            if (isCorrect) {
-                currentStreak++;
-                localStorage.setItem('thai_game_streak', currentStreak);
-                document.getElementById('current-streak').innerText = currentStreak;
-
-                banner.className = "mt-4 text-center font-bold text-emerald-400 text-base animate-bounce";
-                banner.innerText = "🎉 Correct! Great job!";
-            } else {
-                currentStreak = 0;
-                localStorage.setItem('thai_game_streak', currentStreak);
-                document.getElementById('current-streak').innerText = currentStreak;
-
-                banner.className = "mt-4 text-center font-bold text-rose-400 text-sm";
-                banner.innerHTML = `❌ Incorrect. Correct word was: <span class="text-white text-base">${currentWordObj.word}</span>`;
-            }
-
-            let submitBtn = document.getElementById('submit-btn');
-            submitBtn.innerText = "Next Word ➔";
-            submitBtn.setAttribute("onclick", "loadRandomWord()");
-            submitBtn.className = "w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-indigo-500/20 transition cursor-pointer";
-            
-            updateStatsCounter();
-        }
-
-        function updateStatsCounter() {
-            let stats = JSON.parse(localStorage.getItem('thai_vocab_stats') || '{}');
-            let totalAnswers = Object.values(stats).reduce((acc, curr) => acc + curr.total, 0);
-            document.getElementById('total-played-count').innerText = totalAnswers;
-        }
-
-        function openStats() {
-            let stats = JSON.parse(localStorage.getItem('thai_vocab_stats') || '{}');
-            let listEl = document.getElementById('stats-list');
-            listEl.innerHTML = '';
-
-            let items = vocabulary.map(v => {
-                let s = stats[v.word] || { correct: 0, total: 0, category: v.category };
-                let pct = s.total > 0 ? Math.round((s.correct / s.total) * 100) : -1;
-                return { word: v.word, category: v.category, correct: s.correct, total: s.total, pct };
-            });
-
-            // Sort: Worst performing percentage first
-            items.sort((a, b) => {
-                if (a.pct === -1 && b.pct === -1) return 0;
-                if (a.pct === -1) return 1;
-                if (b.pct === -1) return -1;
-                return a.pct - b.pct;
-            });
-
-            if (items.length === 0 || items.every(i => i.total === 0)) {
-                listEl.innerHTML = `<p class="text-center text-slate-400 py-8">No practice stats recorded yet. Play a few rounds!</p>`;
-            } else {
-                items.forEach(item => {
-                    let pctText = item.total > 0 ? `${item.pct}%` : 'Unplayed';
-                    let colorClass = item.total === 0 ? 'text-slate-400' : item.pct < 50 ? 'text-rose-400' : item.pct < 80 ? 'text-amber-400' : 'text-emerald-400';
-                    
-                    let div = document.createElement('div');
-                    div.className = "py-3 flex justify-between items-center text-sm";
-                    div.innerHTML = `
-                        <div>
-                            <span class="font-bold text-white text-base">${item.word}</span>
-                            <span class="block text-xs text-slate-400">${item.category}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-bold ${colorClass}">${pctText}</span>
-                            <span class="block text-xs text-slate-500">${item.correct}/${item.total} correct</span>
-                        </div>
-                    `;
-                    listEl.appendChild(div);
-                });
-            }
-
-            document.getElementById('stats-modal').classList.remove('hidden');
-        }
-
-        function closeStats() {
-            document.getElementById('stats-modal').classList.add('hidden');
-        }
-
-        window.onload = initGame;
-    </script>
+    window.onload = initGame;
+</script>
 </body>
 </html>
