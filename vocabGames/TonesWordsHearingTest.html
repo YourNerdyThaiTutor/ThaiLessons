@@ -45,9 +45,39 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
             min-height: 100vh;
         }
+
+        /* Top Navigation Bar */
+        header {
+            width: 100%;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid #334155;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-btn {
+            background: #334155;
+            color: #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-btn:hover { background: #475569; color: white; }
 
         .container {
             width: 100%;
@@ -58,13 +88,13 @@
             box-sizing: border-box;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             text-align: center;
-            margin-top: 20px;
+            margin: 40px auto;
         }
 
         h1 { font-family: 'Syncopate'; font-size: 1.1rem; color: var(--accent); letter-spacing: 2px; }
 
         #definition {
-            font-size: 1rem;
+            font-size: 0.95rem;
             color: #94a3b8;
             margin: 10px 0;
             font-weight: 400;
@@ -116,7 +146,7 @@
 
         .tone-keyboard {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             margin: 20px 0;
         }
@@ -126,15 +156,27 @@
             border: none;
             color: white;
             padding: 15px 5px;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             border-radius: 12px;
             cursor: pointer;
             font-family: var(--thai-font);
             transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .tone-key:hover { background: #475569; }
         .tone-key:active { transform: scale(0.95); }
+
+        .tone-label {
+            font-size: 0.55rem;
+            font-family: 'Montserrat', sans-serif;
+            color: #94a3b8;
+            margin-top: 4px;
+            text-transform: uppercase;
+        }
 
         .btn {
             width: 100%;
@@ -152,23 +194,24 @@
 
         .btn-submit { background: var(--accent); color: #0f172a; }
         .btn-next { background: var(--correct); color: #0f172a; }
-        .btn-stats { background: transparent; color: #94a3b8; border: 1px solid #334155; margin-top: 25px; }
 
         .remove-tone-btn {
-            grid-column: span 5;
+            grid-column: span 4;
             font-size: 0.7rem;
-            padding: 10px;
+            padding: 12px;
             font-family: 'Syncopate';
             background: #1e293b;
             border: 1px dashed #475569;
             color: #94a3b8;
         }
+        .remove-tone-btn:hover { background: #334155; color: white; }
 
         .overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(4px);
             z-index: 100;
             justify-content: center;
             align-items: center;
@@ -177,19 +220,24 @@
         .stats-content {
             background: var(--card);
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             max-height: 80vh;
             border-radius: 24px;
             padding: 30px;
             overflow-y: auto;
             border: 1px solid #334155;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
         }
 
         .stat-row {
             display: flex;
             justify-content: space-between;
-            padding: 12px;
+            align-items: center;
+            padding: 12px 0;
             border-bottom: 1px solid #334155;
+            text-align: left;
         }
 
         .feedback {
@@ -207,13 +255,6 @@
             margin-left: 5px;
         }
 
-        .btn-study { 
-            background: #818cf8; 
-            color: #0f172a; 
-            margin-top: 10px; 
-        }
-        .btn-study:hover { background: #6366f1; }
-
         @media (max-width: 480px) {
             #word-display {
                 font-size: 2.2rem; 
@@ -226,6 +267,16 @@
     </style>
 </head>
 <body>
+
+    <!-- Top Navigation Bar -->
+    <header>
+        <a href="https://yournerdythaitutor.github.io/Lessons/" class="nav-btn">
+            ← Study Thai
+        </a>
+        <button onclick="showStats()" class="nav-btn">
+            📊 Stats (<span id="total-played-count">0</span>)
+        </button>
+    </header>
 
     <div class="container">
         <h1>COMPLETE THE TONES</h1>
@@ -242,25 +293,26 @@
         <div id="word-display"></div>
 
         <div class="tone-keyboard">
-            <button class="tone-key" onclick="applyTone('่')">◌่</button>
-            <button class="tone-key" onclick="applyTone('้')">◌้</button>
-            <button class="tone-key" onclick="applyTone('๊')">◌๊</button>
-            <button class="tone-key" onclick="applyTone('๋')">◌๋</button>
-            <button class="tone-key" onclick="applyTone('์')" title="Silent Mark">◌์</button>
+            <button class="tone-key" onclick="applyTone('่')">◌่<span class="tone-label">Low</span></button>
+            <button class="tone-key" onclick="applyTone('้')">◌้<span class="tone-label">Falling</span></button>
+            <button class="tone-key" onclick="applyTone('๊')">◌๊<span class="tone-label">High</span></button>
+            <button class="tone-key" onclick="applyTone('๋')">◌๋<span class="tone-label">Rising</span></button>
             <button class="tone-key remove-tone-btn" onclick="applyTone('')">Remove Mark</button>
         </div>
 
         <button id="action-btn" class="btn btn-submit" onclick="checkAnswer()">Submit Guess</button>
         <div id="feedback" class="feedback"></div>
-        
-        <button class="btn btn-stats" onclick="showStats()">📊 Mastery Stats</button>
-        <button class="btn btn-study" onclick="window.open('https://yournerdythaitutor.github.io/Lessons/', '_blank')">📖 Study Lessons</button>
     </div>
 
+    <!-- Stats Modal Overlay -->
     <div id="stats-overlay" class="overlay">
         <div class="stats-content">
-            <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--accent); margin-bottom: 20px;">Mastery Rankings</h2>
-            <div id="stats-list"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #334155; padding-bottom: 12px;">
+                <h2 style="font-family: 'Syncopate'; font-size: 1rem; color: var(--accent); margin: 0;">Mastery Rankings</h2>
+                <button onclick="document.getElementById('stats-overlay').style.display='none'" style="background:none; border:none; color:#94a3b8; font-size: 1.2rem; cursor: pointer;">✕</button>
+            </div>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin-bottom: 15px; text-align: left;">Words are sorted with your worst-performing items at the top so you can focus your practice.</p>
+            <div id="stats-list" style="overflow-y: auto; flex: 1;"></div>
             <button class="btn btn-submit" style="margin-top:20px;" onclick="document.getElementById('stats-overlay').style.display='none'">Back to Game</button>
         </div>
     </div>
@@ -274,7 +326,8 @@
     let isReviewMode = false;
     let currentAudio = null;
     
-    const marksRegex = /[่้๊๋์]/g;
+    // Tone marks regex only (ignoring silent marks)
+    const tonesRegex = /[่้๊๋]/g;
 
     function parseVocabUrls() {
         let raw = typeof vocabAudioUrls !== 'undefined' ? vocabAudioUrls : "";
@@ -290,7 +343,7 @@
             const filenameWithExt = parts[parts.length - 1] || '';
             const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
             const category = parts[parts.length - 2] || 'general';
-            const stripped = word.replace(marksRegex, '');
+            const stripped = word.replace(tonesRegex, '');
             return { url, word, stripped, category };
         }).filter(item => item.word.length > 0);
     }
@@ -340,6 +393,7 @@
         selectedIndex = 0;
         renderWord();
         playAudio();
+        updateStatsCounter();
     }
 
     function playAudio() {
@@ -371,7 +425,7 @@
 
     function applyTone(mark) {
         if(isReviewMode) return;
-        let base = userWordParts[selectedIndex].replace(marksRegex, '');
+        let base = userWordParts[selectedIndex].replace(tonesRegex, '');
         userWordParts[selectedIndex] = base + mark;
         renderWord();
     }
@@ -398,16 +452,23 @@
         actionBtn.innerText = "Next Word";
         actionBtn.className = "btn btn-next";
         actionBtn.onclick = initGame;
+        updateStatsCounter();
     }
 
     function updateStats(word, correct) {
         let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
-        if (!stats[word]) stats[word] = { correct: 0, total: 0 };
+        if (!stats[word]) stats[word] = { correct: 0, total: 0, category: currentWordObj.category };
         
         stats[word].total++;
         if (correct) stats[word].correct++;
         
         localStorage.setItem('thaiToneStats', JSON.stringify(stats));
+    }
+
+    function updateStatsCounter() {
+        let stats = JSON.parse(localStorage.getItem('thaiToneStats')) || {};
+        let totalAnswers = Object.values(stats).reduce((acc, curr) => acc + curr.total, 0);
+        document.getElementById('total-played-count').innerText = totalAnswers;
     }
 
     function showStats() {
@@ -417,19 +478,28 @@
 
         const sortedStats = Object.entries(stats).map(([word, data]) => ({
             word,
+            correct: data.correct,
+            total: data.total,
+            category: data.category || 'general',
             percent: Math.round((data.correct / data.total) * 100)
         })).sort((a, b) => a.percent - b.percent);
 
         if (sortedStats.length === 0) {
-            listDiv.innerHTML = "<p style='color:#64748b'>No data yet. Keep playing!</p>";
+            listDiv.innerHTML = "<p style='color:#64748b; text-align:center; padding: 20px;'>No data yet. Keep playing!</p>";
         }
 
         sortedStats.forEach(item => {
             const row = document.createElement('div');
             row.className = 'stat-row';
             row.innerHTML = `
-                <span style="font-family: var(--thai-font);">${item.word}</span>
-                <span style="font-weight:bold; color: ${item.percent < 60 ? 'var(--wrong)' : 'var(--correct)'}">${item.percent}%</span>
+                <div>
+                    <span style="font-family: var(--thai-font); font-size: 1.2rem; color: white; display: block;">${item.word}</span>
+                    <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase;">${item.category}</span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-weight:bold; font-size: 1rem; color: ${item.percent < 60 ? 'var(--wrong)' : item.percent < 80 ? '#fbbf24' : 'var(--correct)'}">${item.percent}%</span>
+                    <span style="font-size: 0.7rem; color: #64748b; display: block;">${item.correct}/${item.total} correct</span>
+                </div>
             `;
             listDiv.appendChild(row);
         });
