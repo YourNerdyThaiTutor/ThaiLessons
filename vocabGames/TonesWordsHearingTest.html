@@ -6,8 +6,7 @@
     <title>Thai Tone Master</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap');
-        body { font-family: 'Prompt', sans-serif; }
+        body { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
@@ -43,9 +42,9 @@
             </button>
             <p class="text-[11px] text-slate-400 mb-6 animate-pulse">Tap speaker to listen</p>
 
-            <!-- Target Word Character Selector (Reference UI Style) -->
+            <!-- Target Word Character/Syllable Selector -->
             <div class="w-full mb-6">
-                <p class="text-xs uppercase tracking-widest text-slate-400 mb-2 text-center">Tap a character to add/change tone:</p>
+                <p class="text-xs uppercase tracking-widest text-slate-400 mb-2 text-center">Tap a block to add/change tone:</p>
                 <div id="character-selector-container" class="flex flex-wrap justify-center gap-2 bg-slate-900/80 border border-slate-700/60 rounded-2xl p-4 min-h-[5.5rem] items-center">
                     <!-- Populated dynamically -->
                 </div>
@@ -53,19 +52,19 @@
 
             <!-- Tone Modification Keypad -->
             <div class="grid grid-cols-4 gap-2 w-full mb-3">
-                <button onclick="applyToneToSelected('̀')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-xl shadow transition flex flex-col items-center justify-center cursor-pointer">
+                <button onclick="applyToneToSelected('̀')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
                     <span>◌่</span>
                     <span class="text-[9px] font-normal text-slate-400 mt-0.5">Low</span>
                 </button>
-                <button onclick="applyToneToSelected('́')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-xl shadow transition flex flex-col items-center justify-center cursor-pointer">
+                <button onclick="applyToneToSelected('́')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
                     <span>◌́</span>
                     <span class="text-[9px] font-normal text-slate-400 mt-0.5">High</span>
                 </button>
-                <button onclick="applyToneToSelected('̂')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-xl shadow transition flex flex-col items-center justify-center cursor-pointer">
+                <button onclick="applyToneToSelected('̂')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
                     <span>◌̂</span>
                     <span class="text-[9px] font-normal text-slate-400 mt-0.5">Falling</span>
                 </button>
-                <button onclick="applyToneToSelected('̌')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-xl shadow transition flex flex-col items-center justify-center cursor-pointer">
+                <button onclick="applyToneToSelected('̌')" class="bg-slate-700 hover:bg-slate-600 active:bg-indigo-600 text-slate-100 py-3 rounded-xl font-bold text-lg shadow transition flex flex-col items-center justify-center cursor-pointer">
                     <span>◌̌</span>
                     <span class="text-[9px] font-normal text-slate-400 mt-0.5">Rising</span>
                 </button>
@@ -137,8 +136,55 @@
             return text.replace(/[\u0E48-\u0E4B\u0E4C]/g, '');
         }
 
+        // Smart tokenizer to group consonants with leading/trailing vowels and dependent signs correctly
+        function tokenizeThaiWord(word) {
+            let chars = Array.from(word);
+            let blocks = [];
+            let currentBlock = "";
+
+            // Thai leading vowels (เ, แ, โ, ใ, ไ) should attach to the upcoming consonant
+            let leadingVowels = new Set(['เ', 'แ', 'โ', 'ใ', 'ไ']);
+
+            for (let i = 0; i < chars.length; i++) {
+                let char = chars[i];
+                
+                // If it's a leading vowel and we have a pending block, push the old one first
+                if (leadingVowels.has(char) && currentBlock !== "") {
+                    blocks.push(currentBlock);
+                    currentBlock = char;
+                } else if (currentBlock === "" || !leadingVowels.has(currentBlock[0])) {
+                    // Normal combination building
+                    // If current character is a dependent vowel or sign (e.g. ะ, า, ิ, ี, ึ, ื, ุ, ู, ็, ์, etc.) attach to current block
+                    const isDependent = /[\u0E30-\u0E3A\u0E47-\u0E4E]/.test(char);
+                    if (isDependent && currentBlock !== "") {
+                        currentBlock += char;
+                    } else if (currentBlock !== "" && leadingVowels.has(currentBlock)) {
+                        // If current block started with a leading vowel, attach this consonant/vowel to it
+                        currentBlock += char;
+                        blocks.push(currentBlock);
+                        currentBlock = "";
+                    } else {
+                        if (currentBlock !== "") {
+                            blocks.push(currentBlock);
+                        }
+                        currentBlock = char;
+                    }
+                } else {
+                    currentBlock += char;
+                }
+            }
+            if (currentBlock !== "") {
+                blocks.push(currentBlock);
+            }
+
+            // Fallback if empty
+            if (blocks.length === 0) blocks = chars;
+
+            return blocks;
+        }
+
         let currentWordObj = null;
-        let userCharacters = []; // Array of { char: 'ส', tone: '' }
+        let userBlocks = []; // Array of { text: 'ส', tone: '' }
         let selectedIndex = 0;
         let currentAudio = null;
         let currentStreak = parseInt(localStorage.getItem('thai_game_streak') || '0');
@@ -173,9 +219,11 @@
 
             currentWordObj = weightedPool[Math.floor(Math.random() * weightedPool.length)];
             
-            // Break stripped word into character units
+            // Tokenize stripped word into correct syllable/character blocks
             const strippedWord = currentWordObj.stripped;
-            userCharacters = Array.from(strippedWord).map(char => ({ char: char, tone: '' }));
+            const tokens = tokenizeThaiWord(strippedWord);
+            
+            userBlocks = tokens.map(t => ({ text: t, tone: '' }));
             selectedIndex = 0;
             
             document.getElementById('word-category').innerText = currentWordObj.category;
@@ -196,17 +244,17 @@
             const container = document.getElementById('character-selector-container');
             container.innerHTML = '';
 
-            userCharacters.forEach((item, index) => {
+            userBlocks.forEach((item, index) => {
                 const isSelected = index === selectedIndex;
                 const btn = document.createElement('button');
                 btn.type = 'button';
-                btn.className = `relative px-3 py-2 rounded-xl text-3xl font-semibold transition flex flex-col items-center justify-center cursor-pointer ${
+                btn.className = `relative px-3.5 py-2.5 rounded-xl text-3xl font-semibold transition flex flex-col items-center justify-center cursor-pointer ${
                     isSelected ? 'bg-slate-800 text-sky-400 shadow-md ring-1 ring-sky-500/50' : 'bg-slate-900/40 text-slate-200 hover:bg-slate-800/60'
                 }`;
                 
-                // Display character + tone mark combined
+                // Display block text + tone mark combined
                 btn.innerHTML = `
-                    <span>${item.char}${item.tone}</span>
+                    <span>${item.text}${item.tone}</span>
                     <div class="absolute bottom-1 w-3/4 h-1 rounded-full ${isSelected ? 'bg-sky-400' : 'bg-transparent'}"></div>
                 `;
                 btn.onclick = () => {
@@ -218,8 +266,8 @@
         }
 
         function applyToneToSelected(toneMark) {
-            if (userCharacters.length === 0) return;
-            userCharacters[selectedIndex].tone = toneMark;
+            if (userBlocks.length === 0) return;
+            userBlocks[selectedIndex].tone = toneMark;
             renderCharacterSelector();
         }
 
@@ -248,7 +296,7 @@
             if (!currentWordObj) return;
             
             // Build full user attempt string
-            const fullAttempt = userCharacters.map(item => item.char + item.tone).join('');
+            const fullAttempt = userBlocks.map(item => item.text + item.tone).join('');
             const isCorrect = fullAttempt === currentWordObj.word;
             
             recordResult(currentWordObj.word, isCorrect);
