@@ -196,7 +196,7 @@
 
         .tone-keyboard {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
             margin: 20px 0;
         }
@@ -234,7 +234,7 @@
         .btn-next { background: var(--correct); color: #0f172a; }
 
         .remove-tone-btn {
-            grid-column: span 5;
+            grid-column: span 4;
             font-size: 0.7rem;
             padding: 10px;
             font-family: 'Syncopate';
@@ -323,7 +323,7 @@
     </header>
 
     <div class="container">
-        <h1>ADD THE CORRECT TONES & Silencers</h1>
+        <h1>COMPLETE THE TONES</h1>
         <div id="definition">...</div>
         <div id="feedback" class="feedback"></div>
         
@@ -334,7 +334,6 @@
             <button class="tone-key" onclick="applyTone('้')">◌้</button>
             <button class="tone-key" onclick="applyTone('๊')">◌๊</button>
             <button class="tone-key" onclick="applyTone('๋')">◌๋</button>
-            <button class="tone-key" onclick="applyTone('์')" title="Silent Mark">◌์</button>
             <button class="tone-key remove-tone-btn" onclick="applyTone('')">Remove Mark</button>
         </div>
 
@@ -393,8 +392,8 @@
     let focusMode = localStorage.getItem('thaiToneFocusMode') === 'true';
     let lengthFilter = ''; // Default to any length on page load
     
-    // Pattern includes Tone marks (่้๊๋) and the Silent mark (์)
-    const marksRegex = /[่้๊๋์]/g;
+    // Pattern includes ONLY Tone marks (่้๊๋)
+    const marksRegex = /[่้๊๋]/g;
 
     document.addEventListener("DOMContentLoaded", () => {
         const toggleEl = document.getElementById('focus-mode-toggle');
