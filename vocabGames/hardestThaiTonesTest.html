@@ -76,10 +76,10 @@
                 <p class="text-xs text-slate-400 mt-3 font-medium">Tap to listen to the tone audio</p>
                 <p id="audioErrorMsg" class="text-xs text-rose-400 mt-1 hidden font-medium">Audio playback blocked or failed. Click Next to continue.</p>
                 
-                <!-- Show Definition Button & Definition Box -->
+                <!-- Show / Hide Definition Button & Definition Box -->
                 <button id="showDefBtn" class="mt-3 text-xs bg-slate-800 hover:bg-slate-700 text-purple-300 font-medium px-3.5 py-1.5 rounded-full border border-slate-700 transition flex items-center space-x-1.5">
-                    <i class="fa-solid fa-book"></i>
-                    <span>Show Definition</span>
+                    <i class="fa-solid fa-book" id="defBtnIcon"></i>
+                    <span id="defBtnText">Show Definition</span>
                 </button>
                 <div id="definitionBox" class="mt-2 text-xs text-slate-300 bg-slate-800/80 border border-slate-700/60 px-3 py-1.5 rounded-xl hidden text-center max-w-xs">
                     <!-- Definition populated here -->
@@ -186,7 +186,7 @@
     <script>
         let allWordsData = []; 
         let minimalPairsGroups = {}; 
-        let vocabDefinitions = {}; // word -> definition map
+        let vocabDefinitions = {}; 
         let currentPairGroup = null;
         let targetItem = null;
         let streak = parseInt(localStorage.getItem('thai_tone_streak') || '0', 10);
@@ -207,7 +207,6 @@
 
         async function loadAppData() {
             try {
-                // 1. Load Audio URLs script
                 const audioRes = await fetch('./assets/vocabAudioUrls.js');
                 if (!audioRes.ok) throw new Error("Failed to load ./assets/vocabAudioUrls.js");
                 const audioScriptText = await audioRes.text();
@@ -216,7 +215,6 @@
                     throw new Error("No valid MP3 URLs found in script file.");
                 }
 
-                // 2. Load Definitions script (optional/graceful fallback if missing)
                 try {
                     const defRes = await fetch('./assets/vocabWords.js');
                     if (defRes.ok) {
@@ -239,12 +237,10 @@
 
         function parseVocabDefinitions(text) {
             vocabDefinitions = {};
-            // Split by lines
             const lines = text.split(/\r?\n/);
             lines.forEach(line => {
                 const trimmed = line.trim();
                 if (!trimmed) return;
-                // Format: word,definition (e.g. ศูนย์,0 or หนึ่ง,1)
                 const firstCommaIdx = trimmed.indexOf(',');
                 if (firstCommaIdx !== -1) {
                     const word = trimmed.substring(0, firstCommaIdx).trim();
@@ -323,10 +319,8 @@
             answeredCurrent = false;
             document.getElementById('audioErrorMsg').classList.add('hidden');
             
-            // Hide definition box on new round
-            const defBox = document.getElementById('definitionBox');
-            defBox.classList.add('hidden');
-            defBox.textContent = '';
+            // Reset definition state on new round
+            hideDefinitionState();
 
             const eligibleKeys = getFilteredGroups();
             if (eligibleKeys.length === 0) {
@@ -368,13 +362,32 @@
             playTargetAudio(true);
         });
 
-        // Show Definition Button Event
+        // Helper to reset definition UI
+        function hideDefinitionState() {
+            const defBox = document.getElementById('definitionBox');
+            defBox.classList.add('hidden');
+            defBox.textContent = '';
+            document.getElementById('defBtnText').textContent = 'Show Definition';
+            document.getElementById('defBtnIcon').className = 'fa-solid fa-book';
+        }
+
+        // Show / Hide Definition Toggle Button Event
         document.getElementById('showDefBtn').addEventListener('click', () => {
             if (!targetItem) return;
             const defBox = document.getElementById('definitionBox');
-            const definition = vocabDefinitions[targetItem.word] || "Definition not found in vocabWords.js";
-            defBox.textContent = `Definition: ${definition}`;
-            defBox.classList.remove('hidden');
+            const defBtnText = document.getElementById('defBtnText');
+            const defBtnIcon = document.getElementById('defBtnIcon');
+
+            const isHidden = defBox.classList.contains('hidden');
+            if (isHidden) {
+                const definition = vocabDefinitions[targetItem.word] || "Definition not found in vocabWords.js";
+                defBox.textContent = `Definition: ${definition}`;
+                defBox.classList.remove('hidden');
+                defBtnText.textContent = 'Hide Definition';
+                defBtnIcon.className = 'fa-solid fa-book-open';
+            } else {
+                hideDefinitionState();
+            }
         });
 
         function renderOptions() {
@@ -385,15 +398,35 @@
             const shuffledOptions = [...currentPairGroup].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach(item => {
-                const btn = document.createElement('button');
-                btn.className = "w-full py-3.5 px-4 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-xl text-lg font-medium text-slate-100 transition transform active:scale-[0.99] flex items-center justify-center shadow-sm";
-                btn.textContent = item.word;
-                btn.onclick = () => handleAnswer(item, btn);
-                container.appendChild(btn);
+                const optionWrapper = document.createElement('div');
+                optionWrapper.className = "w-full bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-xl transition flex items-center justify-between px-4 py-3 shadow-sm";
+
+                const wordBtn = document.createElement('button');
+                wordBtn.className = "flex-1 text-left text-lg font-medium text-slate-100 focus:outline-none";
+                wordBtn.textContent = item.word;
+                wordBtn.onclick = () => handleAnswer(item, optionWrapper);
+
+                const playBtn = document.createElement('button');
+                playBtn.className = "w-10 h-10 rounded-full bg-slate-700 hover:bg-purple-600 text-slate-300 hover:text-white flex items-center justify-center transition focus:outline-none ml-3";
+                playBtn.title = `Listen to ${item.word}`;
+                playBtn.innerHTML = '<i class="fa-solid fa-volume-high text-xs"></i>';
+                playBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    console.log("Playing preview audio for [Word]:", item.url);
+                    if (currentGameAudio) {
+                        currentGameAudio.pause();
+                    }
+                    currentGameAudio = new Audio(item.url);
+                    currentGameAudio.play().catch(err => console.warn("Audio play error:", err));
+                };
+
+                optionWrapper.appendChild(wordBtn);
+                optionWrapper.appendChild(playBtn);
+                container.appendChild(optionWrapper);
             });
         }
 
-        function handleAnswer(selectedItem, btnElement) {
+        function handleAnswer(selectedItem, wrapperElement) {
             if (answeredCurrent) return;
             answeredCurrent = true;
 
@@ -417,15 +450,17 @@
             localStorage.setItem('thai_tone_stats', JSON.stringify(userStats));
             document.getElementById('streakCount').textContent = streak;
 
-            const allButtons = document.getElementById('optionsContainer').children;
-            for (let b of allButtons) {
-                b.disabled = true;
-                if (b.textContent === targetItem.word) {
-                    b.classList.remove('bg-slate-800/80', 'border-slate-700/60');
-                    b.classList.add('bg-emerald-600/30', 'border-emerald-500', 'text-emerald-300');
-                } else if (b === btnElement && !isCorrect) {
-                    b.classList.remove('bg-slate-800/80', 'border-slate-700/60');
-                    b.classList.add('bg-rose-600/30', 'border-rose-500', 'text-rose-300');
+            const allWrappers = document.getElementById('optionsContainer').children;
+            for (let w of allWrappers) {
+                const wBtn = w.querySelector('button');
+                wBtn.disabled = true;
+                
+                if (wBtn.textContent === targetItem.word) {
+                    w.classList.remove('bg-slate-800/80', 'border-slate-700/60');
+                    w.classList.add('bg-emerald-600/30', 'border-emerald-500', 'text-emerald-300');
+                } else if (w === wrapperElement && !isCorrect) {
+                    w.classList.remove('bg-slate-800/80', 'border-slate-700/60');
+                    w.classList.add('bg-rose-600/30', 'border-rose-500', 'text-rose-300');
                 }
             }
 
@@ -505,7 +540,6 @@
                 }
             });
 
-            // Sort by lowest correct percentage at the top
             attemptedItems.sort((a, b) => a.acc - b.acc);
 
             const listContainer = document.getElementById('statsListContainer');
