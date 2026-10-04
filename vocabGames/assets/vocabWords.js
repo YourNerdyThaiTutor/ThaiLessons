@@ -579,4 +579,6 @@ const vocabWords = `ศูนย์,0
 ดาวพฤหัส,Jupiter
 ดาวศุกร์,Venus
 ดาวเสาร์,Saturn
-พระอาทิตย์,The sun`
+พระอาทิตย์,The sun
+ค่ะ,used at the end of a statment
+คะ,use at the end of a question or after นะ`
