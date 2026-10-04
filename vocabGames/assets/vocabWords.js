@@ -581,4 +581,5 @@ const vocabWords = `ศูนย์,0
 ดาวเสาร์,Saturn
 พระอาทิตย์,The sun
 ค่ะ,used at the end of a statment
-คะ,use at the end of a question or after นะ`
+คะ,use at the end of a question or after นะ
+สี,color`
