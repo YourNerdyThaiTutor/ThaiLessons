@@ -27,23 +27,20 @@
 </head>
 <body class="bg-darkBg text-slate-100 min-h-screen flex flex-col font-sans select-none">
 
-    <!-- Header -->
-    <header class="w-full bg-cardBg border-b border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0 z-20 shadow-md">
-        <!-- Left: Streak & Filter -->
-        <div class="flex items-center space-x-3">
+    <!-- Header (Mobile-Friendly Flex Wrap) -->
+    <header class="w-full bg-cardBg border-b border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3 sticky top-0 z-20 shadow-md">
+        <!-- Left: Streak & Filter Button -->
+        <div class="flex items-center space-x-2.5">
             <div class="flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-full text-xs font-semibold">
                 <i class="fa-solid fa-fire text-amber-500"></i>
                 <span id="streakCount">0</span>
             </div>
 
-            <!-- Filter Dropdown -->
-            <div class="relative">
-                <select id="filterSelect" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-700 focus:outline-none cursor-pointer transition">
-                    <option value="all">All Eligible</option>
-                    <option value="unseen">Unseen Words Only</option>
-                    <option value="needsPractice">Needs Practice (&lt;90%)</option>
-                </select>
-            </div>
+            <!-- Filter Modal Button -->
+            <button id="openFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full border border-slate-700 transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-filter text-purple-400"></i>
+                <span id="filterButtonLabel">Filter</span>
+            </button>
         </div>
 
         <!-- Right: Stats & Study Thai -->
@@ -77,10 +74,11 @@
                     <i class="fa-solid fa-volume-high" id="audioIcon"></i>
                 </button>
                 <p class="text-xs text-slate-400 mt-3 font-medium">Tap to listen to the tone audio</p>
+                <!-- Only shown if user interacts and browser blocks -->
                 <p id="audioErrorMsg" class="text-xs text-rose-400 mt-1 hidden font-medium">Audio playback blocked or failed. Click Next to continue.</p>
             </div>
 
-            <!-- Feedback / Next Area (Replaces category & instruction text) -->
+            <!-- Feedback / Next Area -->
             <div id="feedbackContainer" class="w-full min-h-[3rem] my-2 flex items-center justify-center text-center">
                 <!-- Will display green/red text or Next button dynamically -->
             </div>
@@ -92,6 +90,42 @@
 
         </div>
     </main>
+
+    <!-- Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardBg border border-slate-800 rounded-2xl w-full max-w-sm p-6 shadow-2xl flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <h2 class="text-base font-bold text-slate-100 flex items-center space-x-2">
+                    <i class="fa-solid fa-filter text-purple-400"></i>
+                    <span>Filter Words</span>
+                </h2>
+                <button id="closeFilterModalBtn" class="text-slate-400 hover:text-slate-200 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            
+            <div class="py-4 space-y-2.5">
+                <label class="flex items-center space-x-3 p-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700/50 cursor-pointer transition">
+                    <input type="radio" name="filterOption" value="all" checked class="text-purple-600 focus:ring-purple-500 h-4 w-4">
+                    <span class="text-sm font-medium text-slate-200">All Eligible</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700/50 cursor-pointer transition">
+                    <input type="radio" name="filterOption" value="unseen" class="text-purple-600 focus:ring-purple-500 h-4 w-4">
+                    <span class="text-sm font-medium text-slate-200">Unseen Words Only</span>
+                </label>
+                <label class="flex items-center space-x-3 p-3 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700/50 cursor-pointer transition">
+                    <input type="radio" name="filterOption" value="needsPractice" class="text-purple-600 focus:ring-purple-500 h-4 w-4">
+                    <span class="text-sm font-medium text-slate-200">Needs Practice (&lt;90%)</span>
+                </label>
+            </div>
+
+            <div class="pt-3 border-t border-slate-800 flex justify-end">
+                <button id="applyFilterBtn" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition">
+                    Apply Filter
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Stats Modal -->
     <div id="statsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -106,18 +140,22 @@
                 </button>
             </div>
             
-            <div class="py-4 grid grid-cols-3 gap-3 text-center">
-                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
-                    <span class="block text-xs text-slate-400">Total Seen</span>
-                    <span id="statTotalSeen" class="text-lg font-bold text-slate-100">0</span>
+            <div class="py-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-center">
+                <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/50">
+                    <span class="block text-[11px] text-slate-400">Seen</span>
+                    <span id="statTotalSeen" class="text-base font-bold text-slate-100">0</span>
                 </div>
-                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
-                    <span class="block text-xs text-slate-400">Mastered (10+ & 90%+)</span>
-                    <span id="statMastered" class="text-lg font-bold text-emerald-400">0</span>
+                <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/50">
+                    <span class="block text-[11px] text-slate-400">Mastered</span>
+                    <span id="statMastered" class="text-base font-bold text-emerald-400">0</span>
                 </div>
-                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
-                    <span class="block text-xs text-slate-400">Overall Accuracy</span>
-                    <span id="statAccuracy" class="text-lg font-bold text-purple-400">0%</span>
+                <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/50">
+                    <span class="block text-[11px] text-slate-400">Best Streak</span>
+                    <span id="statBestStreak" class="text-base font-bold text-amber-400">0</span>
+                </div>
+                <div class="bg-slate-800/60 p-2.5 rounded-xl border border-slate-700/50">
+                    <span class="block text-[11px] text-slate-400">Accuracy</span>
+                    <span id="statAccuracy" class="text-base font-bold text-purple-400">0%</span>
                 </div>
             </div>
 
@@ -138,32 +176,32 @@
 
     <!-- JavaScript: Core App Logic -->
     <script>
-        let allWordsData = []; // { word, baseKey, url }
-        let minimalPairsGroups = {}; // baseKey -> array of items
-        let activePairs = []; // groups that have >= 2 variants
+        let allWordsData = []; 
+        let minimalPairsGroups = {}; 
         let currentPairGroup = null;
         let targetItem = null;
         let streak = parseInt(localStorage.getItem('thai_tone_streak') || '0', 10);
+        let bestStreak = parseInt(localStorage.getItem('thai_tone_best_streak') || streak.toString(), 10);
         let userStats = JSON.parse(localStorage.getItem('thai_tone_stats') || '{}');
         let currentFilter = 'all';
         let answeredCurrent = false;
 
         document.getElementById('streakCount').textContent = streak;
+        if (streak > bestStreak) {
+            bestStreak = streak;
+            localStorage.setItem('thai_tone_best_streak', bestStreak);
+        }
 
-        // Thai Tone stripping helper
-        // Thai tone marks: Mai Ek (\u0E48), Mai Tho (\u0E49), Mai Tri (\u0E4A), Mai Chaturi (\u0E4B), Thanthakhat/Garun (\u0E4C), etc.
         function stripThaiTones(word) {
             return word.replace(/[\u0E48-\u0E4D]/g, '');
         }
 
-        // Load vocabAudioUrls.js dynamically
         async function loadVocabAudioScript() {
             try {
                 const response = await fetch('./assets/vocabAudioUrls.js');
                 if (!response.ok) throw new Error("Failed to load ./assets/vocabAudioUrls.js");
                 const scriptText = await response.text();
 
-                // Extract URLs using regex matching lines or strings ending in .mp3
                 const urlMatches = scriptText.match(/https?:\/\/[^\s"'`]+\.mp3/g);
                 if (!urlMatches || urlMatches.length === 0) {
                     throw new Error("No valid MP3 URLs found in script file.");
@@ -191,17 +229,14 @@
                 }
             });
 
-            // Group by base consonant/vowel (ignoring tones)
             const groups = {};
             allWordsData.forEach(item => {
                 if (!groups[item.baseKey]) groups[item.baseKey] = [];
-                // Avoid exact duplicate word entries in the same group
                 if (!groups[item.baseKey].some(i => i.word === item.word)) {
                     groups[item.baseKey].push(item);
                 }
             });
 
-            // Filter out groups with only 1 variant (we need minimal pairs with multiple tone variants)
             minimalPairsGroups = {};
             Object.keys(groups).forEach(key => {
                 if (groups[key].length >= 2) {
@@ -230,12 +265,10 @@
                 if (currentFilter === 'all') return true;
 
                 if (currentFilter === 'unseen') {
-                    // Group is unseen if none of its items have any attempts
                     return groupItems.every(item => !userStats[item.word] || userStats[item.word].attempts === 0);
                 }
 
                 if (currentFilter === 'needsPractice') {
-                    // Group qualifies if any item has accuracy < 90% (and has at least 1 attempt)
                     return groupItems.some(item => {
                         const stat = userStats[item.word];
                         if (!stat || stat.attempts === 0) return false;
@@ -260,22 +293,16 @@
                 return;
             }
 
-            // Pick a random group from eligible keys
             const randomKey = eligibleKeys[Math.floor(Math.random() * eligibleKeys.length)];
             currentPairGroup = minimalPairsGroups[randomKey];
-
-            // Pick target item from this group
             targetItem = currentPairGroup[Math.floor(Math.random() * currentPairGroup.length)];
 
-            // Play audio automatically
             playTargetAudio();
-
-            // Render options (strictly the variants in this exact group)
             renderOptions();
         }
 
         let currentGameAudio = null;
-        function playTargetAudio() {
+        function playTargetAudio(isExplicitClick = false) {
             if (!targetItem) return;
             console.log("Playing audio for [Word]:", targetItem.url);
 
@@ -287,22 +314,21 @@
             currentGameAudio = new Audio(targetItem.url);
             currentGameAudio.play().catch(err => {
                 console.warn("Audio autoplay blocked:", err);
-                document.getElementById('audioErrorMsg').classList.remove('hidden');
+                if (isExplicitClick) {
+                    document.getElementById('audioErrorMsg').classList.remove('hidden');
+                }
             });
         }
 
         document.getElementById('playAudioBtn').addEventListener('click', () => {
-            playTargetAudio();
+            playTargetAudio(true);
         });
 
         function renderOptions() {
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
-
-            // Feedback area reset to empty
             document.getElementById('feedbackContainer').innerHTML = '';
 
-            // Shuffle the options so correct answer isn't always in the same spot
             const shuffledOptions = [...currentPairGroup].sort(() => Math.random() - 0.5);
 
             shuffledOptions.forEach(item => {
@@ -320,7 +346,6 @@
 
             const isCorrect = (selectedItem.word === targetItem.word);
 
-            // Update stats
             if (!userStats[targetItem.word]) {
                 userStats[targetItem.word] = { attempts: 0, correct: 0 };
             }
@@ -328,6 +353,10 @@
             if (isCorrect) {
                 userStats[targetItem.word].correct++;
                 streak++;
+                if (streak > bestStreak) {
+                    bestStreak = streak;
+                    localStorage.setItem('thai_tone_best_streak', bestStreak);
+                }
             } else {
                 streak = 0;
             }
@@ -335,7 +364,6 @@
             localStorage.setItem('thai_tone_stats', JSON.stringify(userStats));
             document.getElementById('streakCount').textContent = streak;
 
-            // Highlight buttons
             const allButtons = document.getElementById('optionsContainer').children;
             for (let b of allButtons) {
                 b.disabled = true;
@@ -348,7 +376,6 @@
                 }
             }
 
-            // Show Correct/Incorrect feedback message & Next button
             const feedbackContainer = document.getElementById('feedbackContainer');
             feedbackContainer.innerHTML = `
                 <div class="flex items-center justify-between w-full px-2 animate-fadeIn">
@@ -367,9 +394,26 @@
             };
         }
 
-        // Filter change event
-        document.getElementById('filterSelect').addEventListener('change', (e) => {
-            currentFilter = e.target.value;
+        // Filter Modal Logic
+        const filterModal = document.getElementById('filterModal');
+        document.getElementById('openFilterBtn').addEventListener('click', () => filterModal.classList.remove('hidden'));
+        document.getElementById('closeFilterModalBtn').addEventListener('click', () => filterModal.classList.add('hidden'));
+        filterModal.addEventListener('click', (e) => {
+            if (e.target === filterModal) filterModal.classList.add('hidden');
+        });
+
+        document.getElementById('applyFilterBtn').addEventListener('click', () => {
+            const selectedRadio = document.querySelector('input[name="filterOption"]:checked');
+            if (selectedRadio) {
+                currentFilter = selectedRadio.value;
+                const labels = {
+                    all: 'Filter',
+                    unseen: 'Unseen',
+                    needsPractice: 'Needs Practice'
+                };
+                document.getElementById('filterButtonLabel').textContent = labels[currentFilter];
+            }
+            filterModal.classList.add('hidden');
             nextRound();
         });
 
@@ -391,9 +435,7 @@
             let totalCorrect = 0;
             let masteredCount = 0;
 
-            const listContainer = document.getElementById('statsListContainer');
-            listContainer.innerHTML = '';
-
+            let attemptedItems = [];
             allWordsData.forEach(item => {
                 const stat = userStats[item.word];
                 if (stat && stat.attempts > 0) {
@@ -402,22 +444,31 @@
                     totalCorrect += stat.correct;
                     const acc = (stat.correct / stat.attempts) * 100;
                     
-                    // Mastery condition: seen at least 10 times and accuracy >= 90%
                     if (stat.attempts >= 10 && acc >= 90) {
                         masteredCount++;
                     }
 
-                    const row = document.createElement('div');
-                    row.className = "flex items-center justify-between bg-slate-800/40 px-3 py-2 rounded-xl border border-slate-700/40 text-xs";
-                    row.innerHTML = `
-                        <span class="font-medium text-slate-200">${item.word}</span>
-                        <div class="flex items-center space-x-3 text-slate-400">
-                            <span>${stat.correct}/${stat.attempts}</span>
-                            <span class="font-semibold ${acc >= 90 ? 'text-emerald-400' : acc >= 70 ? 'text-amber-400' : 'text-rose-400'}">${acc.toFixed(0)}%</span>
-                        </div>
-                    `;
-                    listContainer.appendChild(row);
+                    attemptedItems.push({ word: item.word, correct: stat.correct, attempts: stat.attempts, acc });
                 }
+            });
+
+            // Sort by lowest correct percentage at the top
+            attemptedItems.sort((a, b) => a.acc - b.acc);
+
+            const listContainer = document.getElementById('statsListContainer');
+            listContainer.innerHTML = '';
+
+            attemptedItems.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "flex items-center justify-between bg-slate-800/40 px-3 py-2 rounded-xl border border-slate-700/40 text-xs";
+                row.innerHTML = `
+                    <span class="font-medium text-slate-200">${item.word}</span>
+                    <div class="flex items-center space-x-3 text-slate-400">
+                        <span>${item.correct}/${item.attempts}</span>
+                        <span class="font-semibold ${item.acc >= 90 ? 'text-emerald-400' : item.acc >= 70 ? 'text-amber-400' : 'text-rose-400'}">${item.acc.toFixed(0)}%</span>
+                    </div>
+                `;
+                listContainer.appendChild(row);
             });
 
             if (totalSeen === 0) {
@@ -426,6 +477,7 @@
 
             document.getElementById('statTotalSeen').textContent = totalSeen;
             document.getElementById('statMastered').textContent = masteredCount;
+            document.getElementById('statBestStreak').textContent = bestStreak;
             const overallAcc = totalAttempts > 0 ? ((totalCorrect / totalAttempts) * 100).toFixed(0) + '%' : '0%';
             document.getElementById('statAccuracy').textContent = overallAcc;
         }
@@ -434,8 +486,10 @@
             if (confirm("Are you sure you want to reset all your statistics and progress?")) {
                 userStats = {};
                 streak = 0;
+                bestStreak = 0;
                 localStorage.removeItem('thai_tone_stats');
                 localStorage.setItem('thai_tone_streak', '0');
+                localStorage.setItem('thai_tone_best_streak', '0');
                 document.getElementById('streakCount').textContent = '0';
                 updateStatsModalContent();
                 nextRound();
