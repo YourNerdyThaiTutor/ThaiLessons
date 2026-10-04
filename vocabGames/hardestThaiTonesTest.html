@@ -1,649 +1,449 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thai Tone Minimal Pairs Trainer</title>
-    <!-- Tailwind CSS for styling -->
+    <title>Thai Tone Minimal Pairs</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for iconography -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                        cardHover: '#334155',
+                        accentPurple: '#8b5cf6',
+                        accentHover: '#7c3aed',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts for Thai & English -->
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Prompt', 'Sarabun', sans-serif;
-            touch-action: manipulation;
-        }
-        .thai-text {
-            font-family: 'Sarabun', sans-serif;
-        }
-        @keyframes pulse-subtle {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-        .animate-pulse-subtle {
-            animation: pulse-subtle 2s infinite;
-        }
-    </style>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col font-sans select-none">
 
-    <!-- Header Navigation -->
-    <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50 px-4 py-3 shadow-lg">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2.5">
-                <div class="bg-gradient-to-tr from-pink-500 to-violet-600 p-2 rounded-xl text-white shadow-md">
-                    <i class="fa-solid fa-headphones-simple text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-base tracking-tight bg-gradient-to-r from-pink-300 via-purple-300 to-indigo-300 bg-clip-text text-transparent">Thai Tone Trainer</h1>
-                    <p class="text-[11px] text-slate-400">Minimal Pairs Mastery</p>
-                </div>
+    <!-- Header -->
+    <header class="w-full bg-cardBg border-b border-slate-800 px-4 py-3 flex items-center justify-between sticky top-0 z-20 shadow-md">
+        <!-- Left: Streak & Filter -->
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1.5 rounded-full text-xs font-semibold">
+                <i class="fa-solid fa-fire text-amber-500"></i>
+                <span id="streakCount">0</span>
             </div>
-            <div class="flex items-center space-x-2">
-                <button onclick="app.openStatsModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition active:scale-95 shadow">
-                    <i class="fa-solid fa-chart-pie text-pink-400"></i>
-                    <span class="hidden sm:inline">Stats</span>
-                </button>
-                <button onclick="app.openStudyModal()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-medium flex items-center space-x-1.5 transition active:scale-95 shadow">
-                    <i class="fa-solid fa-book-open text-indigo-400"></i>
-                    <span class="hidden sm:inline">Study Thai</span>
-                </button>
+
+            <!-- Filter Dropdown -->
+            <div class="relative">
+                <select id="filterSelect" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-3 py-1.5 rounded-full border border-slate-700 focus:outline-none cursor-pointer transition">
+                    <option value="all">All Eligible</option>
+                    <option value="unseen">Unseen Words Only</option>
+                    <option value="needsPractice">Needs Practice (&lt;90%)</option>
+                </select>
             </div>
+        </div>
+
+        <!-- Right: Stats & Study Thai -->
+        <div class="flex items-center space-x-2">
+            <button id="openStatsBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium px-3.5 py-1.5 rounded-full border border-slate-700 transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-chart-bar text-purple-400"></i>
+                <span>Stats</span>
+            </button>
+            <a href="https://yournerdythaitutor.github.io/Lessons/index.html" target="_blank" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-3.5 py-1.5 rounded-full transition flex items-center space-x-1.5 shadow-sm">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Study Thai</span>
+            </a>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-center">
-
-        <!-- Loading Screen -->
-        <div id="loading-screen" class="text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-10 w-10 border-3 border-pink-500 border-t-transparent mb-4"></div>
-            <h2 class="text-lg font-semibold mb-1">Loading Vocabulary...</h2>
-            <p class="text-xs text-slate-400">Fetching <code class="text-pink-300">./assets/vocabAudioUrls.js</code></p>
+    <!-- Main Game Container -->
+    <main class="flex-1 max-w-xl w-full mx-auto p-4 flex flex-col justify-center items-center">
+        
+        <!-- Loading / Error State -->
+        <div id="statusMessage" class="text-center py-12">
+            <i class="fa-solid fa-spinner fa-spin text-3xl text-purple-500 mb-3"></i>
+            <p class="text-slate-400 text-sm">Loading audio URLs from ./assets/vocabAudioUrls.js...</p>
         </div>
 
-        <!-- Error Screen (Strictly no fallback data as requested) -->
-        <div id="error-screen" class="hidden text-center py-12 bg-slate-900/80 border border-rose-500/30 rounded-3xl p-6 shadow-xl">
-            <div class="text-rose-400 text-3xl mb-3"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <h2 class="text-lg font-bold mb-2">Failed to load audio files. Please check ./assets/vocabAudioUrls.js</h2>
-            <p id="error-details" class="text-xs text-slate-400 mb-6 max-w-md mx-auto"></p>
-            <button onclick="app.loadVocabulary()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition">
-                Retry Loading
-            </button>
-        </div>
-
-        <!-- Main Game Interface -->
-        <div id="game-screen" class="hidden flex flex-col space-y-5">
+        <!-- Game Card (Hidden until loaded) -->
+        <div id="gameCard" class="w-full bg-cardBg border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col items-center hidden relative">
             
-            <!-- Controls Bar: Streak & Filters -->
-            <div class="flex justify-between items-center bg-slate-800/60 backdrop-blur border border-slate-700/60 p-3 rounded-2xl shadow">
-                <div class="flex items-center space-x-2">
-                    <span class="bg-amber-500/20 border border-amber-500/40 text-amber-300 px-3 py-1 rounded-xl text-xs font-bold flex items-center space-x-1.5">
-                        <i class="fa-solid fa-fire text-amber-400"></i>
-                        <span id="streak-count">0</span> Streak
-                    </span>
-                    <span class="bg-purple-500/20 border border-purple-500/40 text-purple-300 px-3 py-1 rounded-xl text-xs font-bold hidden sm:inline">
-                        Pairs: <span id="pair-pool-count">0</span>
-                    </span>
-                </div>
-                <div>
-                    <button onclick="app.openFilterModal()" class="bg-indigo-600/30 hover:bg-indigo-600/50 border border-indigo-500/50 text-indigo-200 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition">
-                        <i class="fa-solid fa-filter"></i>
-                        <span id="active-filter-badge">All Eligible</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Audio Player Card -->
-            <div class="bg-gradient-to-b from-slate-800/90 to-slate-900/90 border border-slate-700/80 rounded-3xl p-6 shadow-2xl text-center relative overflow-hidden">
-                <div class="absolute -top-12 -right-12 w-32 h-32 bg-pink-500/10 rounded-full blur-2xl pointer-events-none"></div>
-                <div class="absolute -bottom-12 -left-12 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
-
-                <span id="vocab-category" class="inline-block bg-slate-700/60 text-slate-300 text-xs px-3 py-1 rounded-full mb-4 uppercase tracking-wider font-semibold">Category</span>
-                
-                <!-- Big Replay Button -->
-                <div class="my-2">
-                    <button id="play-audio-btn" onclick="app.playCurrentAudio()" class="mx-auto w-24 h-24 rounded-full bg-gradient-to-tr from-pink-600 to-violet-600 hover:from-pink-500 hover:to-violet-500 text-white shadow-lg shadow-pink-500/30 flex items-center justify-center transition transform active:scale-95 group animate-pulse-subtle">
-                        <i class="fa-solid fa-volume-high text-3xl group-hover:scale-110 transition"></i>
-                    </button>
-                </div>
-                <p class="text-xs text-slate-400 mt-3">Tap to listen to the tone audio</p>
-                <div id="audio-error-msg" class="text-xs text-rose-400 mt-1 hidden"></div>
-            </div>
-
-            <!-- Multiple Choice Options -->
-            <div class="space-y-3">
-                <p class="text-xs font-medium text-slate-400 text-center uppercase tracking-wider">Choose the correct word tone</p>
-                <div id="options-container" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <!-- Dynamic buttons injected here -->
-                </div>
-            </div>
-
-            <!-- Feedback & Next Action Banner -->
-            <div id="feedback-banner" class="hidden p-4 rounded-2xl border text-center transition-all">
-                <div id="feedback-title" class="font-bold text-base mb-1"></div>
-                <div id="feedback-desc" class="text-sm text-slate-300 mb-3 thai-text"></div>
-                <button onclick="app.nextQuestion()" class="w-full bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-semibold py-3 px-6 rounded-2xl shadow-lg transition active:scale-98 text-sm">
-                    Next Question <i class="fa-solid fa-arrow-right ml-2"></i>
+            <!-- Audio Player Circle -->
+            <div class="my-6 flex flex-col items-center">
+                <button id="playAudioBtn" class="w-24 h-24 rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 flex items-center justify-center text-white text-3xl shadow-lg transform active:scale-95 transition focus:outline-none ring-4 ring-purple-500/20">
+                    <i class="fa-solid fa-volume-high" id="audioIcon"></i>
                 </button>
+                <p class="text-xs text-slate-400 mt-3 font-medium">Tap to listen to the tone audio</p>
+                <p id="audioErrorMsg" class="text-xs text-rose-400 mt-1 hidden font-medium">Audio playback blocked or failed. Click Next to continue.</p>
+            </div>
+
+            <!-- Feedback / Next Area (Replaces category & instruction text) -->
+            <div id="feedbackContainer" class="w-full min-h-[3rem] my-2 flex items-center justify-center text-center">
+                <!-- Will display green/red text or Next button dynamically -->
+            </div>
+
+            <!-- Multiple Choice Options Container -->
+            <div id="optionsContainer" class="w-full grid grid-cols-1 gap-3 mt-4">
+                <!-- Dynamically populated buttons -->
             </div>
 
         </div>
-
     </main>
 
-    
-    <!-- STATS MODAL -->
-    <div id="stats-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-lg rounded-3xl p-6 shadow-2xl flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
-                <h3 class="text-sm font-bold flex items-center space-x-2 text-pink-300">
-                    <i class="fa-solid fa-chart-pie"></i>
-                    <span>Vocabulary Statistics</span>
-                </h3>
-                <button onclick="app.closeStatsModal()" class="text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800">
-                    <i class="fa-solid fa-xmark text-sm"></i>
+    <!-- Stats Modal -->
+    <div id="statsModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-cardBg border border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-800">
+                <h2 class="text-lg font-bold text-slate-100 flex items-center space-x-2">
+                    <i class="fa-solid fa-chart-pie text-purple-400"></i>
+                    <span>Your Tone Statistics</span>
+                </h2>
+                <button id="closeStatsBtn" class="text-slate-400 hover:text-slate-200 p-1 rounded-lg">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
+            
             <div class="py-4 grid grid-cols-3 gap-3 text-center">
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700/50">
-                    <div id="stat-total-seen" class="text-lg font-bold text-indigo-300">0</div>
-                    <div class="text-[11px] text-slate-400">Attempted</div>
+                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+                    <span class="block text-xs text-slate-400">Total Seen</span>
+                    <span id="statTotalSeen" class="text-lg font-bold text-slate-100">0</span>
                 </div>
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700/50">
-                    <div id="stat-overall-acc" class="text-lg font-bold text-emerald-400">0%</div>
-                    <div class="text-[11px] text-slate-400">Accuracy</div>
+                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+                    <span class="block text-xs text-slate-400">Mastered (10+ & 90%+)</span>
+                    <span id="statMastered" class="text-lg font-bold text-emerald-400">0</span>
                 </div>
-                <div class="bg-slate-800/80 p-3 rounded-2xl border border-slate-700/50">
-                    <div id="stat-mastered" class="text-lg font-bold text-pink-400">0</div>
-                    <div class="text-[11px] text-slate-400">Mastered (90%+)</div>
+                <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/50">
+                    <span class="block text-xs text-slate-400">Overall Accuracy</span>
+                    <span id="statAccuracy" class="text-lg font-bold text-purple-400">0%</span>
                 </div>
             </div>
-            <div class="flex-1 overflow-y-auto space-y-2 pr-1 mt-2" id="stats-word-list">
-                <!-- Word performance breakdown -->
-            </div>
-            <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
-                <button onclick="app.resetStats()" class="text-xs text-rose-400 hover:text-rose-300 px-3 py-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 transition">
-                    Reset All Stats
-                </button>
-                <button onclick="app.closeStatsModal()" class="bg-slate-800 hover:bg-slate-700 text-xs px-4 py-1.5 rounded-xl">Close</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- STUDY MODAL -->
-    <div id="study-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-xl rounded-3xl p-6 shadow-2xl flex flex-col max-h-[85vh]">
-            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
-                <h3 class="text-sm font-bold flex items-center space-x-2 text-indigo-300">
-                    <i class="fa-solid fa-book-open"></i>
-                    <span>Study Thai Lessons & Audio</span>
-                </h3>
-                <button onclick="app.closeStudyModal()" class="text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
+            <div class="flex-1 overflow-y-auto mt-2 space-y-2 pr-1" id="statsListContainer">
+                <!-- Word list stats populated here -->
             </div>
-            <div class="flex-1 overflow-y-auto space-y-4 pr-2 mt-4" id="study-lessons-container">
-                <!-- Grouped lessons by category -->
-            </div>
-        </div>
-    </div>
 
-    <!-- FILTER MODAL -->
-    <div id="filter-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl flex flex-col">
-            <div class="flex justify-between items-center pb-4 border-b border-slate-800">
-                <h3 class="text-sm font-bold flex items-center space-x-2 text-purple-300">
-                    <i class="fa-solid fa-filter"></i>
-                    <span>Filter Vocabulary</span>
-                </h3>
-                <button onclick="app.closeFilterModal()" class="text-slate-400 hover:text-white p-2 rounded-xl bg-slate-800">
-                    <i class="fa-solid fa-xmark text-sm"></i>
+            <div class="pt-4 border-t border-slate-800 flex justify-between items-center mt-3">
+                <button id="resetStatsBtn" class="text-xs text-rose-400 hover:text-rose-300 font-medium px-3 py-1.5 rounded-lg border border-rose-500/20 bg-rose-500/10 transition">
+                    Reset Progress
                 </button>
-            </div>
-            <div class="py-4 space-y-3">
-                <label class="flex items-center space-x-3 p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <input type="radio" name="word-filter" value="all" class="text-pink-600 focus:ring-pink-500 h-4 w-4" checked>
-                    <div>
-                        <div class="font-medium text-xs">All Minimal Pairs</div>
-                        <div class="text-[11px] text-slate-400">Play from all tone pairs</div>
-                    </div>
-                </label>
-                <label class="flex items-center space-x-3 p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <input type="radio" name="word-filter" value="unseen" class="text-pink-600 focus:ring-pink-500 h-4 w-4">
-                    <div>
-                        <div class="font-medium text-xs">Unseen Words Only</div>
-                        <div class="text-[11px] text-slate-400">Words you haven't practiced yet</div>
-                    </div>
-                </label>
-                <label class="flex items-center space-x-3 p-3 bg-slate-800/80 rounded-2xl border border-slate-700/50 cursor-pointer hover:bg-slate-800 transition">
-                    <input type="radio" name="word-filter" value="weak" class="text-pink-600 focus:ring-pink-500 h-4 w-4">
-                    <div>
-                        <div class="font-medium text-xs">Needs Practice (&lt;90% Accuracy)</div>
-                        <div class="text-[11px] text-slate-400">Words below 90% accuracy or unseen</div>
-                    </div>
-                </label>
-            </div>
-            <div class="pt-2">
-                <button onclick="app.applyFilter()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-semibold py-2.5 rounded-2xl shadow transition text-xs">
-                    Apply Filter
+                <button id="closeStatsModalBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-4 py-2 rounded-xl transition">
+                    Close
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Application Controller Script -->
+    <!-- JavaScript: Core App Logic -->
     <script>
-        // Regex to match Thai tone marks and diacritics: Mai Ek (\u0E48), Mai Tho (\u0E49), Mai Tri (\u0E4A), Mai Chattawa (\u0E4B), Karan (\u0E4C), etc.
-        const THAI_TONE_MARKS_REGEX = /[\u0E48\u0E49\u0E4A\u0E4B\u0E4C\u0E4D]/g;
+        let allWordsData = []; // { word, baseKey, url }
+        let minimalPairsGroups = {}; // baseKey -> array of items
+        let activePairs = []; // groups that have >= 2 variants
+        let currentPairGroup = null;
+        let targetItem = null;
+        let streak = parseInt(localStorage.getItem('thai_tone_streak') || '0', 10);
+        let userStats = JSON.parse(localStorage.getItem('thai_tone_stats') || '{}');
+        let currentFilter = 'all';
+        let answeredCurrent = false;
 
-        class ThaiToneGame {
-            constructor() {
-                this.items = [];
-                this.pairsGroups = {};
-                this.eligibleItems = [];
-                this.currentQuestion = null;
-                this.streak = 0;
-                this.userStats = JSON.parse(localStorage.getItem('thai_tone_stats') || '{}');
-                this.currentFilter = 'all';
-                this.audioElement = new Audio();
-                this.isAnswered = false;
-            }
+        document.getElementById('streakCount').textContent = streak;
 
-            async init() {
-                this.streak = parseInt(localStorage.getItem('thai_tone_streak') || '0', 10);
-                document.getElementById('streak-count').textContent = this.streak;
-                await this.loadVocabulary();
-            }
+        // Thai Tone stripping helper
+        // Thai tone marks: Mai Ek (\u0E48), Mai Tho (\u0E49), Mai Tri (\u0E4A), Mai Chaturi (\u0E4B), Thanthakhat/Garun (\u0E4C), etc.
+        function stripThaiTones(word) {
+            return word.replace(/[\u0E48-\u0E4D]/g, '');
+        }
 
-            async loadVocabulary() {
-                const loadingEl = document.getElementById('loading-screen');
-                const errorEl = document.getElementById('error-screen');
-                const errorDetailsEl = document.getElementById('error-details');
-                const gameEl = document.getElementById('game-screen');
+        // Load vocabAudioUrls.js dynamically
+        async function loadVocabAudioScript() {
+            try {
+                const response = await fetch('./assets/vocabAudioUrls.js');
+                if (!response.ok) throw new Error("Failed to load ./assets/vocabAudioUrls.js");
+                const scriptText = await response.text();
 
-                loadingEl.classList.remove('hidden');
-                errorEl.classList.add('hidden');
-                gameEl.classList.add('hidden');
-
-                try {
-                    // Fetch directly from ./assets/vocabAudioUrls.js
-                    const response = await fetch('./assets/vocabAudioUrls.js');
-                    if (!response.ok) {
-                        throw new Error(`HTTP status ${response.status} when accessing ./assets/vocabAudioUrls.js`);
-                    }
-                    const text = await response.text();
-
-                    // Parse URLs from string literals or backticks ending in .mp3
-                    const urlRegex = /https?:\/\/[^\s"'`]+\.mp3/g;
-                    const matches = text.match(urlRegex);
-
-                    if (!matches || matches.length === 0) {
-                        throw new Error("No .mp3 audio URLs found inside ./assets/vocabAudioUrls.js");
-                    }
-
-                    this.parseUrls(matches);
-                    this.buildTonePairs();
-
-                    if (this.eligibleItems.length === 0) {
-                        throw new Error("Found URLs, but no minimal tone pairs could be formed.");
-                    }
-
-                    loadingEl.classList.add('hidden');
-                    gameEl.classList.remove('hidden');
-                    this.nextQuestion();
-
-                } catch (err) {
-                    console.error("Vocabulary loading error:", err);
-                    loadingEl.classList.add('hidden');
-                    errorDetailsEl.textContent = err.message || "Failed to load audio files.";
-                    errorEl.classList.remove('hidden');
-                }
-            }
-
-            parseUrls(urls) {
-                this.items = urls.map(url => {
-                    const cleanUrl = url.split('?')[0];
-                    const parts = cleanUrl.split('/');
-                    const filenameWithExt = parts[parts.length - 1];
-                    const word = decodeURIComponent(filenameWithExt.replace('.mp3', ''));
-                    const category = parts.length >= 2 ? parts[parts.length - 2] : 'general';
-
-                    // Base spelling with tone marks stripped to identify minimal pair families
-                    const baseSpelling = word.replace(THAI_TONE_MARKS_REGEX, '');
-
-                    return {
-                        id: url,
-                        url: url,
-                        word: word,
-                        baseSpelling: baseSpelling,
-                        category: category
-                    };
-                }).filter(item => item.word && item.word.trim() !== '');
-            }
-
-            buildTonePairs() {
-                const groups = {};
-                this.items.forEach(item => {
-                    if (!groups[item.baseSpelling]) {
-                        groups[item.baseSpelling] = [];
-                    }
-                    if (!groups[item.baseSpelling].some(existing => existing.word === item.word)) {
-                        groups[item.baseSpelling].push(item);
-                    }
-                });
-
-                // Keep only groups that have multiple tone variants (minimal pairs)
-                this.pairsGroups = {};
-                Object.keys(groups).forEach(base => {
-                    if (groups[base].length > 1) {
-                        this.pairsGroups[base] = groups[base];
-                    }
-                });
-
-                this.updateEligibleItems();
-            }
-
-            updateEligibleItems() {
-                this.eligibleItems = [];
-                Object.keys(this.pairsGroups).forEach(baseKey => {
-                    const group = this.pairsGroups[baseKey];
-                    group.forEach(item => {
-                        const stats = this.userStats[item.word] || { seen: 0, correct: 0 };
-                        let include = true;
-
-                        if (this.currentFilter === 'unseen') {
-                            include = stats.seen === 0;
-                        } else if (this.currentFilter === 'weak') {
-                            const acc = stats.seen > 0 ? (stats.correct / stats.seen) * 100 : 0;
-                            include = stats.seen === 0 || acc < 90;
-                        }
-
-                        if (include) {
-                            this.eligibleItems.push({ item: item, group: group });
-                        }
-                    });
-                });
-
-                // If filter returns empty, fallback to all eligible pairs
-                if (this.eligibleItems.length === 0 && Object.keys(this.pairsGroups).length > 0) {
-                    Object.keys(this.pairsGroups).forEach(baseKey => {
-                        const group = this.pairsGroups[baseKey];
-                        group.forEach(item => {
-                            this.eligibleItems.push({ item: item, group: group });
-                        });
-                    });
+                // Extract URLs using regex matching lines or strings ending in .mp3
+                const urlMatches = scriptText.match(/https?:\/\/[^\s"'`]+\.mp3/g);
+                if (!urlMatches || urlMatches.length === 0) {
+                    throw new Error("No valid MP3 URLs found in script file.");
                 }
 
-                document.getElementById('pair-pool-count').textContent = this.eligibleItems.length;
-            }
-
-            nextQuestion() {
-                if (this.eligibleItems.length === 0) {
-                    this.updateEligibleItems();
-                }
-                if (this.eligibleItems.length === 0) return;
-
-                const randomIndex = Math.floor(Math.random() * this.eligibleItems.length);
-                const entry = this.eligibleItems[randomIndex];
-                
-                this.currentQuestion = {
-                    target: entry.item,
-                    options: this.generateOptions(entry.item, entry.group)
-                };
-
-                this.isAnswered = false;
-                this.renderQuestion();
-                this.playCurrentAudio();
-            }
-
-            generateOptions(target, group) {
-                let options = [target];
-                const siblings = group.filter(i => i.word !== target.word);
-                const shuffledSiblings = [...siblings].sort(() => 0.5 - Math.random());
-                
-                for (let i = 0; i < Math.min(2, shuffledSiblings.length); i++) {
-                    options.push(shuffledSiblings[i]);
-                }
-
-                if (options.length < 3) {
-                    const allOtherItems = this.items.filter(i => i.word !== target.word && !options.some(o => o.word === i.word));
-                    const shuffledOthers = allOtherItems.sort(() => 0.5 - Math.random());
-                    while (options.length < 3 && shuffledOthers.length > 0) {
-                        options.push(shuffledOthers.pop());
-                    }
-                }
-
-                return options.sort(() => 0.5 - Math.random());
-            }
-
-            renderQuestion() {
-                document.getElementById('vocab-category').textContent = `Category: ${this.currentQuestion.target.category}`;
-                document.getElementById('feedback-banner').classList.add('hidden');
-                document.getElementById('audio-error-msg').classList.add('hidden');
-
-                const container = document.getElementById('options-container');
-                container.innerHTML = '';
-
-                this.currentQuestion.options.forEach((opt, idx) => {
-                    const btn = document.createElement('button');
-                    btn.className = "option-btn bg-slate-800 hover:bg-slate-700/80 border border-slate-700/80 p-4 rounded-2xl text-xl font-bold thai-text transition transform active:scale-98 shadow-md flex items-center justify-between group";
-                    btn.innerHTML = `
-                        <span class="text-slate-400 text-xs font-sans bg-slate-700/50 px-2.5 py-1 rounded-xl group-hover:bg-slate-700">Option ${idx + 1}</span>
-                        <span class="text-2xl text-slate-100">${opt.word}</span>
-                        <i class="fa-solid fa-chevron-right text-xs text-slate-500 opacity-0 group-hover:opacity-100 transition"></i>
-                    `;
-                    btn.onclick = () => this.handleAnswer(opt, btn);
-                    container.appendChild(btn);
-                });
-            }
-
-            playCurrentAudio() {
-                if (!this.currentQuestion) return;
-                const target = this.currentQuestion.target;
-                const url = target.url;
-                
-                // Console log exact audio URL and word as requested
-                console.log(`Playing audio for [${target.word}]:`, url);
-
-                this.audioElement.src = url;
-                this.audioElement.play().catch(err => {
-                    console.warn("Audio playback error:", err);
-                    const errEl = document.getElementById('audio-error-msg');
-                    errEl.textContent = "Audio playback blocked or failed. Click Next to continue.";
-                    errEl.classList.remove('hidden');
-                });
-            }
-
-            handleAnswer(selectedOpt, btnElement) {
-                if (this.isAnswered) return;
-                this.isAnswered = true;
-
-                const targetWord = this.currentQuestion.target.word;
-                const isCorrect = selectedOpt.word === targetWord;
-
-                const wordKey = targetWord;
-                if (!this.userStats[wordKey]) {
-                    this.userStats[wordKey] = { seen: 0, correct: 0 };
-                }
-                this.userStats[wordKey].seen += 1;
-                if (isCorrect) {
-                    this.userStats[wordKey].correct += 1;
-                    this.streak += 1;
-                } else {
-                    this.streak = 0;
-                }
-
-                localStorage.setItem('thai_tone_stats', JSON.stringify(this.userStats));
-                localStorage.setItem('thai_tone_streak', this.streak.toString());
-                document.getElementById('streak-count').textContent = this.streak;
-
-                const allBtns = document.querySelectorAll('.option-btn');
-                allBtns.forEach(b => {
-                    b.disabled = true;
-                    if (b.textContent.includes(targetWord)) {
-                        b.classList.remove('bg-slate-800', 'border-slate-700');
-                        b.classList.add('bg-emerald-600/30', 'border-emerald-500', 'text-emerald-200');
-                    }
-                });
-
-                if (!isCorrect) {
-                    btnElement.classList.remove('bg-slate-800', 'border-slate-700');
-                    btnElement.classList.add('bg-rose-600/30', 'border-rose-500', 'text-rose-200');
-                }
-
-                const banner = document.getElementById('feedback-banner');
-                const titleEl = document.getElementById('feedback-title');
-                const descEl = document.getElementById('feedback-desc');
-
-                banner.classList.remove('hidden');
-                if (isCorrect) {
-                    banner.className = "p-4 rounded-2xl border bg-emerald-950/80 border-emerald-500/50 text-emerald-200 text-center shadow-lg";
-                    titleEl.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i> Correct! Excellent Tone Ear!`;
-                    descEl.textContent = `Spoken word: "${targetWord}"`;
-                } else {
-                    banner.className = "p-4 rounded-2xl border bg-rose-950/80 border-rose-500/50 text-rose-200 text-center shadow-lg";
-                    titleEl.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400 mr-2"></i> Not quite!`;
-                    descEl.textContent = `Correct answer was "${targetWord}" (You chose "${selectedOpt.word}")`;
-                }
-            }
-
-            openStatsModal() {
-                document.getElementById('stats-modal').classList.remove('hidden');
-                this.renderStatsContent();
-            }
-            closeStatsModal() {
-                document.getElementById('stats-modal').classList.add('hidden');
-            }
-            renderStatsContent() {
-                let totalSeen = 0;
-                let totalCorrect = 0;
-                let masteredCount = 0;
-                const listContainer = document.getElementById('stats-word-list');
-                listContainer.innerHTML = '';
-
-                const keys = Object.keys(this.userStats);
-                keys.forEach(word => {
-                    const st = this.userStats[word];
-                    totalSeen += st.seen;
-                    totalCorrect += st.correct;
-                    const acc = st.seen > 0 ? Math.round((st.correct / st.seen) * 100) : 0;
-                    if (acc >= 90 && st.seen > 0) masteredCount++;
-
-                    const div = document.createElement('div');
-                    div.className = "bg-slate-800/60 p-3 rounded-2xl border border-slate-700/50 flex justify-between items-center";
-                    div.innerHTML = `
-                        <div class="flex items-center space-x-3">
-                            <span class="thai-text text-base font-bold">${word}</span>
-                            <span class="text-[11px] text-slate-400">${st.seen} attempts</span>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-lg ${acc >= 90 ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : acc >= 50 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'}">
-                                ${acc}% Accuracy
-                            </span>
-                        </div>
-                    `;
-                    listContainer.appendChild(div);
-                });
-
-                if (keys.length === 0) {
-                    listContainer.innerHTML = `<p class="text-center text-slate-400 text-xs py-8">No practice stats recorded yet. Start playing!</p>`;
-                }
-
-                const overallAcc = totalSeen > 0 ? Math.round((totalCorrect / totalSeen) * 100) : 0;
-                document.getElementById('stat-total-seen').textContent = totalSeen;
-                document.getElementById('stat-overall-acc').textContent = overallAcc + '%';
-                document.getElementById('stat-mastered').textContent = masteredCount;
-            }
-            resetStats() {
-                if (confirm("Reset all statistics?")) {
-                    this.userStats = {};
-                    localStorage.removeItem('thai_tone_stats');
-                    this.renderStatsContent();
-                    this.updateEligibleItems();
-                }
-            }
-
-            openStudyModal() {
-                document.getElementById('study-modal').classList.remove('hidden');
-                this.renderStudyContent();
-            }
-            closeStudyModal() {
-                document.getElementById('study-modal').classList.add('hidden');
-            }
-            renderStudyContent() {
-                const container = document.getElementById('study-lessons-container');
-                container.innerHTML = '';
-
-                const categories = {};
-                this.items.forEach(item => {
-                    if (!categories[item.category]) categories[item.category] = [];
-                    if (!categories[item.category].some(i => i.word === item.word)) {
-                        categories[item.category].push(item);
-                    }
-                });
-
-                Object.keys(categories).forEach(cat => {
-                    const words = categories[cat];
-                    const section = document.createElement('div');
-                    section.className = "bg-slate-800/60 rounded-2xl p-4 border border-slate-700/50";
-                    section.innerHTML = `
-                        <h4 class="text-pink-300 font-bold uppercase text-xs tracking-wider mb-3 flex items-center justify-between">
-                            <span><i class="fa-solid fa-folder-open mr-2"></i> ${cat}</span>
-                            <span class="bg-slate-700 text-slate-300 px-2 py-0.5 rounded-lg text-[10px]">${words.length} words</span>
-                        </h4>
-                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                            ${words.map(w => `
-                                <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-700/40 flex flex-col justify-between">
-                                    <span class="thai-text text-sm font-bold text-slate-100">${w.word}</span>
-                                    <button onclick="console.log('Playing study audio for [${w.word}]:', '${w.url}'); new Audio('${w.url}').play()" class="mt-2 text-[11px] text-indigo-300 hover:text-indigo-200 flex items-center space-x-1 bg-indigo-950/60 px-2 py-1 rounded-lg border border-indigo-800/40 transition">
-                                        <i class="fa-solid fa-volume-high"></i>
-                                        <span>Play Audio</span>
-                                    </button>
-                                </div>
-                            `).join('')}
-                        </div>
-                    `;
-                    container.appendChild(section);
-                });
-            }
-
-            openFilterModal() {
-                document.getElementById('filter-modal').classList.remove('hidden');
-                const radios = document.querySelectorAll('input[name="word-filter"]');
-                radios.forEach(r => {
-                    r.checked = r.value === this.currentFilter;
-                });
-            }
-            closeFilterModal() {
-                document.getElementById('filter-modal').classList.add('hidden');
-            }
-            applyFilter() {
-                const radios = document.querySelectorAll('input[name="word-filter"]');
-                radios.forEach(r => {
-                    if (r.checked) {
-                        this.currentFilter = r.value;
-                    }
-                });
-
-                const badge = document.getElementById('active-filter-badge');
-                if (this.currentFilter === 'all') badge.textContent = 'All Eligible';
-                else if (this.currentFilter === 'unseen') badge.textContent = 'Unseen Words';
-                else if (this.currentFilter === 'weak') badge.textContent = 'Needs Practice (<90%)';
-
-                this.closeFilterModal();
-                this.updateEligibleItems();
-                this.nextQuestion();
+                processLoadedUrls(urlMatches);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('statusMessage').innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation text-3xl text-rose-500 mb-3"></i>
+                    <p class="text-rose-400 text-sm font-semibold">Failed to load audio files. Please check ./assets/vocabAudioUrls.js</p>
+                `;
             }
         }
 
-        let app;
-        window.onload = () => {
-            app = new ThaiToneGame();
-            app.init();
-        };
+        function processLoadedUrls(urls) {
+            allWordsData = [];
+            urls.forEach(url => {
+                const parts = url.split('/');
+                const rawFilename = parts[parts.length - 1];
+                const word = decodeURIComponent(rawFilename.replace('.mp3', '').trim());
+                if (word) {
+                    const baseKey = stripThaiTones(word);
+                    allWordsData.push({ word, baseKey, url });
+                }
+            });
+
+            // Group by base consonant/vowel (ignoring tones)
+            const groups = {};
+            allWordsData.forEach(item => {
+                if (!groups[item.baseKey]) groups[item.baseKey] = [];
+                // Avoid exact duplicate word entries in the same group
+                if (!groups[item.baseKey].some(i => i.word === item.word)) {
+                    groups[item.baseKey].push(item);
+                }
+            });
+
+            // Filter out groups with only 1 variant (we need minimal pairs with multiple tone variants)
+            minimalPairsGroups = {};
+            Object.keys(groups).forEach(key => {
+                if (groups[key].length >= 2) {
+                    minimalPairsGroups[key] = groups[key];
+                }
+            });
+
+            if (Object.keys(minimalPairsGroups).length === 0) {
+                document.getElementById('statusMessage').innerHTML = `
+                    <i class="fa-solid fa-circle-exclamation text-3xl text-amber-500 mb-3"></i>
+                    <p class="text-amber-400 text-sm font-semibold">No minimal tone pairs found in the provided URLs.</p>
+                `;
+                return;
+            }
+
+            document.getElementById('statusMessage').classList.add('hidden');
+            document.getElementById('gameCard').classList.remove('hidden');
+
+            nextRound();
+        }
+
+        function getFilteredGroups() {
+            const keys = Object.keys(minimalPairsGroups);
+            return keys.filter(key => {
+                const groupItems = minimalPairsGroups[key];
+                if (currentFilter === 'all') return true;
+
+                if (currentFilter === 'unseen') {
+                    // Group is unseen if none of its items have any attempts
+                    return groupItems.every(item => !userStats[item.word] || userStats[item.word].attempts === 0);
+                }
+
+                if (currentFilter === 'needsPractice') {
+                    // Group qualifies if any item has accuracy < 90% (and has at least 1 attempt)
+                    return groupItems.some(item => {
+                        const stat = userStats[item.word];
+                        if (!stat || stat.attempts === 0) return false;
+                        const acc = (stat.correct / stat.attempts) * 100;
+                        return acc < 90;
+                    });
+                }
+                return true;
+            });
+        }
+
+        function nextRound() {
+            answeredCurrent = false;
+            document.getElementById('audioErrorMsg').classList.add('hidden');
+            
+            const eligibleKeys = getFilteredGroups();
+            if (eligibleKeys.length === 0) {
+                document.getElementById('feedbackContainer').innerHTML = `
+                    <p class="text-amber-400 text-sm font-medium">No words match the current filter! Switch filter to 'All Eligible'.</p>
+                `;
+                document.getElementById('optionsContainer').innerHTML = '';
+                return;
+            }
+
+            // Pick a random group from eligible keys
+            const randomKey = eligibleKeys[Math.floor(Math.random() * eligibleKeys.length)];
+            currentPairGroup = minimalPairsGroups[randomKey];
+
+            // Pick target item from this group
+            targetItem = currentPairGroup[Math.floor(Math.random() * currentPairGroup.length)];
+
+            // Play audio automatically
+            playTargetAudio();
+
+            // Render options (strictly the variants in this exact group)
+            renderOptions();
+        }
+
+        let currentGameAudio = null;
+        function playTargetAudio() {
+            if (!targetItem) return;
+            console.log("Playing audio for [Word]:", targetItem.url);
+
+            if (currentGameAudio) {
+                currentGameAudio.pause();
+                currentGameAudio = null;
+            }
+
+            currentGameAudio = new Audio(targetItem.url);
+            currentGameAudio.play().catch(err => {
+                console.warn("Audio autoplay blocked:", err);
+                document.getElementById('audioErrorMsg').classList.remove('hidden');
+            });
+        }
+
+        document.getElementById('playAudioBtn').addEventListener('click', () => {
+            playTargetAudio();
+        });
+
+        function renderOptions() {
+            const container = document.getElementById('optionsContainer');
+            container.innerHTML = '';
+
+            // Feedback area reset to empty
+            document.getElementById('feedbackContainer').innerHTML = '';
+
+            // Shuffle the options so correct answer isn't always in the same spot
+            const shuffledOptions = [...currentPairGroup].sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = "w-full py-3.5 px-4 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700/60 rounded-xl text-lg font-medium text-slate-100 transition transform active:scale-[0.99] flex items-center justify-center shadow-sm";
+                btn.textContent = item.word;
+                btn.onclick = () => handleAnswer(item, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedItem, btnElement) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+
+            const isCorrect = (selectedItem.word === targetItem.word);
+
+            // Update stats
+            if (!userStats[targetItem.word]) {
+                userStats[targetItem.word] = { attempts: 0, correct: 0 };
+            }
+            userStats[targetItem.word].attempts++;
+            if (isCorrect) {
+                userStats[targetItem.word].correct++;
+                streak++;
+            } else {
+                streak = 0;
+            }
+            localStorage.setItem('thai_tone_streak', streak);
+            localStorage.setItem('thai_tone_stats', JSON.stringify(userStats));
+            document.getElementById('streakCount').textContent = streak;
+
+            // Highlight buttons
+            const allButtons = document.getElementById('optionsContainer').children;
+            for (let b of allButtons) {
+                b.disabled = true;
+                if (b.textContent === targetItem.word) {
+                    b.classList.remove('bg-slate-800/80', 'border-slate-700/60');
+                    b.classList.add('bg-emerald-600/30', 'border-emerald-500', 'text-emerald-300');
+                } else if (b === btnElement && !isCorrect) {
+                    b.classList.remove('bg-slate-800/80', 'border-slate-700/60');
+                    b.classList.add('bg-rose-600/30', 'border-rose-500', 'text-rose-300');
+                }
+            }
+
+            // Show Correct/Incorrect feedback message & Next button
+            const feedbackContainer = document.getElementById('feedbackContainer');
+            feedbackContainer.innerHTML = `
+                <div class="flex items-center justify-between w-full px-2 animate-fadeIn">
+                    <span class="text-sm font-bold ${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
+                        ${isCorrect ? 'Correct!' : `Incorrect! Correct word: ${targetItem.word}`}
+                    </span>
+                    <button id="nextRoundBtn" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold px-5 py-2 rounded-xl transition shadow-md flex items-center space-x-1.5">
+                        <span>Next</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('nextRoundBtn').onclick = () => {
+                nextRound();
+            };
+        }
+
+        // Filter change event
+        document.getElementById('filterSelect').addEventListener('change', (e) => {
+            currentFilter = e.target.value;
+            nextRound();
+        });
+
+        // Stats Modal Logic
+        const statsModal = document.getElementById('statsModal');
+        document.getElementById('openStatsBtn').addEventListener('click', () => {
+            updateStatsModalContent();
+            statsModal.classList.remove('hidden');
+        });
+        document.getElementById('closeStatsBtn').addEventListener('click', () => statsModal.classList.add('hidden'));
+        document.getElementById('closeStatsModalBtn').addEventListener('click', () => statsModal.classList.add('hidden'));
+        statsModal.addEventListener('click', (e) => {
+            if (e.target === statsModal) statsModal.classList.add('hidden');
+        });
+
+        function updateStatsModalContent() {
+            let totalSeen = 0;
+            let totalAttempts = 0;
+            let totalCorrect = 0;
+            let masteredCount = 0;
+
+            const listContainer = document.getElementById('statsListContainer');
+            listContainer.innerHTML = '';
+
+            allWordsData.forEach(item => {
+                const stat = userStats[item.word];
+                if (stat && stat.attempts > 0) {
+                    totalSeen++;
+                    totalAttempts += stat.attempts;
+                    totalCorrect += stat.correct;
+                    const acc = (stat.correct / stat.attempts) * 100;
+                    
+                    // Mastery condition: seen at least 10 times and accuracy >= 90%
+                    if (stat.attempts >= 10 && acc >= 90) {
+                        masteredCount++;
+                    }
+
+                    const row = document.createElement('div');
+                    row.className = "flex items-center justify-between bg-slate-800/40 px-3 py-2 rounded-xl border border-slate-700/40 text-xs";
+                    row.innerHTML = `
+                        <span class="font-medium text-slate-200">${item.word}</span>
+                        <div class="flex items-center space-x-3 text-slate-400">
+                            <span>${stat.correct}/${stat.attempts}</span>
+                            <span class="font-semibold ${acc >= 90 ? 'text-emerald-400' : acc >= 70 ? 'text-amber-400' : 'text-rose-400'}">${acc.toFixed(0)}%</span>
+                        </div>
+                    `;
+                    listContainer.appendChild(row);
+                }
+            });
+
+            if (totalSeen === 0) {
+                listContainer.innerHTML = `<p class="text-center text-slate-500 text-xs py-6">No words attempted yet. Start playing to track progress!</p>`;
+            }
+
+            document.getElementById('statTotalSeen').textContent = totalSeen;
+            document.getElementById('statMastered').textContent = masteredCount;
+            const overallAcc = totalAttempts > 0 ? ((totalCorrect / totalAttempts) * 100).toFixed(0) + '%' : '0%';
+            document.getElementById('statAccuracy').textContent = overallAcc;
+        }
+
+        document.getElementById('resetStatsBtn').addEventListener('click', () => {
+            if (confirm("Are you sure you want to reset all your statistics and progress?")) {
+                userStats = {};
+                streak = 0;
+                localStorage.removeItem('thai_tone_stats');
+                localStorage.setItem('thai_tone_streak', '0');
+                document.getElementById('streakCount').textContent = '0';
+                updateStatsModalContent();
+                nextRound();
+            }
+        });
+
+        // Initialize on load
+        loadVocabAudioScript();
     </script>
 </body>
 </html>
