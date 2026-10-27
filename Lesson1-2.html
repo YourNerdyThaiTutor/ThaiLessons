@@ -25,11 +25,78 @@
         <meta property="og:type" content="article">
         <meta property="og:url" content="https://yournerdythaitutor.github.io/ThaiLessons/Lesson1-2.html">
         
+        <style>
+            /* Stats Modal & Mobile-Friendly Table Styling */
+            .stats-modal {
+                display: none;
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                z-index: 1000;
+                width: 90%;
+                max-width: 600px;
+                max-height: 80vh;
+                overflow-y: auto;
+                font-family: sans-serif;
+            }
+            .stats-overlay {
+                display: none;
+                position: fixed;
+                top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.4);
+                z-index: 999;
+            }
+            .stats-table-container {
+                width: 100%;
+                overflow-x: auto;
+            }
+            .stats-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                text-align: left;
+                font-size: 14px;
+            }
+            .stats-table th, .stats-table td {
+                padding: 10px 8px;
+                border-bottom: 1px solid #eee;
+                white-space: nowrap;
+            }
+            .stats-table th {
+                font-weight: bold;
+                color: #333;
+            }
+            .stats-close-btn {
+                margin-top: 15px;
+                padding: 6px 15px;
+                cursor: pointer;
+            }
+        </style>
     </head>
 
     <body>
-        <a href="https://yournerdythaitutor.github.io/"> home</a>
-        <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" style="float: right">other games</a>
+
+        <div class="topOfPageDiv">
+            <div class="leftSlot">
+                <a href="https://yournerdythaitutor.github.io/" >Home</a>
+            </div>
+
+            <div class="centerSlot">
+                <button id="statsBtn" onclick="toggleStats()" class="options" style="float: right; margin-right: 15px;">
+                    My Stats 📊
+                </button>
+            </div>  
+                
+            <div class="rightSlot">
+                <a href="https://yournerdythaitutor.github.io/Lessons/AllGames.html" >Other Games</a>
+            </div>
+        </div>
+
         <div id="score" class="score">Score: </div>
         <div id="streak" class="streak">Streak: </div><a href="https://yournerdythaitutor.github.io/Lessons/Lesson1.html" style="float: right">Lesson</a>
         <div id="question" class="question">
@@ -53,114 +120,264 @@
             <button id="myBtn" onclick="SubmitAnswer()" type="button">Submit</button>
             
         </div>
-            <script>
-                var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
-var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
-var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
-var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
-var tones =["","่","้","๊","๋"];
-var vowels =["า","อ"];
-var choices = consonants;
-var correct ="";
-var score = 0;
-var alreadyWrong = false;
-var streak = 0;
 
-var input = document.getElementById("numb");
-    input.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            document.getElementById("myBtn").click();
-        }
-    });
+        <!-- Stats Popup Modal -->
+        <div id="statsOverlay" class="stats-overlay" onclick="toggleStats()"></div>
+        <div id="statsModal" class="stats-modal">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0;">📊 Consonant Stats</h3>
+                <span onclick="toggleStats()" style="cursor: pointer; font-size: 20px; font-weight: bold;">&times;</span>
+            </div>
+            <div class="stats-table-container">
+                <table class="stats-table" id="statsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Lifetime Success Rate</th>
+                            <th>Longest Streak</th>
+                            <th>Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="statsTableBody">
+                        <!-- Populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div style="text-align: center;">
+                <button class="stats-close-btn" onclick="toggleStats()">Close</button>
+            </div>
+        </div>
 
-function checkAnswer(txt){
-    
-    
-    if(txt === correct){
-        //var t = document.createTextNode("correct");
-        //document.body.appendChild(t);
-        document.getElementById("myBtn").style.background='#00ff00';
-        if(!alreadyWrong){
-            score ++;
-            streak ++;
-            document.getElementById("score").textContent = "Score: "+score;
-            document.getElementById("streak").textContent = "Streak: "+streak;
-        }
-        else{
-            streak = 0;
-            document.getElementById("streak").textContent = "Streak: "+streak;
-        }
-        alreadyWrong = false;
+        <script>
+            var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
+            var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
+            var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
+            var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
+            var tones =["","่","้","๊","๋"];
+            var vowels =["า","อ"];
+            var choices = consonants;
+            var correct ="";
+            var score = 0;
+            var alreadyWrong = false;
+            var streak = 0;
 
-        //check if helper table is open
-        var helperTable = document.getElementById("etable");
-        helperTable.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letter is";
+            var gameKey = "lesson1-2"; // Matches your AllGames row ID key
 
-        setTimeout(() => startGame(),700);
-        
-    }
-    else{
-        //var ti = document.createTextNode("wrong");
-        //document.body.appendChild(ti);
-        document.getElementById("myBtn").style.background='#ff3333';
-        alreadyWrong = true;
-    }
-}
-function createQuestion(){
-    var correctIndex = Math.floor(Math.random() * choices.length);
-    correct = choices[correctIndex];
-    var src = "mid/"+correct+"อ"+".mp3";
-    
-    var audio = document.getElementById('audio');
+            // Load itemized tracking maps from localStorage (or initialize empty objects)
+            var attemptsMap = JSON.parse(localStorage.getItem(gameKey + "_attempts") || "{}");
+            var correctMap = JSON.parse(localStorage.getItem(gameKey + "_correct") || "{}");
+            var streakMap = JSON.parse(localStorage.getItem(gameKey + "_streaks") || "{}");
+            var currentStreakMap = {}; // Tracks live active streak per letter during session
 
-    var source = document.getElementById('audioSource');
-    source.src = src;
-    audio.load();
-    audio.play();
-    //var t = document.createTextNode(src);
-    //document.body.appendChild(t);
-}
+            var input = document.getElementById("numb");
+                input.addEventListener("keypress", function(event) {
+                    if (event.key === "Enter") {
+                        event.preventDefault();
+                        document.getElementById("myBtn").click();
+                    }
+                });
 
-function SubmitAnswer() {
-  // Get the value of the input field with id="numb"
-  let x = document.getElementById("numb").value;
-    document.getElementById("numb").focus();
-    document.getElementById("numb").select();
-  // If x is Not a Number or less than one or greater than 10
-   x.replace(/\s/g, '');
-   checkAnswer(x);
-}
+            function checkAnswer(txt){
 
-function startGame(){
-    document.getElementById("numb").focus();
-    document.getElementById("numb").select();
-    document.getElementById("myBtn").style.background='#ffffff';
-    createQuestion();
-}
+                // Initialize stats for this letter if not present
+                if(!attemptsMap[correct]) attemptsMap[correct] = 0;
+                if(!correctMap[correct]) correctMap[correct] = 0;
+                if(!streakMap[correct]) streakMap[correct] = 0;
+                if(!currentStreakMap[correct]) currentStreakMap[correct] = 0;
 
-window.onload = function start(){startGame();}
+                attemptsMap[correct]++;
+                
+                
+                if(txt === correct){
+                    //var t = document.createTextNode("correct");
+                    //document.body.appendChild(t);
+                    document.getElementById("myBtn").style.background='#00ff00';
+                    correctMap[correct]++;
 
-function toggleHelp(){
-    
-    //TODO show ending consonant table
-      var x = document.getElementById("etable");
-    var letters = "";
-    for(let i = 0; i< correct.length;i++){
-        letters+=correct[i]+",";
-    }
-    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
-      if (x.style.display === "none") {
-        x.style.display = "block";
-        document.getElementById("helper").innerHTML = "close table";
-      } else {
-        x.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letter is";
-      }
-}
+                    if(!alreadyWrong){
+                        score ++;
+                        streak ++;
+                        currentStreakMap[correct]++;
 
-            </script>
+                        if(currentStreakMap[correct] > streakMap[correct]) {
+                            streakMap[correct] = currentStreakMap[correct];
+                        }
+
+                        // Find global max streak across all letters for the main progress bar
+                        var maxGlobalStreak = Math.max(...Object.values(streakMap), 0);
+                        localStorage.setItem(gameKey + "Streak", maxGlobalStreak);
+
+                        // Save itemized stats
+                        localStorage.setItem(gameKey + "_attempts", JSON.stringify(attemptsMap));
+                        localStorage.setItem(gameKey + "_correct", JSON.stringify(correctMap));
+                        localStorage.setItem(gameKey + "_streaks", JSON.stringify(streakMap));
+                        
+                        document.getElementById("score").textContent = "Score: "+score;
+                        document.getElementById("streak").textContent = "Streak: "+streak;
+                    }
+                    else{
+                        streak = 0;
+                        currentStreakMap[correct] = 0;
+                        document.getElementById("streak").textContent = "Streak: "+streak;
+                    }
+                    alreadyWrong = false;
+
+                    //check if helper table is open
+                    var helperTable = document.getElementById("etable");
+                    helperTable.style.display = "none";
+                    document.getElementById("helper").innerHTML = "click here to see where the letter is";
+
+                    setTimeout(() => startGame(),700);
+                    
+                }
+                else{
+                    //var ti = document.createTextNode("wrong");
+                    //document.body.appendChild(ti);
+                    document.getElementById("myBtn").style.background='#ff3333';
+                    alreadyWrong = true;
+                    currentStreakMap[correct] = 0;
+
+                    // Save updated attempts count
+                    localStorage.setItem(gameKey + "_attempts", JSON.stringify(attemptsMap));
+                }
+            }
+            function createQuestion(){
+                var correctIndex = Math.floor(Math.random() * choices.length);
+                correct = choices[correctIndex];
+                var src = "mid/"+correct+"อ"+".mp3";
+                
+                var audio = document.getElementById('audio');
+
+                var source = document.getElementById('audioSource');
+                source.src = src;
+                audio.load();
+                audio.play();
+                //var t = document.createTextNode(src);
+                //document.body.appendChild(t);
+            }
+
+            function SubmitAnswer() {
+            // Get the value of the input field with id="numb"
+            let x = document.getElementById("numb").value;
+                document.getElementById("numb").focus();
+                document.getElementById("numb").select();
+            // If x is Not a Number or less than one or greater than 10
+            x.replace(/\s/g, '');
+            checkAnswer(x);
+            }
+
+            function startGame(){
+                document.getElementById("numb").focus();
+                document.getElementById("numb").select();
+                document.getElementById("myBtn").style.background='#ffffff';
+                createQuestion();
+            }
+
+            window.onload = function start(){startGame();}
+
+            function toggleHelp(){
+                
+                //TODO show ending consonant table
+                var x = document.getElementById("etable");
+                var letters = "";
+                for(let i = 0; i< correct.length;i++){
+                    letters+=correct[i]+",";
+                }
+                x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+                if (x.style.display === "none") {
+                    x.style.display = "block";
+                    document.getElementById("helper").innerHTML = "close table";
+                } else {
+                    x.style.display = "none";
+                    document.getElementById("helper").innerHTML = "click here to see where the letter is";
+                }
+            }
+
+            function toggleStats() {
+                var modal = document.getElementById("statsModal");
+                var overlay = document.getElementById("statsOverlay");
+                
+                if (modal.style.display === "block") {
+                    modal.style.display = "none";
+                    overlay.style.display = "none";
+                } else {
+                    buildStatsTable();
+                    modal.style.display = "block";
+                    overlay.style.display = "block";
+                }
+            }
+
+            function buildStatsTable() {
+                var tbody = document.getElementById("statsTableBody");
+                tbody.innerHTML = "";
+
+                // Prepare data array for sorting
+                var rowsData = consonants.map(function(item) {
+                    var att = attemptsMap[item] || 0;
+                    var cor = correctMap[item] || 0;
+                    var rate = att > 0 ? (cor / att) : 0; // 0.0 to 1.0
+                    var strk = streakMap[item] || 0;
+                    return { name: item, rate: rate, streak: strk, attempts: att };
+                });
+
+                // Sort by worst success rate top-to-bottom (lowest rate first)
+                // If rates are tied, sort by fewest attempts or alphabetically
+                rowsData.sort(function(a, b) {
+                    if (a.rate !== b.rate) {
+                        return a.rate - b.rate; 
+                    }
+                    return b.attempts - a.attempts;
+                });
+
+                // Build DOM rows matching your requested format
+                rowsData.forEach(function(data) {
+                    var tr = document.createElement("tr");
+
+                    // Name column
+                    var tdName = document.createElement("td");
+                    tdName.textContent = data.name;
+                    tr.appendChild(tdName);
+
+                    // Lifetime Success Rate column
+                    var tdRate = document.createElement("td");
+                    var percent = data.attempts > 0 ? ((data.correctMap_get || data.rate) * 100).toFixed(2) + "%" : "0.00%";
+                    // Correct calculation for percentage:
+                    var actualCorrect = correctMap[data.name] || 0;
+                    var actualAttempts = attemptsMap[data.name] || 0;
+                    var exactRate = actualAttempts > 0 ? (actualCorrect / actualAttempts) * 100 : 0;
+                    tdRate.textContent = exactRate.toFixed(2) + "%";
+                    tr.appendChild(tdRate);
+
+                    // Longest Streak column
+                    var tdStreak = document.createElement("td");
+                    tdStreak.textContent = data.streak;
+                    tr.appendChild(tdStreak);
+
+                    // Progress column (mini progress bar matching your app design)
+                    var tdProgress = document.createElement("td");
+                    var maxStreakGoal = 20; // Target streak per individual item
+                    var barContainer = document.createElement("div");
+                    barContainer.style.width = "80px";
+                    barContainer.style.backgroundColor = "#eee";
+                    barContainer.style.borderRadius = "4px";
+                    barContainer.style.height = "12px";
+                    barContainer.style.overflow = "hidden";
+
+                    var barFill = document.createElement("div");
+                    var fillPercent = Math.min((data.streak / maxStreakGoal) * 100, 100);
+                    barFill.style.width = fillPercent + "%";
+                    barFill.style.height = "100%";
+                    barFill.style.backgroundColor = data.streak >= maxStreakGoal ? "#77dd77" : "#ffcc00";
+
+                    barContainer.appendChild(barFill);
+                    tdProgress.appendChild(barContainer);
+                    tr.appendChild(tdProgress);
+
+                    tbody.appendChild(tr);
+                });
+            }
+
+        </script>
         
     </body>
 </html>
