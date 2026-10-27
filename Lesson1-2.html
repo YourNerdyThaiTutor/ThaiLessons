@@ -210,6 +210,7 @@
             var attemptsMap = JSON.parse(localStorage.getItem(gameKey + "_attempts") || "{}");
             var correctMap = JSON.parse(localStorage.getItem(gameKey + "_correct") || "{}");
             var streakMap = JSON.parse(localStorage.getItem(gameKey + "_streaks") || "{}");
+            var globalBestStreak = Number(localStorage.getItem(gameKey + "Streak") || 0); // All-time overall game streak
             var currentStreakMap = {}; // Tracks live active streak per letter during session
 
             var input = document.getElementById("numb");
@@ -244,18 +245,24 @@
                         correctMap[correct]++;
                         currentStreakMap[correct]++;
 
+                        // 1. Update individual letter streak
                         if(currentStreakMap[correct] > streakMap[correct]) {
                             streakMap[correct] = currentStreakMap[correct];
                         }
 
-                        // Calculate global max streak and save cleanly as "Lesson1-2Streak" for your AllGames page
-                        var maxGlobalStreak = Math.max(...Object.values(streakMap), 0);
-                        localStorage.setItem(gameKey + "Streak", maxGlobalStreak);
+                        // 2. Update overall all-time game streak
+                        if(streak > globalBestStreak) {
+                            globalBestStreak = streak;
+                        }
 
-                        // Save itemized stats
+                        // Save cleanly as "Lesson1-2Streak" for your AllGames progress bar and stats summary
+                        localStorage.setItem(gameKey + "Streak", globalBestStreak);
+
+                        // Save itemized letter stats
                         localStorage.setItem(gameKey + "_attempts", JSON.stringify(attemptsMap));
                         localStorage.setItem(gameKey + "_correct", JSON.stringify(correctMap));
                         localStorage.setItem(gameKey + "_streaks", JSON.stringify(streakMap));
+
                         
                         document.getElementById("score").textContent = "Score: "+score;
                         document.getElementById("streak").textContent = "Streak: "+streak;
@@ -359,19 +366,16 @@
                 // 1. Calculate Overall Totals for the Top Summary Row
                 var totalAttemptsAll = 0;
                 var totalCorrectAll = 0;
-                var maxStreakAll = 0;
 
                 consonants.forEach(function(item) {
-                    var att = attemptsMap[item] || 0;
-                    var cor = correctMap[item] || 0;
-                    var strk = streakMap[item] || 0;
-                    totalAttemptsAll += att;
-                    totalCorrectAll += cor;
-                    if(strk > maxStreakAll) maxStreakAll = strk;
+                    totalAttemptsAll += (attemptsMap[item] || 0);
+                    totalCorrectAll += (correctMap[item] || 0);
                 });
 
+                // Use all-time overall game streak for the top row
+                var maxStreakAll = Number(localStorage.getItem(gameKey + "Streak") || globalBestStreak);
                 var overallRate = totalAttemptsAll > 0 ? (totalCorrectAll / totalAttemptsAll) * 100 : 0;
-
+                
                 // Render Overall Summary Row at the Top
                 var overallTr = document.createElement("tr");
                 overallTr.className = "overall-row";
