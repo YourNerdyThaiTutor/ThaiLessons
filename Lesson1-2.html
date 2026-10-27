@@ -228,8 +228,6 @@
                 if(!correctMap[correct]) correctMap[correct] = 0;
                 if(!streakMap[correct]) streakMap[correct] = 0;
                 if(!currentStreakMap[correct]) currentStreakMap[correct] = 0;
-
-                attemptsMap[correct]++;
                 
                 
                 if(txt === correct){
@@ -286,11 +284,16 @@
                     //var ti = document.createTextNode("wrong");
                     //document.body.appendChild(ti);
                     document.getElementById("myBtn").style.background='#ff3333';
+
+                    // If this is the FIRST time missing it on this question, log an attempt
+                    if(!alreadyWrong) {
+                        attemptsMap[correct]++;
+                        localStorage.setItem(gameKey + "_attempts", JSON.stringify(attemptsMap));
+                    }
+
                     alreadyWrong = true;
                     currentStreakMap[correct] = 0;
 
-                    // Save updated attempts count
-                    localStorage.setItem(gameKey + "_attempts", JSON.stringify(attemptsMap));
                 }
             }
             function createQuestion(){
