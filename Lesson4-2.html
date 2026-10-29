@@ -57,110 +57,110 @@
         </div>
             <script>
                 var consonants =["ก","จ","ด","ต","บ","ป","อ"]; //middle consonants
-var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
-var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
-var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
-var tones =["","่","้","๊","๋"];
-var vowels =["า","อ"];
-var choices = ["กาง","กาย","กาว","แกง","แกน","โกง","โกน","จาง","จาน","จาม","จีน","จูง","แจว","ดาว","แดน","โดน","ตาม","ตีน","บาง","บาน","ปูน","อาน","เอน"];
-var correct ="";
-var score = 0;
-var alreadyWrong = false;
-var streak = 0;
+                var single_low_consonants = ["ง","ญ","น","ย","ณ","ร","ว","ม","ฬ","ล"];
+                var paired_low_consonants = ["ค","ช","ซ","ท","พ","ฟ","ฮ"];//simple consonants no repeeated sounds
+                var paired_high_consonants = ["ข","ฉ","ส","ถ","ผ","ฝ","ห"];
+                var tones =["","่","้","๊","๋"];
+                var vowels =["า","อ"];
+                var choices = ["กาง","กาย","กาว","แกง","แกน","โกง","โกน","จาง","จาน","จาม","จีน","จูง","แจว","ดาว","แดน","โดน","ตาม","ตีน","บาง","บาน","ปูน","อาน","เอน"];
+                var correct ="";
+                var score = 0;
+                var alreadyWrong = false;
+                var streak = 0;
 
-var input = document.getElementById("numb");
-    input.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            document.getElementById("myBtn").click();
-        }
-    });
+                var input = document.getElementById("numb");
+                    input.addEventListener("keypress", function(event) {
+                        if (event.key === "Enter") {
+                            event.preventDefault();
+                            document.getElementById("myBtn").click();
+                        }
+                    });
 
-function checkAnswer(txt){
-    
-    
-    if(txt === correct){
-        //var t = document.createTextNode("correct");
-        //document.body.appendChild(t);
-        document.getElementById("myBtn").style.background='#00ff00';
-        if(!alreadyWrong){
-            score ++;
-            streak ++;
-            document.getElementById("score").textContent = "Score: "+score;
-            document.getElementById("streak").textContent = "Streak: "+streak;
-        }
-        else{
-            streak = 0;
-            document.getElementById("streak").textContent = "Streak: "+streak;
-        }
-        alreadyWrong = false;
+                function checkAnswer(txt){
+                    
+                    
+                    if(txt === correct){
+                        //var t = document.createTextNode("correct");
+                        //document.body.appendChild(t);
+                        document.getElementById("myBtn").style.background='#00ff00';
+                        if(!alreadyWrong){
+                            score ++;
+                            streak ++;
+                            document.getElementById("score").textContent = "Score: "+score;
+                            document.getElementById("streak").textContent = "Streak: "+streak;
+                        }
+                        else{
+                            streak = 0;
+                            document.getElementById("streak").textContent = "Streak: "+streak;
+                        }
+                        alreadyWrong = false;
 
-        //check if helper table is open
-        var helperTable = document.getElementById("etable");
-        helperTable.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letter is";
+                        //check if helper table is open
+                        var helperTable = document.getElementById("etable");
+                        helperTable.style.display = "none";
+                        document.getElementById("helper").innerHTML = "click here to see where the letter is";
 
-        setTimeout(() => startGame(),700);
-        
-    }
-    else{
-        //var ti = document.createTextNode("wrong");
-        //document.body.appendChild(ti);
-        document.getElementById("myBtn").style.background='#ff3333';
-        alreadyWrong = true;
-    }
-}
-function createQuestion(){
-    var correctIndex = Math.floor(Math.random() * choices.length);
-    correct = choices[correctIndex];
-    var src = "./spelling_audios/"+correct+".mp3";
-    
-    var audio = document.getElementById('audio');
+                        setTimeout(() => startGame(),700);
+                        
+                    }
+                    else{
+                        //var ti = document.createTextNode("wrong");
+                        //document.body.appendChild(ti);
+                        document.getElementById("myBtn").style.background='#ff3333';
+                        alreadyWrong = true;
+                    }
+                }
+                function createQuestion(){
+                    var correctIndex = Math.floor(Math.random() * choices.length);
+                    correct = choices[correctIndex];
+                    var src = "./spelling_audios/"+correct+".mp3";
+                    
+                    var audio = document.getElementById('audio');
 
-    var source = document.getElementById('audioSource');
-    source.src = src;
-    audio.load();
-    audio.play();
-    //var t = document.createTextNode(src);
-    //document.body.appendChild(t);
-}
+                    var source = document.getElementById('audioSource');
+                    source.src = src;
+                    audio.load();
+                    audio.play();
+                    //var t = document.createTextNode(src);
+                    //document.body.appendChild(t);
+                }
 
-function SubmitAnswer() {
-  // Get the value of the input field with id="numb"
-  let x = document.getElementById("numb").value;
-    document.getElementById("numb").focus();
-    document.getElementById("numb").select();
-  // If x is Not a Number or less than one or greater than 10
-   x.replace(/\s/g, '');
-   checkAnswer(x);
-}
+                function SubmitAnswer() {
+                // Get the value of the input field with id="numb"
+                let x = document.getElementById("numb").value;
+                    document.getElementById("numb").focus();
+                    document.getElementById("numb").select();
+                // If x is Not a Number or less than one or greater than 10
+                x.replace(/\s/g, '');
+                checkAnswer(x);
+                }
 
-function startGame(){
-    document.getElementById("numb").focus();
-    document.getElementById("numb").select();
-    document.getElementById("myBtn").style.background='#ffffff';
-    createQuestion();
-}
+                function startGame(){
+                    document.getElementById("numb").focus();
+                    document.getElementById("numb").select();
+                    document.getElementById("myBtn").style.background='#ffffff';
+                    createQuestion();
+                }
 
-window.onload = function start(){startGame();}
+                window.onload = function start(){startGame();}
 
-function toggleHelp(){
-    
-    //TODO show ending consonant table
-      var x = document.getElementById("etable");
-    var letters = "";
-    for(let i = 0; i< correct.length;i++){
-        letters+=correct[i]+",";
-    }
-    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
-      if (x.style.display === "none") {
-        x.style.display = "block";
-        document.getElementById("helper").innerHTML = "close table";
-      } else {
-        x.style.display = "none";
-        document.getElementById("helper").innerHTML = "click here to see where the letters are";
-      }
-}
+                function toggleHelp(){
+                    
+                    //TODO show ending consonant table
+                    var x = document.getElementById("etable");
+                    var letters = "";
+                    for(let i = 0; i< correct.length;i++){
+                        letters+=correct[i]+",";
+                    }
+                    x.src = "https://yournerdythaitutor.github.io/ThaiKeyboard.html?product="+letters;
+                    if (x.style.display === "none") {
+                        x.style.display = "block";
+                        document.getElementById("helper").innerHTML = "close table";
+                    } else {
+                        x.style.display = "none";
+                        document.getElementById("helper").innerHTML = "click here to see where the letters are";
+                    }
+                }
 
             </script>
         
